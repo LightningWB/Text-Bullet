@@ -24,7 +24,7 @@ The Core layer is controlled by the travelers plus, and the logic layer is contr
 There are two main concepts you need to know to be able to write plugins. Events and data structures.
 - Events
 
-	Each plugin is event oriented. Events are called for a variety of reasons. Some example events are playerJoin, playerTick, gameTick, playerCreate or any action sent from the client. Each event is given a priority. The priority for base events is 0. This can be any number. You can use priorities to block certain events from happening. An example would be another plugin can stop a player from moving if they have an item. Other events can be emitted through namespaces to ensure multiple plugins don't use the same names and cause unwanted side effects. [A detailed list of events](./Events.md).
+	Each plugin is event oriented. Events are called for a variety of reasons. Some example events are playerJoin, playerTick, gameTick, playerCreate or any action sent from the client. Each event is given a priority. The priority for base events is 0. This can be any number. You can use priorities to block certain events from happening. An example would be another plugin can stop a player from moving if they have an item. Other events can be emitted through namespaces to ensure multiple plugins don't use the same names and cause unwanted side effects. [A detailed list of events](./Events.md). ALl events sent from the client are under the `actions` namespace. Ex. `actions::setDir`. An easy way to see every action from the client is doing `plugin.on('actions::*', console.log)`.
 
 - Data Structures
 	- Players
