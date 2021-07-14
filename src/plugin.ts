@@ -145,30 +145,34 @@ namespace plugins
 			this.addAdminButton = require('./net').addAdminButton;
 			this.addAdminText = require('./net').addAdminText;
 		}
-		on(event: 'playerTick', listener: (player:player.playerData) => any, priority:number):any
-		on(event: 'playerJoin', listener: (player:player.playerData) => any, priority:number):any
-		on(event: 'playerInit', listener: (player:player.playerData) => any, priority:number):any
-		on(event: 'playerCreate', listener: (player:player.playerData) => any, priority:number):any
-		on(event: 'playerUnload', listener: (player:player.playerData) => any, priority:number):any
-		on(event: 'saveChunk', listener: (chunk:chunk.chunk) => any, priority:number):any
-		on(event: 'loadChunk', listener: (chunk:chunk.chunk) => any, priority:number):any
+		on(event: 'chunkSave', listener: (chunk:chunk.chunk) => any, priority:number):any
+		on(event: 'disconnect', listener: (player:player.playerData) => any, priority:number):any
 		on(event: 'gameTickPre', listener: () => any, priority:number):any
 		on(event: 'gameTick', listener: () => any, priority:number):any
+		on(event: 'loadChunk', listener: (chunk:chunk.chunk) => any, priority:number):any
+		on(event: 'playerConnect', listener: (player:player.playerData) => any, priority:number):any
+		on(event: 'playerCreate', listener: (player:player.playerData) => any, priority:number):any
+		on(event: 'playerReady', listener: (player:player.playerData) => any, priority:number):any
+		on(event: 'playerSave', listener: (player:player.playerData) => any, priority:number):any
+		on(event: 'playerTick', listener: (player:player.playerData) => any, priority:number):any
+		on(event: 'saveChunk', listener: (chunk:chunk.chunk) => any, priority:number):any
 		on(event: string, listener: (...args: any[])=>any, priority:number):any
 		{
 			(plugin.parent as any).on(event, listener, priority);
 		}
 
 		// pretty bad copy pasting but not too bad
-		once(event: 'playerTick', listener: (player:player.playerData) => any, priority:number):any
-		once(event: 'playerJoin', listener: (player:player.playerData) => any, priority:number):any
-		once(event: 'playerInit', listener: (player:player.playerData) => any, priority:number):any
-		once(event: 'playerCreate', listener: (player:player.playerData) => any, priority:number):any
-		once(event: 'playerUnload', listener: (player:player.playerData) => any, priority:number):any
-		once(event: 'saveChunk', listener: (chunk:chunk.chunk) => any, priority:number):any
-		once(event: 'loadChunk', listener: (chunk:chunk.chunk) => any, priority:number):any
+		once(event: 'chunkSave', listener: (chunk:chunk.chunk) => any, priority:number):any
+		once(event: 'disconnect', listener: (player:player.playerData) => any, priority:number):any
 		once(event: 'gameTickPre', listener: () => any, priority:number):any
 		once(event: 'gameTick', listener: () => any, priority:number):any
+		once(event: 'loadChunk', listener: (chunk:chunk.chunk) => any, priority:number):any
+		once(event: 'playerConnect', listener: (player:player.playerData) => any, priority:number):any
+		once(event: 'playerCreate', listener: (player:player.playerData) => any, priority:number):any
+		once(event: 'playerReady', listener: (player:player.playerData) => any, priority:number):any
+		once(event: 'playerSave', listener: (player:player.playerData) => any, priority:number):any
+		once(event: 'playerTick', listener: (player:player.playerData) => any, priority:number):any
+		once(event: 'saveChunk', listener: (chunk:chunk.chunk) => any, priority:number):any
 		once(event: string, listener: (...args: any[])=>any, priority:number):any
 		{
 			(plugin.parent as any).once(event, listener, priority);
