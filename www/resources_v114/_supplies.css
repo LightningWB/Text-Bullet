@@ -1,0 +1,209 @@
+#loot-popup {
+    border: 1px solid black;
+    background-color: white;
+    top: 50px;
+    z-index: 17;
+    left: 0;
+    right: 0;
+    width: calc(100% - 64px);
+    position: absolute;
+    padding: 30px 30px 40px;
+    font-size: 20px;
+    text-align: center;
+    max-width: 750px;
+    margin: auto;
+    overflow-y: auto;
+    max-height: calc(100% - 150px);
+}
+
+#loot-blocker {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 7;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+div.loot-contain {
+    display: inline-block;
+    vertical-align: top;
+    width: calc(50% - 12px);
+    border: 1px solid black;
+    height: 400px;
+    margin: 0 5px;
+    text-align: left;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+#loot-title {
+    font-size: 32px;
+    margin: 0 0 5px;
+}
+
+#loot-desc {
+    margin: 0 0 10px;
+    font-size: 18px;
+}
+
+div.loot-item {
+    border-bottom: 1px solid black;
+    font-size: 16px;
+}
+
+div.loot-item-left {
+    display: inline-block;
+    width: calc(100% - 107px);
+    padding: 8px 0 8px 10px;
+}
+
+div.loot-item-right {
+    display: inline-block;
+    vertical-align: top;
+    width: 77px;
+    padding: 5px 10px;
+}
+
+div.loot-btn {
+    border: 1px solid black;
+    padding: 3px 5px;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+span.supplies-sortbtn {
+    text-decoration: none;
+}
+
+span.supplies-sortbtn:hover {
+    text-decoration:underline;
+}
+
+p.supply-category {
+    font-weight: bold;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    margin: 10px 5px 3px;
+    font-size: 12px;
+}
+
+select.supplies-dropdown {
+    font-size: 12px;
+    position: absolute;
+    height: 12px;
+    line-height: 1.1;
+    cursor:pointer;
+    z-index:2;
+}
+
+select.supplies-dropdown:hover {
+    border-bottom:1px solid black;
+}
+
+select.loot-dropdown {
+    font-size: 12px;
+    height: 12px;
+    line-height: 1;
+    cursor: pointer;
+    vertical-align: top;
+    display: inline-block;
+}
+
+#loot-barRatio {
+    font-size: 12px;
+    vertical-align: top;
+    display: inline-block;
+    line-height: 1;
+    margin: 0 15px 0 5px;
+}
+
+#loot-otherBarRatio {
+    font-size: 12px;
+    vertical-align: top;
+    display: inline-block;
+    line-height: 1;
+    margin: 0 5px 0 15px;
+}
+
+#loot-takeAll {
+    font-size: 12px;
+    vertical-align: top;
+    display: inline-block;
+    line-height: 1;
+}
+
+#supplies-scroll {
+    padding: 30px 2px 0;
+    height: calc(100% - 30px);
+}
+
+#supplies-infomenu {
+    height: calc(70% - 21px);
+    border-top: 1px solid black;
+    padding: 10px;
+    overflow-y: auto;
+    word-break: break-word;
+}
+
+div.bottom-box-left-menu {
+    border: 1px solid black;
+    display: inline-block;
+    margin: 2px;
+    height: calc(30% - 21px);
+    vertical-align: top;
+    padding: 10px;
+    overflow-y: auto;
+    word-break: break-word;
+    height: 158px;
+    width: 436px;
+    text-align: left;
+}
+
+#supplies-infotitle, h2.bottom-box-left-menu-title {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+    text-decoration: none;
+}
+
+#supplies-infodesc {
+    font-size: 14px;
+    margin: 0 auto 10px;
+}
+
+p.bottom-box-left-menu-desc {
+    font-size: 14px;
+    margin: 0 3px 10px;
+}
+
+@media only screen and (max-width:705px) {
+    #loot-popup {
+        width: calc(100% - 4px);
+        padding: 30px 0 40px;
+        top:90px
+    }
+
+    #loot-title {
+        font-size: 24px;
+    }
+
+    #loot-desc {
+        font-size:16px;
+    }
+
+    div.loot-item-right, div.loot-item-left {
+        width: calc(100% - 10px);
+        font-size: 14px;
+        text-align: center !important;
+        padding: 5px !important;
+    }
+
+    div.loot-contain {
+        height: 400px;
+    }
+}

@@ -1,0 +1,55 @@
+div.craft-menu {
+    height: calc(60% - 21px);
+    border-top: 1px solid black;
+    padding: 10px;
+    overflow-y:auto;
+    word-break:break-word;
+}
+
+#craft-title {
+    margin: 0 0 5px;
+    padding: 0;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#craft-desc {
+    margin: 0 0 10px;
+    font-size: 14px;
+}
+
+#craft-divlist {
+    font-size: 14px;
+    margin: 0 0 10px;
+}
+
+#craft-time {
+    font-size: 14px;
+    margin: 0 0 10px;
+}
+
+input.craft-btns {
+    font-size: 16px;
+    margin: 0 4px 10px;
+    padding: 3px 7px;
+}
+
+p.craft-queue-item {
+    font-size: 14px;
+}
+
+#queue-cancelall-btn {
+    font-size: 14px;
+    padding: 2px 8px;
+    margin: 10px 0;
+}
+
+span.craft-cancel-btn {
+    font-size:12px;
+    cursor:pointer;
+}
+
+span.craft-cancel-btn:hover {
+    text-decoration:underline;
+}

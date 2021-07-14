@@ -1,0 +1,157 @@
+#int-popup {
+    border: 1px solid black;
+    background-color: white;
+    top: 50px;
+    z-index: 5;
+    left: 0;
+    right: 0;
+    width: calc(100% - 64px);
+    position: absolute;
+    padding: 30px;
+    font-size: 20px;
+    text-align: center;
+    max-width: 400px;
+    margin: auto;
+    overflow-y: auto;
+    max-height: calc(100% - 150px);
+}
+
+#int-blocker, #int-leavemsg-blocker {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 4;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+#int-atthisloc {
+    text-align: left;
+    margin: 0 0 5px;
+    font-size: 16px;
+    font-style: italic;
+}
+
+div.chat-box {
+    display: block;
+    text-align: right;
+}
+
+#int-infobox {
+    display: block;
+}
+
+#int-username {
+    font-weight: bold;
+    font-size: 24px;
+    margin: 0 0 30px;
+}
+
+div.chat-msgbox {
+    height: 300px;
+    background-color: #eee;
+    overflow: auto;
+}
+
+textarea.typebox {
+    width: calc(100% - 6px);
+    resize: none;
+    height: 60px;
+    font-size: 16px;
+    border: 1px solid black;
+    padding: 2px;
+    height:80px;
+}
+
+input.chat-sendBtn {
+    margin: 0;
+    font-size: 16px;
+    padding: 3px 6px;
+}
+
+p.int-playerinfo {
+    display: inline-block;
+    vertical-align: text-bottom;
+    font-size: 14px;
+    font-weight: normal;
+    margin: 0 0 2px 15px;
+    font-style: italic;
+}
+
+div.init-message {
+    font-style: italic;
+    font-size: 14px;
+    text-align: center;
+    opacity: .5;
+    background-color: rgba(0,0,0,0);
+    padding: 10px;
+}
+
+div.int-message {
+    text-align: left;
+    background-color: rgba(0,0,0,0);
+    font-size: 14px;
+    padding: 2px 6px;
+    word-wrap: break-word;
+}
+
+input.int-btns {
+    font-size: 14px;
+    margin: 5px 5px 5px 0;
+    padding: 3px 7px;
+}
+
+#int-usernames {
+    font-size: 18px;
+    text-align: left;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+div.init-message {
+    opacity:0.7;
+}
+
+#int-leavemsg-pop {
+    border: 1px solid black;
+    background-color: white;
+    top: 50px;
+    z-index: 20;
+    left: 0;
+    right: 0;
+    width: calc(100% - 64px);
+    position: absolute;
+    padding: 30px 30px 0;
+    font-size: 20px;
+    text-align: center;
+    max-width: 400px;
+    margin: auto;
+    overflow-y: auto;
+    max-height: calc(100% - 150px);
+}
+
+#int-leavemsg-blocker {
+    z-index: 19;
+}
+
+#int-showmsg-desc {
+    font-size: 16px;
+    margin: 0 0 20px;
+}
+
+div.int-offlinemsgs {
+    text-align: left;
+    font-size: 16px;
+    border: 1px solid black;
+    padding: 10px;
+    margin: 0 0 20px;
+}
+
+@media only screen and (max-width:705px) {
+    #int-popup {
+        width: calc(100% - 64px);
+        top: 90px
+    }
+}

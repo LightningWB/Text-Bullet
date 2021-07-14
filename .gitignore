@@ -1,0 +1,6 @@
+node_modules
+db.json
+config.toml
+plugins
+build
+dist

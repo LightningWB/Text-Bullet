@@ -1,0 +1,338 @@
+#pvp-popup {
+    border: 1px solid black;
+    background-color: white;
+    top: 50px;
+    z-index: 7;
+    left: 0;
+    right: 0;
+    width: calc(100% - 64px);
+    position: absolute;
+    padding: 30px;
+    font-size: 20px;
+    text-align: center;
+    max-width: 400px;
+    margin: auto;
+    overflow-y: auto;
+}
+
+#pvp-blocker {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.7);
+    z-index: 6;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+}
+
+#pvp-chal-title {
+    font-size: 26px;
+    margin: 0 auto 20px;
+}
+
+#pvp-chal-desc {
+    font-size: 16px;
+    text-align: left;
+    margin: 0;
+}
+
+#pvp-chal-waiting {
+    font-size: 16px;
+    font-style: italic;
+    opacity: 0.5;
+}
+
+#pvp-chal-supplies {
+    height: 130px;
+    background-color: #e8e8e8;
+    margin: 5px auto 40px;
+    text-align: left;
+    padding-left: 5px;
+    overflow-x: auto;
+    white-space: nowrap;
+    border: 1px solid black;
+}
+
+div.pvp-chal-supp {
+    display: inline-block;
+    height: 88px;
+    margin: 5px 5px 5px 0;
+    border: 1px solid black;
+    padding: 2px 5px;
+}
+
+p.chal-weaponstat {
+    font-size: 14px;
+}
+
+input.pvp-chalsel-btn {
+    display: block;
+    margin: 4px auto 2px;
+}
+
+div.selected-weap {
+    outline: #444 solid 2px;
+}
+
+#pvp-chal-startingin {
+    font-size: 14px;
+    font-style: italic;
+}
+
+p.pvp-timer {
+    font-weight: bold;
+    font-size: 32px;
+}
+
+/* fight screen */
+
+#pvp-fight-yourbox, #pvp-fight-oppbox {
+    border: 1px solid black;
+    padding: 10px;
+    margin: 20px 0 0;
+}
+
+h1.pvp-title {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+#pvp-fight-desc {
+    font-size: 16px;
+}
+
+div.fightbtn {
+    font-size: 18px;
+    padding: 4px 0;
+    font-weight: bold;
+    margin: 0;
+    width: 150px;
+    border: 1px solid black;
+    display: inline-block;
+    cursor:pointer;
+}
+
+p.o_d {
+    font-size: 14px;
+    font-style: italic;
+    opacity: 0.5;
+    margin: 15px auto
+}
+
+p.o_d-topadjust {
+    border-bottom: 1px solid;
+    padding-bottom: 15px;
+    width: 70%;
+}
+
+#pvp-fight-youweapdesc {
+    font-size: 14px;
+    font-style: italic;
+    margin: 0 0 10px;
+}
+
+#pvp-fight-opplevel {
+    font-size: 14px;
+    font-style: italic;
+    margin: 20px 0 0;
+}
+
+#pvp-fight-statbox {
+    margin: 20px auto 0;
+}
+
+#pvp-fight-oppname {
+    font-weight: bold;
+    font-size: 22px;
+    text-decoration: none;
+    padding: 0;
+}
+
+#pvp-fight-oppdesc {
+    font-size: 14px;
+    margin: 0 0 15px;
+    font-style: italic;
+}
+
+#pvp-fight-oppchoice-desc {
+    font-size: 14px;
+    font-style: italic;
+    margin: 0 0 2px;
+}
+
+#pvp-fight-oppchoice {
+    font-size: 18px;
+    font-weight: bold;
+    border: 1px solid black;
+    padding: 2px 0;
+    width: 150px;
+    margin: auto;
+}
+
+#pvp-end-desc {
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+input.pvp-accept-challenge {
+    margin: 0 auto 10px;
+    display: block;
+    font-size: 16px;
+}
+
+span.pvp-notif {
+    margin-left:5px;
+    font-weight:bold;
+}
+
+#pvp-fight-introview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+div.pvp-intro-floater {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 50% auto;
+}
+
+h2.pvp-intro-title {
+    display: inline-block;
+    font-size: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 0;
+}
+
+p.pvp-intro-level {
+    display: inline-block;
+    font-size: 30px;
+    font-weight: bold;
+    font-style: italic;
+}
+
+span.pvp-intro-small {
+    font-size: 18px;
+    font-weight: normal;
+    font-style: italic;
+    margin: 0 8px 0 15px;
+}
+
+p.pvp-intro-stats {
+    font-size: 16px;
+    font-style: italic;
+}
+
+p.pvp-intro-weapon {
+    font-size: 18px;
+}
+
+span.pvp-intro-weapon-name {
+    font-weight:bold;
+    font-size:20px;
+}
+
+p.pvp-intro-versus {
+    margin: 70px auto;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+p.pvp-intro-total {
+    font-size: 30px;
+    margin-top: 10px;
+    font-style:italic;
+}
+
+span.pvp-intro-total-small {
+    font-size: 16px;
+    margin-left: 8px;
+}
+
+#pvp-mid-chat {
+    border: 1px solid black;
+    border-left: none !important;
+    background-color: white;
+    top: 347px;
+    left: calc(50% + 231px);
+    z-index: 7;
+    width: 250px;
+    position: absolute;
+    padding: 10px;
+    font-size: 20px;
+    text-align: center;
+    max-width: 400px;
+}
+
+
+@media only screen and (max-height:1000px) {
+    div.pvp-intro-floater {
+        margin: 40% auto;
+    }
+
+    #pvp-mid-chat {
+        left: calc(50% + 211px);
+    }
+
+    #pvp-popup {
+        width: calc(100% - 24px);
+        padding: 10px;
+    }
+
+    #pvp-fight-yourbox, #pvp-fight-oppbox {
+        margin: 10px 0 0;
+        padding: 5px;
+    }
+
+    #pvp-fight-oppdesc {
+        margin: 0 0 5px;
+    }
+
+    p.o_d {
+        margin: 5px auto
+    }
+
+    p.o_d-topadjust {
+        padding-bottom: 5px;
+    }
+
+    div.fightbtn, #pvp-fight-oppchoice {
+        font-size: 16px;
+        padding: 2px 0;
+    }
+
+    div.pvp-fight-statbox p.fight-hp-you, div.pvp-fight-statbox-opp p.stat-subbar-info {
+        margin: 1px auto 0px;
+    }
+
+    #pvp-fight-opplevel {
+        margin: 10px 0 0;
+    }
+}
+
+@media only screen and (max-width:1200px) {
+    #pvp-mid-chat {
+        display:none !important;
+    }
+}
+
+@media only screen and (max-width:560px) {
+    #pvp-popup {
+        width: calc(100% - 34px);
+        padding: 15px
+    }
+
+    div.fightbtn {
+        font-size: 14px;
+        padding: 3px 0;
+        width: 110px;
+    }
+}

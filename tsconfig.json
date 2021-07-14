@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"resolveJsonModule": true,
+		"module": "CommonJS",
+		"target": "es6",
+		"outDir": "build/",
+		"skipLibCheck": true,
+		"allowJs": true
+	},
+	"include": [
+		"./index.ts",
+		"./src/*"
+	]
+}

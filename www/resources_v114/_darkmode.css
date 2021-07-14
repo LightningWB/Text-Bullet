@@ -1,0 +1,165 @@
+html, body, div, h1, h2, p, input, #event-popup, #event-cycle, #pvp-popup, div.settings-menu, #loot-popup, #int-popup, #int-leavemsg-pop, #tut-window, div.tut-border-back, div.tut-blocker, #genmsg-popup, #dc-popup, #pvp-mid-chat {
+    color: white;
+    background-color: rgb(40, 40, 40);
+}
+
+    #world-box, #world-time, #world-position, #arrow-box, div.arrows, div.side-section-div, input, #mid-menu, #dropdown-menu, input.popup-button, #event-popup, #event-cycle, #autolog-btn, #hover-tileinfo, div.settings-menu, #loot-popup, div.loot-contain, div.loot-btn, div.stat-bar,
+    #stats-skillpoint-box, #stats-upgrades, #stats-resetall, span.movement-btns, div.supplies-box-icon, select.settings-dropdown, #tut-window, div.tut-border-back, #int-popup, #int-leavemsg-pop, div.int-offlinemsgs, #supplies-equipactions, div.popup-reqbutton,
+    span.hotbar-btn, div.bottom-box-left-menu, #building-magnifier, div.building-magnifier-tile, #event-desc span.doc, #genmsg-popup, #pvp-popup, div.pvp-chal-supp, #pvp-fight-yourbox, #pvp-fight-oppbox, #pvp-fight-oppchoice, div.fightbtn, #pvp-mid-chat, #dc-popup {
+        border: 1px solid white;
+    }
+
+    #craft-menu, div.craft-menu, #supplies-infomenu, div.popup-reqbutton-info {
+        border-top: 1px solid white;
+    }
+
+a.nonlink, a.nonlink:visited {
+    color: white;
+}
+
+a.floating-box-link {
+    color: #46aaff;
+}
+
+    a.floating-box-link:visited {
+        color:#b9b9b9;
+    }
+
+div.arrows > img {
+    filter: invert(1);
+}
+
+input {
+    border: 1px solid white !important;
+}
+
+input[type=button]:active {
+    background-color: #535353;
+}
+
+input.popup-button:active, #loot-takeBtn:active, #loot-leaveBtn:active {
+    background-color: rgb(40, 40, 40);
+}
+
+input[disabled] {
+    border: 1px solid #515151 !important;
+    color: #515151 !important;
+}
+
+select {
+    color: white;
+    background-color: #282828
+}
+
+.active {
+    background-color: #535353 !important;
+}
+
+.ddMenu-item, div.loot-item, select.supplies-dropdown:hover {
+    border-bottom: 1px solid white !important;
+}
+
+div.popup-reqbutton-disabled {
+    border: 1px solid #515151 !important;
+    color: #515151 !important;
+}
+
+#ddMenu-backblock {
+    background-color: rgba(0,0,0,0.8);
+}
+
+#init-cover {
+    background-color: rgb(55, 55, 55);
+}
+
+div.settings-menu {
+    border-top: none;
+}
+
+div.settings-check {
+    border: 3px solid rgb(40, 40, 40);
+    box-shadow: 0 0 0 1px rgb(255, 255, 255);
+    background-color: rgb(40, 40, 40);
+}
+
+div.settings-checked {
+    background-color: white;
+}
+
+div.stat-bar-filler {
+    background-color: #535353;
+}
+
+#account-addemail {
+    box-shadow: 0 0 0 1px white;
+    border:none !important;
+}
+
+div.account-settings-box {
+    border-left:1px solid white
+}
+
+span.account-badspan {
+    color: #ff4747;
+}
+
+textarea.typebox, #int-leavemsg-textbox, #genmsg-textbox {
+    border: 1px solid white;
+    background-color: #151515;
+    color: white;
+}
+
+#int-messages {
+    background-color: #404040;
+    color: white;
+}
+
+div.chat-msgbox, div.int-message {
+    background-color: #000;
+}
+
+p.supply-category {
+    border-bottom: 1px solid rgba(256,256,256,0.1);
+}
+
+#autolog-motd {
+    background-color: #282828;
+    color: white;
+    border: 1px solid white;
+}
+
+img.homepage-icon {
+    filter: invert(1);
+}
+
+#pvp-chal-supplies {
+    background-color: #0c0c0c;
+    border: 1px solid white;
+}
+
+div.selected-weap {
+    outline: #ccc solid 2px;
+}
+
+/* homepage */
+div.header {
+    background-color: #000;
+}
+
+div.content-box {
+    background-color: #191919
+}
+/* end homepage */
+/* scrollbars */
+.scrollbar {
+    scrollbar-color: #888 #282828;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #282828
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+/* end scrollbars */

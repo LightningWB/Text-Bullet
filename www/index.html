@@ -1,0 +1,841 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>
+	@&variable[title]&@
+</title><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0" />
+<meta property="og:title" content="@&variable[title]&@" /><meta property="og:type" content="website" />
+<meta property="og:url" content="https://thetravelers.online" />
+<meta property="og:image" content="/imgs/logo2.png" />
+<meta property="og:description" content="@&variable[description]&@" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="/imgs/logo2.png" />
+<meta name="twitter:title" content="@&variable[title]&@" />
+<meta name="twitter:description" content="@&variable[description]&@" />
+<link id="styleCss" rel="stylesheet" href="./resources_v114/__travelers.css" /><link rel="stylesheet" href="./resources_v114/_supplies.css" /><link rel="stylesheet" href="./resources_v114/_crafting.css" /><link rel="stylesheet" href="./resources_v114/_stats.css" /><link rel="stylesheet" href="./resources_v114/_interaction.css" /><link rel="stylesheet" href="./resources_v114/_building.css" /><link rel="stylesheet" href="./resources_v114/_pvp.css" /><link rel="stylesheet" href="./resources_v114/_otherpages.css" /><link id="favicon" rel="shortcut icon" type="image/png" href="favicon.ico" />
+    
+</head>
+<body>
+    <form method="post" action="./default.aspx" id="form1" style="position: relative;">
+        <div id="init-cover"></div>
+        <div id="homepage" class="homepage clearback">
+            <div class="header">
+                <h2 class="banner-title">@&variable[title]&@</h2>&nbsp;
+                <h3 class="game-subtitle">@&variable[description]&@</h3>
+            </div>
+
+            <!-- login/signup/forgot password -->
+            <div id="main-content-dip" class="content-dip homepage-content-dip">
+                <div id='start-page' style='opacity:1;'>
+                    <div class="homepage-content-dip-spacer"></div>
+                    <div id='login-screen' class='startpage-optionbox' style='opacity:0;display:none'>
+                        <h3 class='post-title' style="padding:0">wake up</h3>
+                        <p class='start-desc'>your body rests somewhere in the ashes.</p>
+
+                        <p id="password-changed" style="display:none;font-size:14px;">password changed successfully, please log in with the new password.</p>
+    
+                        <input type='text' id='loginname-txt' placeholder='username or email' maxlength="200" style='font-size: 20px;'/>
+                        <input type='password' id='loginpass-txt' placeholder='password' maxlength="100" style='font-size: 20px;'/>
+                
+                        <p id='badlogin' class="clearback"></p>
+
+                        <br />
+                
+                        <input type="checkbox" id="login-remember" /><label for="login-remember" class="rememberme">remember me</label><br />
+                        <input type='button' id='login-btn' value='wake up' onclick='SOCKET.login();' />
+                        <input type='button' id='signup-switch' class='linkbtn clearback' value='new traveler? sign up here' onclick='SOCKET.switchstart();' style="font-size:18px;" />
+
+                        <br />
+                        <input type='button' class='linkbtn clearback' value='forgot password?' onclick='SOCKET.switchforgot();' />
+                    </div>
+                    <div id='signup-screen' class='startpage-optionbox' style='opacity:1;'>
+                        <h3 class='post-title' style="padding:0">create an account</h3>
+                        <p class='start-desc'>enter the endless wastes and discover what lies hidden.</p>
+
+                        <input type='text' id='signupname-txt' placeholder='choose a username' maxlength="16" style='font-size: 20px;'/>
+                        <input type='text' id='signupemail-txt' placeholder='email (optional)' maxlength="200" style='font-size: 20px;'/>
+                        <p id="email-info">your email will only ever be used to<br />reset your password if you forget it.</p>
+
+                        <input type='password' id='signuppass-txt' placeholder='choose a password' maxlength="100" style='font-size: 20px;'/>
+                        <input type='password' id='signupconfirmpass-txt' placeholder='confirm password' maxlength="100" style='font-size: 20px;'/>
+
+                        <p id='badsignup' class="clearback"></p>
+
+                        <br />
+
+                        <input type="checkbox" id="signup-remember" /><label for="signup-remember" class="rememberme">remember me</label><br />
+                        <input type='button' id='signup-btn' value='join' onclick='SOCKET.signup();' />
+                        <input type='button' id='login-switch' class='linkbtn clearback' value='asleep somewhere? log in here' onclick='SOCKET.switchstart();' style="font-size:18px;" />
+                
+                        <input type='button' class='linkbtn clearback' value='forgot password?' onclick='SOCKET.switchforgot();' />
+                    </div>
+                    <div id='forgot-screen' class='startpage-optionbox' style='opacity:0;display:none'>
+                        <h3 class='post-title' style="padding:0">forgot password</h3>
+                        <p id="forgot-desc" class='start-desc'>enter your email and you'll get a verification code to change your password.</p>
+    
+                        <input type='text' id='forgotemail-txt' placeholder='account email' maxlength="200" style='font-size: 20px;'/>
+                        <input type='text' id='forgotcode-txt' placeholder='enter code' maxlength="9" style='font-size: 20px;width: 145px;display:none;text-transform:uppercase;'/>
+
+                        <div id="forgot-newpassbox" class="clearback" style="display:none;">
+                            <input type='password' id='forgotpass-txt' placeholder='enter new password' maxlength="100" style='font-size: 20px;'/>
+                            <input type='password' id='forgotconfirmpass-txt' placeholder='confirm password' maxlength="100" style='font-size: 20px;'/>
+                        </div>
+                        <p id='badforgot' class="clearback" style="font-size: 14px;display:inline-block;margin:auto;"></p><br />
+
+                        <input type='button' id='forgot-getcode-btn' value='get code' onclick='SOCKET.forgot(1);' />
+                        <input type='button' id='forgot-entercode-btn' value='continue' onclick='SOCKET.forgot(2);' style="display:none" />
+                        <input type='button' id='forgot-reset-btn' value='reset' onclick='SOCKET.forgot(3);' style="display:none"/>
+
+                        <input type='button' class='linkbtn clearback' value='go back' onclick='SOCKET.switchforgot();' style="font-size:18px;" />
+                    </div>
+                    <div id="autolog-screen" class="startpage-optionbox" style='opacity:1;background-color:#373737;display:none;color:white;position:relative;'>
+                        <span id="autolog-username"></span>
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <input type='button' id='autolog-btn' value='wake up' onclick="SOCKET.autologBtn(); this.setAttribute('onclick', '');" style="margin:10px 0 0;" />
+                        <span style="text-decoration:underline;font-size:14px;cursor:pointer;display:block;margin:15px 0 20px;" onclick="SOCKET.logout();">logout</span>
+                        <div id="autolog-tip">tip:</div>
+                        <div id="autolog-motd"></div>
+                    </div>
+                    <div id="game-info"></div>
+                </div>
+            </div><!--
+
+                FORUM BOXES
+         --><div class="news-area clearback"><!--
+            ---><div class="content-box floating-content-box">
+                    <h3 class="post-title">about</h3>
+                    <p class="post-body" style="padding-bottom:15px;">
+                        You wake up in the dust and ash with no memory, endless black clouds overhead smothering the world like a blanket. You have only a backpack and a device displaying a coordinate system. You feel an urge to find the center of the world, not far from where you woke.
+                        <br /><br />
+                        The Travelers is a text-based adventure MMO about a post-apocalyptic world. Discover the secrets of the wasteland, waiting to be uncovered by travelers exploring to the corners of the Earth.
+                        <br /><br />
+                        <a href="/howtoplay" target="_blank" style="color:#0089ff">[how to play]</a>
+                    </p>
+                </div><!--
+            ---><div class="content-box floating-content-box">
+                    <h3 class="post-title">leaderboard</h3>
+                    <p class="post-body" style="padding-bottom:15px;">the current top 5 players for xp are listed below.</p>
+                    <p id="leaderboard-list" class="post-body">loading...</p>
+                </div><!--
+            ---><div class="content-box floating-content-box">
+                    <h3 class="post-title">latest version</h3>
+                    <h4 id="changelog-date" class="post-subtitle">2/11/2020</h4>
+                    <p id="changelog-desc" class="post-body">loading...</p>
+                </div><!--
+            ---><div class="content-box floating-content-box">
+                    <h3 class="post-title">donate</h3>
+                    <p class="post-body">I've spent hundreds of hours developing The Travelers and I plan to keep it going as long as I can. 
+                        The site costs $20 a month to run and $25 a year to keep the domain. I can handle this myself, but if you want
+                        to donate to show your appreciation and help keep the mystery alive, here's a few links. Thanks for playing!
+                        <br />
+                        <br />PayPal/Venmo: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="30445f425f57515445545570575d51595c1e535f5d">[email&#160;protected]</a>
+                        <br />Bitcoin: <span style="font-size:12px;">3Hap8CWvLZVAJnU8L8F8hXf8WEkRBEwazr</span>
+                        <br />Ethereum: <span style="font-size:12px;">0xD805732a2053F8F3395Ff7DDCa390ad64804F166</span>
+                    </p>
+                </div><!--
+        ---></div>
+        </div>
+
+        <div id="site-background"></div>
+
+        <!-- death screen -->
+        <div id="death-screen" style="display:none;">
+            <p id="death-title"></p>
+            <p id="death-desc"></p>
+            <input type="button" id="death-reincarnate-btn" value="reincarnate" onclick="YOU.reincarnate();" />
+        </div>
+
+        <!-- startup story sequence -->
+        <div id="begin-sequence" style="display:none;opacity:0">
+            <div id="begin-text" style="opacity:0"></div>
+            <br />
+            <input type='button' id='begin-nextBtn' value='...' onclick="SOCKET.beginSeq(1);" style="display:none;opacity:0" />
+        </div>
+
+        <!-- dropdown menu -->
+        <div id="dropdown-menu" style="display:none;">
+            <div id="tut-skip" class="ddMenu-item unselectable" onclick="TUT.skip();ENGINE.toggleMenu();" style="display:none;font-weight:bold;">skip tutorial</div>
+            <a href='./howtoplay' target="_blank" class="nonlink ddMenu-item unselectable">how to play</a>
+            <a href='./changelog' target="_blank" class="nonlink ddMenu-item unselectable">changelog</a>
+            <a href='./leaderboard' target="_blank" class="nonlink ddMenu-item unselectable">leaderboard</a>
+            <div class="ddMenu-item unselectable" onclick="SETTINGS.open();">game settings</div>
+            <div class="ddMenu-item unselectable" onclick="PLAYERSTATS.open();">statistics</div>
+            <div class="ddMenu-item unselectable" onclick="ACC.open();">your account</div>
+            <div class="ddMenu-item unselectable" onclick="SOCKET.logout();" style="border-bottom:none !important">log out</div>
+        </div>
+
+        <!-- account popup -->
+        <div id="account-menu" class="settings-menu" style="display:none">
+            <p class="settings-title">your account<span class="menu-close" onclick="ACC.close();ENGINE.toggleMenu();">close</span></p>
+            <div id="account-loading">loading...</div>
+            <div id="account-main" style="display:none;">
+                <div id="account-email" style="font-size: 16px;margin: 10px 0 0;"></div>
+                <div id="account-username" style="font-size: 16px;margin-bottom:20px;"></div>
+                
+                <!--
+                <input id="change-emailBtn" type="button" onclick="ACC.toggleEmailBox();" class="account-settings-btns"  value="change email" />
+                <div id="change-emailBox" class="account-settings-box" style="display:none">
+                    hi
+                </div>
+                -->
+
+                <input id="change-passwordBtn" type="button" onclick="ACC.togglePassBox();" class="account-settings-btns" value="change password" />
+                <div id="change-passwordBox" class="account-settings-box" style="display:none">
+                    <input type="password" id="change-oldpassTxt" placeholder="old password" class="account-changepass-boxes" maxlength="100" />
+                    <input type="password" id="change-newpassTxt" placeholder="new password" class="account-changepass-boxes" maxlength="100" />
+                    <input type="password" id="change-conpassTxt" placeholder="confirm password" class="account-changepass-boxes" maxlength="100" />
+                    <input id="submit-newPass" type="button" value="submit" class="account-settings-btns" style="font-size:14px;display: inline-block;margin-bottom:0;" onclick="ACC.changepass();" /><span id="bad-changepass" class='account-badspan'></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- playerstats popup -->
+        <div id="playerstats-menu" class="settings-menu" style="display:none">
+            <p class="settings-title">player stats<span class="menu-close" onclick="PLAYERSTATS.close();ENGINE.toggleMenu();">close</span></p>
+            <div id="playerstats-info" style="font-size: 16px;margin: 10px 0 0;"></div>
+        </div>
+
+        <!-- settings popup -->
+        <div id="settings-menu" class="settings-menu" style="display:none">
+            <p class="settings-title">game settings<span class="menu-close" onclick="SETTINGS.close();ENGINE.toggleMenu();">close</span></p>
+            
+            <!-- darkmode -->
+            <div class="settings-sect" onclick="SETTINGS.toggleDarkMode();" style="cursor:pointer;">
+                <div class="settings-check" id="set-darkmode"></div> toggle darkmode
+            </div>
+            <br />
+
+            <!-- disable hover text-->
+            <div class="settings-sect" onclick="SETTINGS.toggleHover();" style="cursor:pointer;">
+                <div class="settings-check settings-checked" id="set-hover"></div> toggle hover-text
+            </div>
+            <br />
+
+            <!-- autowalk past-->
+            <div class="settings-sect">
+                <div class="settings-check settings-checked" id="set-autowalkpast" onclick="SETTINGS.toggleAutoPast();"></div><span onclick="SETTINGS.toggleAutoPast();" style="cursor:pointer;"> auto-walk past events after </span><input id="set-autowalkpast-time" type="number" min="1" max="100" value="30" onchange="SETTINGS.setAutopastTime(this.value);" /><span onclick="SETTINGS.toggleAutoPast();" style="cursor:pointer;"> cycles</span>
+            </div>
+            <br />
+
+            <!-- notifications-->
+            <div class="settings-sect" onclick="SETTINGS.toggleNotifAny();" style="cursor:pointer;">
+                <div class="settings-check settings-checked" id="set-notifAny"></div> enable notifications
+            </div>
+            <br />
+            <div id="notif-sub0000" class="settings-sect" style="cursor:pointer;margin-left: 40px;">
+                notifications can activate after <input id="set-notification-timeout" type="number" min="1" value="10" onchange="SETTINGS.setNotifTimeout(this.value);" /> cycles without inputs
+            </div>
+            <br />
+            <div id="notif-sub0" class="settings-sect" onclick="SETTINGS.toggleNotifSound();" style="cursor:pointer;margin-left: 40px;">
+                <div class="settings-check settings-checked" id="set-notifSound"></div> enable notification sound effect
+            </div>
+            <br />
+            <div id="notif-sub00" class="settings-sect" onclick="SETTINGS.toggleNotifDesktop();" style="cursor:pointer;margin-left: 40px;">
+                <div class="settings-check settings-checked" id="set-notifDesktop"></div> enable desktop notifications
+            </div>
+            <br />
+            <div id="notif-sub1" class="settings-sect" onclick="SETTINGS.toggleNotifTraveler();" style="cursor:pointer;margin-left: 40px;">
+                <div class="settings-check settings-checked" id="set-notifTraveler"></div> notify for nearby travelers
+            </div>
+            <br />
+            <div id="notif-sub3" class="settings-sect" onclick="SETTINGS.toggleNotifHouse();" style="cursor:pointer;margin-left: 40px;">
+                <div class="settings-check settings-checked" id="set-notifHouse"></div> notify for nearby houses
+            </div>
+            <br />
+            <div id="notif-sub2" class="settings-sect" onclick="SETTINGS.toggleNotifCity();" style="cursor:pointer;margin-left: 40px;">
+                <div class="settings-check settings-checked" id="set-notifCity"></div> notify for nearby cities
+            </div>
+            <br />
+            <div id="notif-sub5" class="settings-sect" onclick="SETTINGS.toggleNotifBuild();" style="cursor:pointer;margin-left: 40px;">
+                <div class="settings-check settings-checked" id="set-notifBuild"></div> notify for structures built by travelers
+            </div>
+            <br />
+            <div id="notif-sub000" class="settings-sect" onclick="SETTINGS.toggleNotifUnknown();" style="cursor:pointer;margin-left: 40px;">
+                <div class="settings-check settings-checked" id="set-notifUnknown"></div> notify for other unknown new locations
+            </div>
+            <br />
+            <div id="notif-sub4" class="settings-sect" onclick="SETTINGS.toggleNotifLevel();" style="cursor:pointer;margin-left: 40px;">
+                <div class="settings-check settings-checked" id="set-notifLevel"></div> notify when leveling up
+            </div>
+            <br />
+
+            <!-- supply/craft view-->
+            <div class="settings-sect">
+                show supplies and craftable items as:
+                <select id="set-supply-view" class="settings-dropdown" onchange="SETTINGS.setSupplyView(parseInt(this.value))">
+                    <option value="1" selected="selected">icon</option>
+                    <option value="2">list</option>
+                </select>
+            </div>
+
+            <br />
+            <br />
+            <br />
+            <span id="settings-savetoserver" class="hotbar-btn unselectable" onclick="SETTINGS.saveToServer();">save settings to server</span>
+            <br />
+            <br />
+            <span id="settings-loadfromserver" class="hotbar-btn unselectable" onclick="SETTINGS.loadFromServer();">load settings from server</span>
+        </div>
+        <div id="ddMenu-backblock" style="display:none;" onclick="if(event.target !== this)return;ENGINE.toggleMenu();SETTINGS.close();ACC.close();PLAYERSTATS.close();">
+            <div id="ddMenu-backInfo"></div>
+        </div>
+
+        <!-- loot popup -->
+        <div id='loot-popup' style='display:none;'><!--
+        ---><div id='loot-title'></div><!--
+        ---><div id='loot-desc'></div><!--
+        ---><div style='margin: 0 5px 29px;font-size: 14px;text-align: left;'>
+                <span style='float:left;'>your supplies</span>
+            
+                <span style='float:right;'>available loot</span>
+            </div><!--
+        ---><div style="margin:0 5px 5px;font-size:0;"><!--why, if you remove this font-size:0, does the vert space of this box get so much bigger?-->
+                <div style="display:inline-block;width:50%;text-align:left;">
+                    <div class="stat-bar mini" style="display:inline-block;vertical-align:top;"><div id="looting-barFillerEl" class="stat-bar-filler"></div></div><!--
+                ---><span id="loot-barRatio"></span><!--
+
+                ---><select onchange="LOOT.popSort=parseInt(this.value);LOOT.popLootLists();" class="loot-dropdown">
+                        <option value="0" selected="selected">sort by count</option>
+                        <option value="1">sort by name</option>
+                        <option value="2">sort by weight</option>
+                    </select>
+                </div><!--
+            ---><div style="display:inline-block;width:50%;text-align:right;"><!--
+                ---><span id="loot-takeAll" class="spanlink" onclick="LOOT.takeall();">take all</span><!--
+
+                ---><span id="loot-otherBarRatio"></span><!--
+
+                ---><div class="stat-bar mini" style="display:inline-block;vertical-align:top;"><div id="looting-otherBarFillerEl" class="stat-bar-filler" style="float:right;"></div></div>
+                </div>
+            </div><!--
+
+        ---><div id='your-loot' class='loot-contain scrollbar'></div><!--
+        ---><div id='other-loot' class='loot-contain scrollbar'></div><!--
+
+        ---><input id="loot-takeBtn" type='button' value='continue' onclick="LOOT.take(this);"/><!--
+            <input id="loot-leaveBtn" type='button' value='don&#39;t loot' onclick="LOOT.leave(this);" style="margin-bottom: 20px;"/>
+    ---></div>
+        <div id="loot-blocker" style="display:none"></div>
+
+        <!-- general typing popup -->
+        <div id="genmsg-popup" style="display:none"><!--
+        ---><p id="genmsg-desc"></p><!--
+        ---><textarea id="genmsg-textbox" maxlength="200" class="scrollbar"></textarea><!--
+
+        ---><input type="button" id="genmsg-sendBtn" class="focus" value="send" style="margin: 20px 5px 0;" onclick="MSG.send();"/><!--
+        ---><input type="button" id="genmsg-closeBtn" class="focus" value="close" style="margin: 20px 5px 0;" onclick="MSG.close();"/><!--
+    ---></div>
+        <div id="genmsg-blocker" style="display:none"></div>
+
+        <!-- player interaction popup -->
+        <div id='int-popup' class="scrollbar" style='display:none;'><!--
+        ---><div id="int-chatbox" class="chat-box">
+                <div id="int-messagebox" class="chat-msgbox scrollbar">
+                    <div id="int-areainfo" class="clearback"></div>
+                    <div id="int-messages" class="clearback"></div>
+                </div>
+                <textarea id="int-textbox" maxlength="200" class="typebox scrollbar" placeholder="say something"></textarea>
+                <span id="int-sending" style="display:none;font-size: 14px;">sending...</span>
+                <input type="button" id="int-sendBtn" class="chat-sendBtn" value="speak" onclick="INT.sendMessage(this);"/>
+            </div><!--
+        ---><div id="int-atthisloc">at this location:</div><!--
+        ---><div id="int-usernames" class="scrollbar"></div><!--
+        ---><input type="button" id="int-leaveBtn" class="focus" value="leave" style="margin: 20px 0 30px;" onclick="INT.leaveInit();"/><!--
+    ---></div>
+        <div id="int-blocker" style="display:none"></div>
+
+        <!-- PVP popup -->
+        <div id='pvp-popup' class="scrollbar" style='display:none;'><!--
+        ---><div id="pvp-challengeblock" style="display:none;">
+                <h1 id="pvp-chal-title"></h1><!--
+            ---><p id="pvp-chal-desc">
+                    you have 1 minute before the battle begins to choose your weapon. if you don't know how to battle, <a href='./howtoplay#battle' target="_blank" style="color:#0089ff">quickly read through here</a>.
+                    <br /><br />
+                    select your weapon:
+                </p><!--
+            
+            ---><div id="pvp-chal-supplies" class="scrollbar"></div><!--
+                
+            ---><p id="pvp-chal-startingin">starting in...</p><!--
+            ---><p id="pvp-chal-timer" class="pvp-timer" style="margin: 0 0 30px;"></p><!--
+            ---><p id="pvp-chal-waiting"></p><!--
+            ---><input id="pvp-chal-ready" type="button" class="focus" value="ready" style="margin: 20px 0 0;" onclick="PVP.ready();" /><!--
+        ---></div><!--
+        ---><div id="pvp-fightingblock" style="display:none;position:relative;"><!--
+            ---><h1 id="pvp-fight-round" class="pvp-title"></h1><!--
+            ---><p id="pvp-fight-timer" class="pvp-timer" style="margin: 10px 0;"></p><!--
+            ---><p class="o_d" id="pvp-fight-desc" style="margin: 10px auto 20px;opacity: 1;font-size: 16px;"></p><!--
+            ---><div id="pvp-fight-yourbox"><!--
+                ---><div id="pvp-fight-aheavy" class="fightbtn unselectable" onclick="PVP.fightOpt('h', this);" style="display: block;margin: 0 auto 15px;">heavy attack</div><!--
+                ---><div id="pvp-fight-aleft" class="fightbtn unselectable" onclick="PVP.fightOpt('al', this);" style="margin-right: 30px;">attack left</div><!--
+                ---><div id="pvp-fight-aright" class="fightbtn unselectable" onclick="PVP.fightOpt('ar', this);" style="margin-left: 30px;">attack right</div><!--
+                ---><p class="o_d o_d-topadjust" style="">offense (costs stamina)</p><!--
+                ---><p class="o_d">defense (gains stamina)</p><!--
+                ---><div id="pvp-fight-dleft" class="fightbtn unselectable" onclick="PVP.fightOpt('dl', this);" style="margin-right: 30px;">dodge left</div><!--
+                ---><div id="pvp-fight-dright" class="fightbtn unselectable" onclick="PVP.fightOpt('dr', this);" style="margin-left: 30px;">dodge right</div><!--
+                ---><div id="pvp-fight-dblock" class="fightbtn unselectable" onclick="PVP.fightOpt('b', this);" style="display: block;margin: 15px auto 0;">block</div><!--
+                ---><div>
+                        <div id="pvp-fight-statbox">
+                            <p id="pvp-fight-youweapdesc"></p>
+
+                            <p class="stat-bar-title">health<span id="pvp-you-hp-notif" class="pvp-notif"></span></p>
+                            <div id="fight-healthbar-you" class="stat-bar">
+                                <div id="fight-healthbar-filler-you-slide" class="stat-bar-filler filler-slide-hp"></div>
+                                <div id="fight-healthbar-filler-you" class="stat-bar-filler"></div>
+                            </div>
+                            <p id="fight-hp-you" class="stat-subbar-info"></p>
+                        
+                            <p class="stat-bar-title">stamina<span id="pvp-you-sp-notif" class="pvp-notif"></span></p>
+                            <div id="fight-staminabar-you" class="stat-bar">
+                                <div id="fight-staminabar-filler-you-slide" class="stat-bar-filler filler-slide-sp"></div>
+                                <div id="fight-staminabar-filler-you" class="stat-bar-filler"></div>
+                            </div>
+                            <p id="fight-sp-you" class="stat-subbar-info"></p>
+                        </div>
+                    </div><!--
+            ---></div><!--
+            ---><div id="pvp-fight-oppbox"><!--
+                ---><h2 id="pvp-fight-oppname"></h2><!--
+                ---><p id="pvp-fight-oppdesc"></p><!--
+                ---><p id="pvp-fight-oppchoice-desc">opponent's choice</p><!--
+                ---><div id="pvp-fight-oppchoice"></div><!--
+                ---><div id="pvp-fight-opplevel"></div><!--
+                ---><div style="margin-top: 20px;">
+                        <div id="pvp-fight-statbox-opp">
+                            <p class="stat-bar-title">health<span id="pvp-opp-hp-notif" class="pvp-notif"></span></p>
+                            <div id="fight-healthbar-opp" class="stat-bar">
+                                <div id="fight-healthbar-filler-opp-slide" class="stat-bar-filler filler-slide-hp"></div>
+                                <div id="fight-healthbar-filler-opp" class="stat-bar-filler"></div>
+                            </div>
+                            <p id="fight-hp-opp" class="stat-subbar-info"></p>
+                        
+                            <p class="stat-bar-title">stamina<span id="pvp-opp-sp-notif" class="pvp-notif"></span></p>
+                            <div id="fight-staminabar-opp" class="stat-bar">
+                                <div id="fight-staminabar-filler-opp-slide" class="stat-bar-filler filler-slide-sp"></div>
+                                <div id="fight-staminabar-filler-opp" class="stat-bar-filler"></div>
+                            </div>
+                            <p id="fight-sp-opp" class="stat-subbar-info"></p>
+                        </div>
+                    </div><!--
+            ---></div><!--
+            ---><div id="pvp-fight-introview" style="display:none">
+                    <div class="pvp-intro-floater">
+                        <h2 id="pvp-intro-opp" class="pvp-intro-title"></h2>
+                        <p id="pvp-intro-opp-level" class="pvp-intro-level"></p>
+                        <p id="pvp-intro-opp-desc" class="pvp-intro-weapon"></p>
+                        <p id="pvp-intro-opp-total" class="pvp-intro-total"></p>
+                        <p id="pvp-intro-opp-stats" class="pvp-intro-stats"></p>
+
+                        <p class="pvp-intro-versus">versus</p>
+
+                        <h2 id="pvp-intro-you" class="pvp-intro-title"></h2>
+                        <p id="pvp-intro-you-level" class="pvp-intro-level"></p>
+                        <p id="pvp-intro-you-desc" class="pvp-intro-weapon"></p>
+                        <p id="pvp-intro-you-total" class="pvp-intro-total"></p>
+                        <p id="pvp-intro-you-stats" class="pvp-intro-stats"></p>
+                    </div>
+                </div><!--
+        ---></div><!--
+        ---><div id="pvp-endblock" style="display:none;">
+                <h1 id="pvp-end-title" class="pvp-title"></h1><!--
+            ---><p id="pvp-end-timer" class="pvp-timer" style="margin: 10px 0;"></p><!--
+            ---><p id="pvp-end-desc"></p><!--
+
+            ---><div id="pvp-end-chatbox" class="chat-box">
+                    <div id="pvp-end-messagebox" class="chat-msgbox scrollbar">
+                        <div class="clearback"><div id="pvp-end-areainfo" class="init-message"></div></div>
+                        <div id="pvp-end-messages" class="clearback"></div>
+                    </div>
+                    <textarea id="pvp-end-textbox" maxlength="200" class="typebox scrollbar" placeholder="say something"></textarea>
+                    <span id="pvp-end-sending" style="display:none;font-size: 14px;">sending...</span>
+                    <input type="button" id="pvp-end-sendBtn" class="chat-sendBtn" value="speak" onclick="PVP.sendEndMessage(this);"/>
+                </div><!--
+
+            ---><input id="pvp-end-killnow" type="button" class="focus" value="execute now" style="margin: 20px 0 0;" onclick="PVP.execute();" /><!--
+        ---></div><!--
+    ---></div>
+        <div id="pvp-mid-chat" style="display:none"><!--
+        ---><div id="pvp-mid-chatbox" class="chat-box">
+                <div id="pvp-mid-messagebox" class="chat-msgbox scrollbar" style="height:150px">
+                    <div id="pvp-mid-messages" class="clearback"></div>
+                </div>
+                <textarea id="pvp-mid-textbox" maxlength="200" class="typebox scrollbar" placeholder="say something"></textarea>
+                <span id="pvp-mid-sending" style="display:none;font-size: 14px;">sending...</span>
+                <input type="button" id="pvp-mid-sendBtn" class="chat-sendBtn" value="speak" onclick="PVP.sendMidMessage(this);"/>
+            </div><!--
+    ---></div>
+        <div id="pvp-blocker" style="display:none"></div>
+
+        <div id="int-leavemsg-pop" style="display:none">
+            <div id="int-showmsgs-side">
+                <p id="int-showmsg-desc"></p>
+                <div id="int-showmsgs"></div>
+                <input type="button" value="close" style="margin: 20px 4px 30px;" onclick="INT.cancelOfflineMsg();"/>
+            </div>
+            <div id="int-leavemsg-side">
+                <p id="int-leavemsg-desc" style="font-size: 16px;margin: 0 auto 25px;"></p>
+                <textarea id="int-leavemsg-textbox" maxlength="200" class="typebox scrollbar" placeholder="your message"></textarea><!--
+            ---><input id="int-leavemsg-send" type="button" value="send" style="margin: 20px 4px 30px;"/><!--
+            ---><input id="int-leavemsg-remove" type="button" value="delete" style="margin: 20px 4px 30px;display:none"/><!--
+            ---><input type="button" value="cancel" style="margin: 20px 4px 30px;" onclick="INT.cancelOfflineMsg();"/><!--
+        ---></div>
+        </div>
+        <div id="int-leavemsg-blocker" style="display:none"></div>
+        
+
+        <!-- disconnect popup -->
+        <div id="dc-popup" style="display:none"><!--
+        ---><p id="dc-desc">connection to the server was lost. you can refresh the page to attempt to reconnect, or close this window while the game awaits reconnection.</p><!--
+
+        ---><input type="button" id="dc-refreshBtn" class="focus" value="refresh" style="margin: 20px 5px 0;" onclick="DC.refresh();"/><!--
+        ---><input type="button" id="dc-closeBtn" class="focus" value="close" style="margin: 20px 5px 0;" onclick="DC.close();"/><!--
+    ---></div>
+        <div id="dc-blocker" style="display:none"></div>
+
+        <!-- actual game -->
+        <div id="game-content" style="display:none;opacity:0;">
+            <div id="event-cycle" style='display:none'>
+                <span id="event-cycle-text"></span>
+                <br />
+                <span id="event-time-text"></span>
+            </div>
+            <div id='event-popup' style='display:none'>
+                <h1 id='event-title'></h1>
+                <p id='event-desc' class="scrollbar"></p>
+
+                <div id='event-btnBox' style="margin-bottom: 20px;"></div>
+            </div>
+            <div id='event-blocker' style='display:none'></div>
+
+            <!-- main screen divs -->
+            <div class='side-screencontainer'>
+                <div id='statsDiv' class="side-section-div">
+                    <h2 id="stats-username" class="side-section-title"></h2>
+                    <div id='stats-scroll' class="side-section-scroll scrollbar" style="text-align: center;">
+                        <div id="stats-effects" style="display:none">
+                            <p id="stats-title"><b>current effects:</b></p>
+                            <div id="stats-current"></div>
+                        </div>
+
+                        <p id="stats-level" class="stat-bar-title"></p>
+
+                        <div id="stats-levelbar" class="stat-bar"><div id="stats-levelbar-filler" class="stat-bar-filler"></div></div>
+                        <p id="stats-xp" class="stat-subbar-info" onmouseover="this.innerHTML='<b>'+XP.xp+'xp</b> total'" onmouseout="XP.setXpDesc();"></p>
+                        
+                        <p class="stat-bar-title">health</p>
+                        <div id="stats-healthbar" class="stat-bar"><div id="stats-healthbar-filler" class="stat-bar-filler"></div></div>
+                        <p id="stats-hp" class="stat-subbar-info"></p>
+                        
+                        <p class="stat-bar-title">stamina</p>
+                        <div id="stats-staminabar" class="stat-bar"><div id="stats-staminabar-filler" class="stat-bar-filler"></div></div>
+                        <p id="stats-sp" class="stat-subbar-info"></p>
+
+                        <p id="stats-dmg"></p><br />
+
+                        <div id="stats-upgrades" style="display:none">
+                            <p id="stats-skillpoint-btndesc"></p>
+                            <input id="stats-skillpoint-upgrade" type="button" value="upgrade" onclick="XP.openSkillBox()" />
+                        </div>
+                        <div id="stats-skillpoint-box" style="display:none">
+                            <p class="upgrade-desc">skill points: <span id="stats-upgrade-points-remaining"></span></p><!--
+                        ---><input id="stats-skillpoint-upgrade-reset" class="stat-apply-btn" type="button" value="reset" onclick="XP.openSkillBox()" style="margin: 0 auto 5px;display: block;" />
+
+                            <div style="text-align:center;">
+                                <div style="display:inline-block;">
+                                    <div class="stat-upgrade-num-holder">max hp:<p id="stat-skill-health-total" class="stat-upgrade-nums"></p><input onclick="XP.addSkillPoint('hp')" class="stat-upgrade-btn" type="button" value="+8" /><input onclick="XP.addSkillPoint('hp', true)" class="stat-upgrade-btn" type="button" value="x10" /></div>
+                                    <div class="stat-upgrade-num-holder">max sp:<p id="stat-skill-stamina-total" class="stat-upgrade-nums"></p><input onclick="XP.addSkillPoint('sp')" class="stat-upgrade-btn" type="button" value="+2" /><input onclick="XP.addSkillPoint('sp', true)" class="stat-upgrade-btn" type="button" value="x10" /></div>
+                                    <div class="stat-upgrade-num-holder">base dmg:<p id="stat-skill-damage-total" class="stat-upgrade-nums"></p><input onclick="XP.addSkillPoint('dmg')" class="stat-upgrade-btn" type="button" value="+1" /><input onclick="XP.addSkillPoint('dmg', true)" class="stat-upgrade-btn" type="button" value="x10" /></div>
+                                    <div class="stat-upgrade-num-holder">carry:<p id="stat-skill-carry-total" class="stat-upgrade-nums"></p><input onclick="XP.addSkillPoint('carry')" class="stat-upgrade-btn" type="button" value="+25" /><input onclick="XP.addSkillPoint('carry', true)" class="stat-upgrade-btn" type="button" value="x10" /></div>
+                                </div>
+                            </div>
+                            
+                            <div style="text-align:center;">
+                                <input id="stats-skillpoint-upgrade-cancel" class="stat-apply-btn" type="button" value="cancel" onclick="XP.closeSkillBox()" style="margin: 15px 3px 0 0" /><!--
+                            ---><input id="stats-skillpoint-upgrade-confirm" class="stat-apply-btn" type="button" value="upgrade" onclick="XP.applySkills()" style="margin: 15px 0 0 3px;" />
+                            </div>
+                        </div>
+
+                        <input type="button" id="stats-resetallBtn" value="reset all skill points" onclick="XP.openResetAllBox();" />
+                        <div id="stats-resetall" style="display:none;">
+                            <p id="stats-resetall-desc">are you sure? if you choose to revert all your skills to their original values, you will clear your crafting queue, and you will <b>lose 10% of your current level, rounded up</b>.</p>
+                            <input type="button" class="stat-apply-btn" value="cancel" onclick="XP.closeResetAllBox();" />
+                            <input id="stats-resetall-confirm" type="button" class="stat-apply-btn" value="confirm reset" onclick="XP.confirmResetAll();" />
+                        </div>
+
+                        <input type="button" id="hands-suicide" style="font-size: 14px;padding: 1px 5px;display: block;margin: 20px auto 10px;" value="commit suicide" onclick="HANDS.suicide();" />
+                    </div>
+                </div>
+                <div id='consoleDiv' class="side-section-div" style="margin-bottom: 0;">
+                    <h2 class="side-section-title">events</h2>
+                    <div id='console-scroll' class="side-section-scroll scrollbar">
+
+                    </div>
+                </div>
+            </div><!--
+
+        ---><div class='mid-screencontainer scrollbar'><!--
+            ---><div id="mid-menu" onclick="ENGINE.toggleMenu()" class="unselectable">
+                    menu
+                </div><!--
+            ---><div id="world-time">
+                    cycle:
+                    <p id="time-countdown" style="display: inline;"></p>
+                    <p id="time-ofday"></p>
+                </div><!--
+            ---><div id="world-position">
+                    tracker:
+                    <p id='world-coords' style="display: inline;"></p>
+                    <p id='world-biome'></p>
+                </div>
+            
+                <div id="build-overlay-top" class="build-overlay" style="display:none;"></div>
+                <div id="build-overlay-bottom" class="build-overlay" style="display:none;"></div>
+                <div id="build-overlay-left" class="build-overlay" style="display:none;"></div>
+                <div id="build-overlay-right" class="build-overlay" style="display:none;"></div>
+                <div id='world-box'></div><!--
+
+            ---><div id="hotbar-box" style="margin:0 auto 1px;text-align:right;"><!--
+                ---><span id="hands-event" class="hotbar-btn unselectable" onclick="HANDS.reenter()">enter event</span><!--
+                ---><span id="hands-break" class="hotbar-btn unselectable" onclick="HANDS.break()">dismantle</span><!--
+                ---><!--<span id="hands-door" class="hotbar-btn unselectable" onclick="HANDS.opendoor(this)">open door</span>--><!--
+                ---><span id="hands-tree" class="hotbar-btn unselectable" onclick="HANDS.gettree(this)">collect wood</span><!--
+                ---><span id="hands-drop" class="hotbar-btn unselectable" onclick="HANDS.drop(this)">drop items</span><!--
+                ---><div style="display:inline-block;vertical-align:top;"><span id="hands-steplimit-btn" class="hotbar-btn unselectable" onclick="STEPLIMIT.toggle();">step limit</span><!--
+                ---><input type="text" id="hands-steplimit-count" placeholder="0" onchange="STEPLIMIT.setCurrent();" maxlength="6" /></div><!--
+                ---><span id="hands-dstep" class="hotbar-btn unselectable" onclick="DSTEP.click()">double step</span><!--
+            ---></div><!--
+            ---><div id="bottom-box"><!--
+                ---><div id="supplies-equipactions" class="bottom-box-left-menu scrollbar" style="display:none">
+                        <h2 id="supplies-equipped-title" class="bottom-box-left-menu-title" style="font-weight:normal;font-size: 16px;margin: 0 0 5px 3px;padding:0px"></h2>
+                        <p id="equip-currentstatus" style="display:none;font-size: 14px;margin: 0 0 6px 3px;display: block;font-style: italic;"></p>
+                        <div id="supplies-equipped-buttons"></div>
+                        <p id="equip-desc" class="bottom-box-left-menu-desc"></p>
+                    </div><!--
+                ---><div id="building-equipactions" class="bottom-box-left-menu scrollbar" style="display:none"><!--
+                    ---><h2 id="building-equipped-title" class="bottom-box-left-menu-title" style="font-weight:normal;font-size: 16px;margin: 0 0 5px 3px;padding:0px"></h2><!--
+                    ---><p id="building-break-timer" class="bottom-box-left-menu-timer"></p><!--
+                        
+                    ---><div id="building-magnifier"><!--
+                        ---><div id="bm-nw" class="building-magnifier-tile unselectable" onclick="BUILD.place(this);"></div><!--
+                        ---><div id="bm-n" class="building-magnifier-tile unselectable" onclick="BUILD.place(this);"></div><!--
+                        ---><div id="bm-ne" class="building-magnifier-tile unselectable" onclick="BUILD.place(this);"></div><br><!--
+                        ---><div id="bm-w" class="building-magnifier-tile unselectable" onclick="BUILD.place(this);"></div><!--
+                        ---><div id="bm-auto" class="building-magnifier-tile unselectable" onclick="BUILD.place(this);" style="font-size: 10px;padding: 7px 0;height: 12px;">auto</div><!--
+                        ---><div id="bm-e" class="building-magnifier-tile unselectable" onclick="BUILD.place(this);"></div><br><!--
+                        ---><div id="bm-sw" class="building-magnifier-tile unselectable" onclick="BUILD.place(this);"></div><!--
+                        ---><div id="bm-s" class="building-magnifier-tile unselectable" onclick="BUILD.place(this);"></div><!--
+                        ---><div id="bm-se" class="building-magnifier-tile unselectable" onclick="BUILD.place(this);"></div><!--
+                    ---></div><!--
+                    ---><input id="building-close" type="button" class="craft-btns focus" value="close" style="padding: 2px 5px;font-size:14px;margin: 0 3px 6px;" onclick="BUILD.close();" /><!--
+                    ---><p id="building-equipped-desc" class="bottom-box-left-menu-desc"></p><!--
+                ---></div><!--
+                ---><div id="arrow-box"><!--
+                    ---><div id="arrow-nw" onclick="ENGINE.dir('nw', this);" class="arrows diag unselectable"><img src="./imgs/arrow.png" style="transform:rotate(-90deg)" /></div><!--
+                    ---><div id="arrow-n" onclick="ENGINE.dir('n', this);" class="arrows unselectable"><img src="./imgs/arrow2.png" /></div><!--
+                    ---><div id="arrow-ne" onclick="ENGINE.dir('ne', this);" class="arrows diag unselectable"><img src="./imgs/arrow.png" /></div><!--
+
+                    ---><div id="arrow-w" onclick="ENGINE.dir('w', this);" class="arrows unselectable"><img src="./imgs/arrow2.png" style="transform:rotate(-90deg)" /></div><!--
+                    ---><div id="arrow-auto" title="auto-walk" onclick="ENGINE.dir('a', this);" class="arrows unselectable" style="font-size: 14px;line-height: 3.4;">auto</div><!--
+                    ---><div id="arrow-e" onclick="ENGINE.dir('e', this);" class="arrows unselectable"><img src="./imgs/arrow2.png" style="transform:rotate(-270deg)" /></div><!--
+                    ---><div id="arrow-sw" onclick="ENGINE.dir('sw', this);" class="arrows diag unselectable"><img src="./imgs/arrow.png" style="transform:rotate(-180deg)" /></div><!--
+                    ---><div id="arrow-s" onclick="ENGINE.dir('s', this);" class="arrows unselectable"><img src="./imgs/arrow2.png" style="transform:rotate(-180deg)" /></div><!--
+                    ---><div id="arrow-se" onclick="ENGINE.dir('se', this);" class="arrows diag unselectable"><img src="./imgs/arrow.png" style="transform:rotate(-270deg)" /></div><!--
+                ---></div><!--
+
+                ---><div id="mobile-boxselect"><!--
+                    ---><input type="button" class="mobile-btn" id="mobile-statsBtn" value="you" onclick="MOBILE.which('you'); this.value = 'you';" /><!--
+                    ---><input type="button" class="mobile-btn" id="mobile-eventBtn" value="events" onclick="MOBILE.which('event'); this.value = 'events';" /><!--
+                    ---><input type="button" class="mobile-btn" id="mobile-suppBtn" value="supplies" onclick="MOBILE.which('supp'); this.value = 'supplies';" /><!--
+                    ---><input type="button" class="mobile-btn" id="mobile-craftBtn" value="crafting" onclick="MOBILE.which('craft'); this.value = 'crafting';" /><!--
+                ---></div><!--
+            ---></div>
+            </div><!--
+
+        ---><div class='side-screencontainer'>
+                <div id='suppliesDiv' class="side-section-div">
+                    <h2 class="side-section-title">supplies</h2><!--
+                        
+                ---><span style="font-size:12px;position: absolute;top: 8px;left:100px;z-index:2" class="unselectable">sort:</span><!--
+                ---><select onchange="SUPPLIES.sort(parseInt(this.value))" class="supplies-dropdown" style="top: 8px;left:138px;">
+                        <option value="1" selected="selected">count</option>
+                        <option value="2">name</option>
+                    </select><!--
+
+                ---><div id='supplies-scroll' class="side-section-scroll scrollbar">
+                        <p class="stat-bar-title" style="margin-top:10px;">weight</p>
+                        <div id="stats-carrybar" class="stat-bar"><div id="stats-carrybar-filler" class="stat-bar-filler"></div></div>
+                        <p id="stats-carry" class="stat-subbar-info"></p>
+
+                        <div id="supplies-item-grid"></div>
+                    </div><!--
+                ---><div id="supplies-infomenu" class="scrollbar" style="display:none">
+                        <h2 id="supplies-infotitle"></h2>
+                    
+                        <input type="button" id="supplies-equip" class="craft-btns" value="equip" onclick="EQUIP.open();" style="display:none" /><!--
+                    ---><input type="button" id="supplies-learn" class="craft-btns" value="learn" onclick="SUPPLIES.learn();" style="display:none" /><!--
+                    ---><input type="button" id="supplies-build" class="craft-btns" value="equip" onclick="BUILD.open();" style="display:none" /><!--
+                    ---><input type="button" id="supplies-breaker" class="craft-btns" value="equip" onclick="BUILD.open_break();" style="display:none" /><!--
+                    ---><input type="button" id="supplies-closemenu" class="craft-btns" value="close" onclick="SUPPLIES.closeMenu();" style="margin-top:10px;" />
+
+                        <div id="supplies-infodesc"></div>
+                    </div>
+                </div>
+                <div id='craftDiv' class="side-section-div" style="margin-bottom: 0;">
+                    <h2 class="side-section-title">crafting</h2>
+                    <div id='craft-scroll' class="side-section-scroll scrollbar" style="padding: 30px 2px 0;">
+
+                    </div>
+                    <div id="craft-menu" class="craft-menu scrollbar" style="display:none;">
+                        <h2 id="craft-title"></h2>
+                        <p id="craft-desc"></p>
+
+                        <div id="craft-divlist"></div>
+
+                        <div id="craft-time"></div>
+
+                        <input id="craft-btn" type="button" class="craft-btns" onclick="CRAFTING.craft();" value="craft" style="margin-left:0" /><!--
+                    ---><input type="button" class="craft-btns" onclick="CRAFTING.close();" value="close" />
+                    </div>
+                    <div id="craft-ing-menu" class="craft-menu" style="display:none">
+                        
+                        <p id="crafting-item"></p>
+
+                        <input type="button" id='queue-cancelall-btn' onclick="CRAFTING.cancelall();" value="cancel all" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <input name="autologin" type="hidden" id="autologin" value="@&asyncReturnFunction[token]&@" />
+        <input name="autocount" type="hidden" id="autocount" value="@&returnFunction[onlinePlayers]&@" />
+        <input name="auto_dailyPeak" type="hidden" id="auto_dailyPeak" value="41" />
+        <input name="auto_alltimePeak" type="hidden" id="auto_alltimePeak" value="67" />
+    </form>
+
+    <!-- 
+        
+        Development on The Travelers began September 6th, 2019. The first edition live to play came online at https://thetravelers.online on September 18th, 2019.
+
+    -->
+
+    <!-- 
+
+        THETRAVELERS.ONLINE
+
+        This project was inspired by 2b2t, A Dark Room, Candybox, and Notpron. The experiences I've had in these games have all left a mark on me, 
+        and inspired me in diverse ways. The Travelers is the amalgamation of these inspirations, and it's a project I'm extremely proud of 
+        and an idea that I think will be better than many of my other game ideas for years to come. I'm hopeful that this will find some small 
+        success with the (admittedly niche) slow-burn apocalyptic puzzle-solving community, because I'm super confident people will enjoy this if
+        they try it. Thank you for taking the time to read this little message, and for already enjoying the game enough to want to take a
+        peek at the code.
+
+        That said, no game hints will be hidden in the JS for this site. Unlike Notpron, all information regarding the puzzle will be found
+        in-game as you play it. Due to my patented slow-MMO system, I'm able to process everyone finding each other and various events serverside,
+        so while you technically will be able to do some basic world-generation, and even find some basic places like houses or cities, you 
+        will not be able to actually cheat the game by looking through the code. Feel free to try though!
+
+        -torogadude, September 18th 2019  
+
+    -->   
+
+	<script src="/socket.io/socket.io.min.js"></script>
+    <!--my scripts-->
+    <script src="./resources_v114/socket.js"></script>
+    <script src="./resources_v114/engine.js"></script>
+    <script src="./resources_v114/tutorial.js"></script>
+    <script src="./resources_v114/settings.js"></script>
+    <script src="./resources_v114/time.js"></script>
+    <script src="./resources_v114/notifications.js"></script>
+    <script src="./resources_v114/worldgen.js"></script>
+    <script src="./resources_v114/events.js"></script>
+    <script src="./resources_v114/popup.js"></script>
+    <script src="./resources_v114/hands.js"></script>
+    <script src="./resources_v114/supplies.js"></script>
+    <script src="./resources_v114/equip.js"></script>
+    <script src="./resources_v114/building.js"></script>
+    <script src="./resources_v114/crafting.js"></script>
+    <script src="./resources_v114/interaction.js"></script>
+    <script src="./resources_v114/xp.js"></script>
+    <script src="./resources_v114/effects.js"></script>
+    <script src="./resources_v114/pvp.js"></script>
+    <script src="./resources_v114/you.js"></script>
+    <script src="./resources_v114/other.js"></script>
+    <script src="./resources_v114/puzzle.js"></script>
+    <script>
+        (function () {
+            //document.getElementById("adblock-msg").style.display = window.adsEnabled !== undefined ? "none" : "";
+
+            if (window.innerWidth <= 1200) {
+                MOBILE.is = true;
+                MOBILE.which("you");
+            }
+
+            document.getElementById("init-cover").style.display = "none";
+
+            ENGINE.playersOnline = parseInt(document.getElementById("autocount").value);
+
+            document.getElementById("game-info").innerHTML = ENGINE.setOnline() + "<div id='game-peaks' style='background-color: rgba(0,0,0,0);font-size: 12px;margin-top:10px'>daily peak <b>" + document.getElementById("auto_dailyPeak").value + "</b> \u2022 alltime peak <b>" + document.getElementById("auto_alltimePeak").value + "</b></div>";
+            
+            if (document.getElementById("autologin").value !== "0") {
+                document.getElementById("game-info").setAttribute("style", "color:white !important");
+                document.getElementById("game-peaks").style.color = "white";
+                SOCKET.autolog();
+            }
+
+            //load latest changelog
+            ENGINE.ajaxCall(
+                "/changelog.aspx/GetSpecificChangelog",
+                { "ver": -1 },
+                function (r) {
+                    let job = JSON.parse(r),
+                        body = OTHER.markdown(job.body),
+                        leaders = job.leaders,
+                        ltext = "";
+
+                    if (body.length > 400) {
+                        body = body.substr(0, 420);
+                        let space = body.lastIndexOf(" "),
+                            comma = body.lastIndexOf(","),
+                            period = body.lastIndexOf(".");
+
+                        if (space !== -1 && space > 400) body = body.substr(0, space);
+                        else if (comma !== -1 && comma > 400) body = body.substr(0, comma);
+                        else if (period !== -1 && space > 400) body = body.substr(0, period);
+
+                        body += "...";
+                    }
+                    body += "<br /><br /><a target='_blank' class='floating-box-link' href='./changelog'>[view changelog]</a>";
+                    
+                    document.getElementById("changelog-date").innerHTML = job.title + " \u2022 " + job.date;
+                    document.getElementById("changelog-desc").innerHTML = body;
+                    
+                    leaders.sort(function (a, b) {
+                        return b.xp - a.xp;
+                    });
+                    for (let i = 0; i < 5; i++) {
+                        if (leaders[i] === undefined) break;
+                        ltext += "<p class='lboard-wide clearback'>" + (i + 1) + ")</p><span class='lboard-main'><b>" + leaders[i].username + "</b>: level " + (leaders[i].level + 1) + "</span><br /><span class='lboard-sub'>" + leaders[i].xp + " total xp</span><div class='clearback' style='height:5px'></div>";
+                    }
+
+                    document.getElementById("leaderboard-list").innerHTML = ltext + "<br /><a target='_blank' class='floating-box-link' href='./leaderboard'>[view leaderboard]</a>";
+                }
+            );
+
+            if (ENGINE.isProd()) {
+                console.log("\n\n\nWARNING! The Travelers has the developer's blessing to be used for mods, but if someone has linked you to install one, PLEASE make absolutely certain the source is trustworthy, or read through the JS yourself. " +
+                    "XSS (cross-site scripting) is real and incredibly dangerous, and injections can even occur in seemingly harmless places, like the 'src' attribute in the 'img' tag if you want a fancy image for a texturepack. When in doubt, simply do not install the mod at all.\n\n\n");
+            }
+			document.onreadystatechange = function(e)
+			{
+				if(e.eventPhase !== 2)return;
+				@&returnFunction[worldGen]&@
+			}
+        })();
+    </script>
+</body>
+</html>
