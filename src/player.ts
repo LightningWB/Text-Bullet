@@ -241,18 +241,7 @@ namespace player
 		{
 			if(isOnline(username))
 			{
-				const player = onlinePlayers[username];
-				let sendObj:util.anyObject = {};
-				const combined = util.mergeObject(player.player.data.public, player.player.data.temp);
-				if(player.player.queue.includes('*'))sendObj = combined;
-				// else for loop
-				else for(const prop of player.player.queue)
-				{
-					sendObj[prop] = combined[prop];
-				}
-				player.conn.emit('getGameObject', sendObj);
-				player.player.data.temp = {};
-				player.player.queue = [];
+				sendPlayerDataFor(username);
 			}
 		}
 	}
