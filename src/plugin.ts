@@ -34,9 +34,14 @@ namespace plugins
 			if(p)return p.data;
 			else return null;
 		}
-		export async function loadPlayer(username:string)
+		export function onlinePlayers(): player.playerData[]
 		{
-			return player.loadPlayer(username);
+			return player.getOnlinePlayers().map(p=> players.getOnlinePlayer(p));
+		}
+		
+		export function onlinePlayerNames(): string[]
+		{
+			return player.getOnlinePlayers();
 		}
 	}
 	export namespace chunks

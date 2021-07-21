@@ -1,6 +1,6 @@
 {
   "name": "text-bullet",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "a custom backend for the travelers with plugin support",
   "main": "index.js",
   "scripts": {
