@@ -64,7 +64,7 @@ namespace loader
 			'# a string added to every password to make it harder for an attacker to brute force passwords.',
 			'# NEVER TELL ANYONE THIS.',
 			allowed(['String']),
-			'pepper = "replace this string right now with something a thousand times more secure than this"'
+			'pepper = "' + util.randomString(50) + '"'
 		])
 		
 	].join('\n');
