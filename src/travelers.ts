@@ -26,6 +26,7 @@ namespace travelers
 		genTileRaw = require('./worldgen').generateTileAt;
 		db.start(options.db.mode as any, options.db);
 		net.start(travelers);
+		await plugins.init();
 		loadPlugins();
 		await player.loadPlayers();
 		setInterval(()=>cycle(), 1000/options.tps);

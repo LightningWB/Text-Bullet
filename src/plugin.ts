@@ -10,6 +10,12 @@ import * as ops from './options';
  */
 namespace plugins
 {
+	type fullStorage = {
+		id: string,
+		data: utility.anyObject
+	}
+	export type storage = fullStorage["data"];
+	const pluginStorage = {};
 	export const SAVE_INTERVAL:number = chunk.SAVE_INTERVAL;
 	export namespace players
 	{
@@ -189,6 +195,33 @@ namespace plugins
 		}
 		addAdminButton(id:string, text: string, onSend: Function):any{}
 		addAdminText(id:string, placeHolder: string, text: string, onSend: Function):any{}
+		/**
+		 * gets the storage for this plugin
+		 * @returns plugin storage
+		 */
+		getStorage(): utility.anyObject
+		{
+			if(pluginStorage[this.id] === undefined)
+			{
+				console.log('storage not found')
+				return {};
+			}
+			else return util.clone(pluginStorage[this.id]);
+		}
+		/**
+		 * sets the storage to a new value
+		 * @param storage new storage
+		 */
+		setStorage(storage: storage): void
+		{
+			if(typeof storage === 'object' && !Array.isArray(storage))
+			{
+				if(pluginStorage[this.id] === undefined)db.add('pluginStorage', {id: this.id, data: storage});
+				else db.update('pluginStorage', {id: this.id}, {id: this.id, data: storage}, 1);
+				pluginStorage[this.id] = util.clone(storage);
+			}
+			else throw new TypeError('Expected type "object" but received type ' + (typeof storage === 'object'? 'Array' : typeof storage));
+		}
 	}
 	const plugins:plugin[] = [];
 	plugin.parent = new (require('priority-events'))() as events.EventEmitter;
@@ -211,6 +244,19 @@ namespace plugins
 	export function generateTileAt(x:number, y:number):string
 	{
 		return require('./travelers').genTile(x, y);
+	}
+
+	export async function init():Promise<void>
+	{
+		if(Object.keys(pluginStorage).length > 0)return;
+		util.debug('INFO', 'Loading plugin storage')
+		const savedStates: fullStorage[] = await db.query('pluginStorage');
+		for(const storage of savedStates)
+		{
+			const id = storage.id;
+			pluginStorage[id] = storage.data || {};
+		}
+		util.debug('INFO', 'Successfully loaded ' + savedStates.length + ' storages');
 	}
 }
  
