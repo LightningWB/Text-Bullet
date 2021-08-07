@@ -40,7 +40,7 @@ const defaultOps: ops = {
 		url: 'mongodb://localhost:27017'
 	},
 	crypto: {
-		pepper: 'replace this string right now with something a thousand times more secure than this'
+		pepper: util.randomString(50)
 	}
 };
 const file = fs.readFileSync(path.join(util.root, 'config.toml')).toString();
