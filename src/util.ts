@@ -161,6 +161,56 @@ namespace util
 	{
 		return Math.floor((Math.random() * (max - min + 1)) + min);
 	}
+
+	type dataType = 'number' | 'int' | 'string' | 'object' | 'array' | 'boolean' | 'bigint' | 'symbol' | 'function';
+	export class Out<T>
+	{
+		private value = undefined;
+		private type = undefined;
+		constructor(val:T, t?:dataType)
+		{
+			this.type = t;
+			this.set(val);
+		}
+
+		private static verifyType(val:any, type:dataType):boolean
+		{
+			if(val === undefined || val === null)return false;
+			else if(type === 'int')return Number.isInteger(val);
+			else if(type === 'array')return Array.isArray(val);
+			else if(type === 'object')return !Array.isArray(val) && typeof val === 'object';
+			else return typeof val === type;
+		}
+
+		set(val:T):T
+		{
+			if(this.type !== undefined)
+			{
+				if(!Out.verifyType(val, this.type))
+				{
+					const type = Array.isArray(val) ? 'array' : typeof val;
+					throw new TypeError('Expected type "' + this.type + '" but received type "' + type + '"');
+				}
+			}
+			this.value = val;
+			return this.value;
+		}
+
+		get():T
+		{
+			return this.value;
+		}
+
+		getType():dataType
+		{
+			return this.type;
+		}
+	}
+
+	export function out<T>(val: T, t?:dataType)
+	{
+		return new Out(val, t);
+	}
 }
  
  // this is at the end of every file to avoid garbage collection
