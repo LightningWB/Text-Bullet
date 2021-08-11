@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as replitDb from '@replit/database';
 import * as mongoDb from 'mongodb';
 const jsonDb = require('simple-json-db');
-type jsonDb = typeof jsonDb;
+type jsonDb = import('simple-json-db');
 import * as util from './util';
 
 /**
