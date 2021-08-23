@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc && Xcopy /E /Y .\\www\\ .\\build\\www\\ && pkg . && node ./build"
+    "build": "tsc && Xcopy /E /Y .\\www\\ .\\build\\www\\ && node ./build && pkg ."
   },
   "pkg": {
     "assets": [
