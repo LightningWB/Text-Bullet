@@ -90,6 +90,9 @@ namespace travelers
 		util.debug('INFO', 'Loading plugins');
 		// one sync read is fine for this
 		const folders = fs.readdirSync(path.join(util.root, '/plugins/'));
+		if(folders.length === 0) {
+			util.debug('WARN', 'No plugins found. The server won\'t function properly without any plugins. Do you mean to have https://github.com/LightningWB/the-travelers-plus installed?')
+		}
 		for(const folder of folders)
 		{
 			util.debug('INFO', `Loading ${folder}`);
