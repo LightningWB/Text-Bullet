@@ -45,4 +45,7 @@ const defaultOps: ops = {
 };
 const file = fs.readFileSync(path.join(util.root, 'config.toml')).toString();
 const options: ops = util.mergeObject(defaultOps, toml.parse(file));
+if(options.crypto.pepper === defaultOps.crypto.pepper) {
+	util.debug('WARN', 'No password pepper found. Defaulting to a random string. This will not allow users to log in after a restart.');
+}
 export = options;
