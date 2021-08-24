@@ -203,7 +203,6 @@ namespace plugins
 		{
 			if(pluginStorage[this.id] === undefined)
 			{
-				console.log('storage not found')
 				return {};
 			}
 			else return util.clone(pluginStorage[this.id]);
