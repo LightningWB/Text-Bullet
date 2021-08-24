@@ -54,12 +54,12 @@ declare namespace chunk
 		private: utility.anyObject
 	} |  string
 	// keys are x|y to be more memory and processor efficient
-	export type chunk = {
-		[key:string]:obj[],
+	type objs = {[key:string]:obj[]}
+	export type chunk = objs & {
 		/**
-		 * list of player usernames
+		 * metadata about an object
 		 */
-		players:string[]
+		meta:anyObject
 	}
 }
 

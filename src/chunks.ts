@@ -22,14 +22,14 @@ namespace chunks
 			walk_over: false
 		} & anyObject,
 		private: anyObject
-	} |  string
+	}
 	// keys are x|y to be more memory and processor efficient
-	export type chunk = {
-		[key:string]:obj[],
+	type objs = {[key:string]:obj[]}
+	export type chunk = objs & {
 		/**
-		 * list of player usernames
+		 * metadata about an object
 		 */
-		players:string[]
+		meta:anyObject
 	}
 	/**
 	 * the key is x|y for the chunk number
@@ -46,7 +46,7 @@ namespace chunks
 	export async function loadChunk(x:number, y:number):Promise<void>
 	{
 		// stops more data base calls and allows objects to be added
-		chunks[x+'|'+y] = {players:[]};
+		chunks[x+'|'+y] = {meta:{}} as chunk;
 		// having a separate table for each chunk is faster to search through when there are thousands of chunks and easier to load specific chunks to and from the db
 		const promise = db.query('chunk['+x+'|'+y+']', {});
 		currentlyLoading.push(promise);
@@ -65,7 +65,8 @@ namespace chunks
 			{
 				let chunk = util.clone(chunks[x+'|'+y]);
 				require('./plugin').triggerEvent('saveChunk', chunk);
-				if(Object.keys(chunk).filter(k=>chunk[k]).length === 0)db.deleteTable('chunk[' + x+'|'+y + ']');
+				const keys = Object.keys(chunk).filter(k=>chunk[k]);
+				if((keys.length === 0) || (keys.length === 1 && keys[0] === 'meta' && Object.keys(chunk.meta).length === 0))db.deleteTable('chunk[' + x+'|'+y + ']');
 				else db.set('chunk[' + x+'|'+y + ']', [chunk]).then(()=>{
 					chunks[x+'|'+y] = null;
 				}).catch(db.addErrorRaw);
@@ -192,7 +193,8 @@ namespace chunks
 				const chunk = util.clone(chunks[chunkId]);
 				require('./plugin').triggerEvent('saveChunk', chunk);
 				// filter because of reason above in chunks.save
-				if(Object.keys(chunk).filter(k=>chunk[k]).length === 0)db.deleteTable('chunk[' + chunkId + ']');
+				const keys = Object.keys(chunk).filter(k=>chunk[k]);
+				if((keys.length === 0) || (keys.length === 1 && keys[0] === 'meta' && Object.keys(chunk.meta).length === 0))db.deleteTable('chunk[' + x+'|'+y + ']');
 				else await db.set('chunk[' + chunkId + ']', [chunk]);
 			}
 
