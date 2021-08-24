@@ -143,6 +143,7 @@ namespace util
 	}
 	export const root = process.cwd();
 
+	const oldLog = console.log;
 	type level = 'ERROR' | 'WARN' | 'INFO';
 	export function debug(mode:level, message: string): void
 	{
@@ -154,8 +155,12 @@ namespace util
 			case 'WARN': color = '\x1b[33m'; break;
 			case 'INFO': color = '\x1b[0m'; break;
 		}
-		if(color)console.log(color + mode + reset + ' [' + new Date().toISOString() + '] ' + message);
+		if(color)oldLog(color + mode + reset + ' [' + new Date().toISOString() + '] ' + message);
 	}
+
+	console.log = (...args) => {
+		debug.apply(debug, ['INFO'].concat(args));
+	};
 
 	export function rand(min: number, max: number): number
 	{
