@@ -144,6 +144,12 @@ namespace util
 	export const root = process.cwd();
 
 	const oldLog = console.log;
+	let logs: string[] = [];
+	export function getLogs():string[]
+	{
+		return cloneArray(logs);
+	}
+	const MAX_LOGS = 100;
 	type level = 'ERROR' | 'WARN' | 'INFO';
 	export function debug(mode:level, message: string): void
 	{
@@ -155,6 +161,11 @@ namespace util
 			case 'WARN': color = '\x1b[33m'; break;
 			case 'INFO': color = '\x1b[0m'; break;
 		}
+		if(logs.length >= MAX_LOGS)
+		{
+			logs.shift();
+		}
+		logs.push(mode + ' [' + new Date().toISOString() + '] ' + message);
 		if(color)oldLog(color + mode + reset + ' [' + new Date().toISOString() + '] ' + message);
 	}
 

@@ -498,6 +498,10 @@ namespace net
 		onlinePlayers: async (data, req, res)=>{
 			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
 			res.end(JSON.stringify({d: player.getOnlinePlayers().join('\n')}));
+		},
+		logs: async (data, req, res)=>{
+			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
+			res.end(JSON.stringify({d: lightspeed.htmlEscape(util.getLogs().join('\n'))}));
 		}
 	}
 

@@ -48,6 +48,8 @@
 	<!-- paths and such -->
 	<script>
 		button('Save', 'save');
+		button('Get Logs', 'logs', (r)=>document.getElementById('logs').innerHTML = r.replaceAll('\n', '<br />').replaceAll('WARN', '<span style="color:orange;">WARN</span>').replaceAll('ERROR', '<span style="color:red;">ERROR</span>'));
+		html('logs');
 		button('Get Errors', 'getErrorLog', (r)=>document.getElementById('errors').innerText = r);
 		html('errors');
 		button('Clear Errors', 'clearErrorLog', (r)=>document.getElementById('errors').innerText = '', ()=>confirm('press "OK" to delete errors'));
