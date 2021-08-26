@@ -59,7 +59,7 @@ declare namespace chunk
 		/**
 		 * metadata about an object
 		 */
-		meta:anyObject
+		meta:utility.anyObject
 	}
 }
 
