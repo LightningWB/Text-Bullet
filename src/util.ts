@@ -151,7 +151,7 @@ namespace util
 	}
 	const MAX_LOGS = 100;
 	type level = 'ERROR' | 'WARN' | 'INFO';
-	export function debug(mode:level, message: string): void
+	export function debug(mode:level, ...message: any[]): void
 	{
 		const reset = '\x1b[0m';
 		let color;
@@ -166,7 +166,7 @@ namespace util
 			logs.shift();
 		}
 		logs.push(mode + ' [' + new Date().toISOString() + '] ' + message);
-		if(color)oldLog(color + mode + reset + ' [' + new Date().toISOString() + '] ' + message);
+		if(color)oldLog.apply(oldLog, [color + mode + reset + ' [' + new Date().toISOString() + ']'].concat(message));
 	}
 
 	console.log = (...args) => {
