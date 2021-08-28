@@ -134,9 +134,9 @@ namespace player
 
 	export function disconnect(username:string):void
 	{
-		require('./plugin').triggerEvent('disconnect', playerData[username]);// if disconnect is called then the event should be fired
 		if(isOnline(username))
 		{
+			require('./plugin').triggerEvent('disconnect', playerData[username].data);// if disconnect is called then the event should be fired
 			onlinePlayers[username].conn.disconnect();
 			fromAuth[username] = undefined;
 			sockets[username] = undefined;
@@ -254,7 +254,7 @@ namespace player
 			// make sure they are online
 			if(!isOnline(username) && traveler)
 			{
-				require('./plugin').triggerEvent('disconnect', traveler.player);
+				require('./plugin').triggerEvent('disconnect', traveler.player.data);
 				savePlayer(username).then(()=>{
 					fromAuth[traveler.playAuth] = null;
 					onlinePlayers[username] = null;
