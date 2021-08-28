@@ -254,7 +254,7 @@ namespace player
 			// make sure they are online
 			if(!isOnline(username) && traveler)
 			{
-				disconnect(username);
+				require('./plugin').triggerEvent('disconnect', traveler.player);
 				savePlayer(username).then(()=>{
 					fromAuth[traveler.playAuth] = null;
 					onlinePlayers[username] = null;
