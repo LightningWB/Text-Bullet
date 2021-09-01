@@ -4,13 +4,14 @@ import * as util from './util';
 
 namespace loader
 {
+	const INDENT_CHARACTER = '    '// 4 spaces because notepad likes it more
 	function allowed(types: string[]): string
 	{
 		return '# Allowed values: ' + types.join(', ');
 	}
 	function indent(values: string[])
 	{
-		return values.map(t=> '\t' + t).join('\n');
+		return values.map(t=> INDENT_CHARACTER + t).join('\n');
 	}
 	const defaultConfig = [
 		'# the port for the server to listen on.',
@@ -33,6 +34,16 @@ namespace loader
 		'# The server description. Should be short and simple',
 		allowed(['String']),
 		'description = "a text-based adventure mmo"',
+		'',
+		'# changelogs for the server. Copy paste more in if needed',
+		'[[changelog]]',
+		indent([
+			'title = "v1.0.0"',
+			'date = "' + new Date().toLocaleDateString() + '"',
+			'body = """',
+			'&bull; Set up the server.',
+			'"""'
+		]),
 		'',
 		'[db]',
 		indent([
