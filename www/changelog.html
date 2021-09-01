@@ -1,0 +1,108 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>
+	@&variable[title]&@: changelog
+</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="@&variable[title]&@" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://thetravelers.online" />
+<meta property="og:image" content="/imgs/logo2.png" />
+<meta property="og:description" content="changelog" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="/imgs/logo2.png" />
+<meta name="twitter:title" content="the travelers" />
+<meta name="twitter:description" content="changelog" />
+<link rel="stylesheet" href="./resources_v114/__travelers.css" />
+<link rel="stylesheet" href="./resources_v114/_otherpages.css" /></head>
+<body class="otherpages">
+    <form method="post" action="./changelog" id="form1" style="position: relative;">
+        <div class="other-siteback"></div>
+
+        <div class="header">
+            <h2 class="banner-title"><a class="title-link" href='./'>the&nbsp;travelers</a></h2>&nbsp;
+            <h3 class="game-subtitle">changelog</h3>
+        </div>
+        <div id="logs" class="content-dip"></div>
+
+        <input id="loadlogs" class="load-btn" type="button" value="Load Older Changelogs" onclick="LoadLogs()" />
+        
+        <script src="./resources_v114/other.js"></script>
+        <script>
+            var page = 0,
+                logDiv = document.getElementById("logs"),
+                loadBtn = document.getElementById("loadlogs"),
+                brk = "<div class='post-spacer'></div>";
+
+            function LoadLogs() {
+                OTHER.ajaxCall(
+                    "/changelog.aspx/GetChangelogs",
+                    { "page": page },
+                    function (r) {
+                        let jar = JSON.parse(r),
+                            html = "";
+
+                        if (page++ === 1) html += brk;
+                        if (jar.length !== 0) {
+                            jar.forEach(job => {
+                                html += "<div class='content-box'>";
+                                html += "<h3 class='post-title'>" + job.title + "</h3>";
+                                html += "<h4 class='post-subtitle'>" + job.date + "</h4>";
+                                html += "<p class='post-body'>" + OTHER.markdown(job.body) + "</p>";
+                                html += "<a class='permalink' href='./changelog?v=" + job.id + "'>permalink</a>";
+                                html += "</div>";
+                                html += brk;
+                            });
+
+                            logDiv.innerHTML += html;
+
+                            if (jar.length < 10) {
+                                loadBtn.style.display = "none";
+                            }
+                        } else {
+                            loadBtn.style.display = "none";
+                        }
+                    }
+                );
+            }
+
+            function LoadSpecificLog(ver) {
+                OTHER.ajaxCall(
+                    "/changelog.aspx/GetSpecificChangelog",
+                    { "ver": ver },
+                    function (r) {
+                        let job = JSON.parse(r),
+                            html = "<div class='content-box'>";
+
+                        if (job.failed === undefined) {
+                            html += "<h3 class='post-title'>" + job.title + "</h3>";
+                            html += "<h4 class='post-subtitle'>" + job.date + "</h4>";
+                            html += "<p class='post-body'>" + OTHER.markdown(job.body) + "</p>";
+                            loadBtn.value = "More Changelogs";
+                        } else {
+                            html += "<h4 class='post-subtitle'>unknown changelog</h4>";
+                            loadBtn.value = "All Changelogs";
+                        }
+                        html += brk + "</div>";
+
+                        logDiv.innerHTML = html;
+                    }
+                );
+
+                loadBtn.setAttribute("onclick", "window.location.href = './changelog'");
+            }
+
+            (function () {
+                if (window.location.search !== "") {
+                    LoadSpecificLog(parseInt(window.location.search.substr(3)));
+                } else {
+                    LoadLogs();
+                }
+            })();
+        </script>
+    </form>
+</body>
+</html>

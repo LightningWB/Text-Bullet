@@ -26,6 +26,7 @@ namespace net
 	const waitingUsers:{[key:string]:waitingUser} = {};
 	let allowSignup = true;
 	let adminHtml = '';
+	const changelogsSorted = options.changelog.sort((l1, l2) => new Date(l2.date).getTime() - new Date(l1.date).getTime());
 	/**
 	 * starts the whole website
 	 */
@@ -57,7 +58,15 @@ namespace net
 					GetPlayersOnline: (d, r, res)=>res.end('{"d":'+player.getOnlinePlayers().length+'}')
 				},
 				'changelog.aspx': {
-					GetSpecificChangelog: ()=>''
+					GetSpecificChangelog: (d, req, res) => {
+						const data = JSON.parse(d);
+						let log = options.changelog[0];
+						if(data.ver === -1 && changelogsSorted.length > 0){
+						} else if(typeof data.ver === 'number') {
+							console.log(data);
+						}
+						res.end(JSON.stringify({d: JSON.stringify({...log, leaders: []})}))
+					}
 				},
 				'admin.aspx': adminTree
 			},
