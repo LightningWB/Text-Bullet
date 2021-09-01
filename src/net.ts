@@ -61,11 +61,20 @@ namespace net
 					GetSpecificChangelog: (d, req, res) => {
 						const data = JSON.parse(d);
 						let log = options.changelog[0];
-						if(data.ver === -1 && changelogsSorted.length > 0){
-						} else if(typeof data.ver === 'number') {
-							console.log(data);
+						if(typeof data.ver === 'number' && data.ver > 0) {
+							log = options.changelog[changelogsSorted.length - data.ver]
 						}
 						res.end(JSON.stringify({d: JSON.stringify({...log, leaders: []})}))
+					},
+					GetChangelogs: (d, req, res) => {
+						const data = JSON.parse(d);
+						const logs = []
+						const index = data.page * 10;// 10 logs at a time
+						for(let i = 0; changelogsSorted.length > i + index && i < 10; i++) {
+							logs.push(util.clone(changelogsSorted[index + i]));
+							logs[index + i].id = changelogsSorted.length - (index + i);
+						}
+						res.end(JSON.stringify({d: JSON.stringify(logs)}));
 					}
 				},
 				'admin.aspx': adminTree
