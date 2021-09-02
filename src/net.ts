@@ -541,6 +541,13 @@ namespace net
 		adminHtml += 'text("' + lightspeed.htmlEscape(text) + '", "plugins.' + lightspeed.htmlEscape(id) + '", "' + placeHolder + '");\n';
 		server.reloadPosts();
 	}
+
+	const leaderBoards = {};
+
+	export function addLeaderboard(name: string, scorer: (player: player.playerData) => number):void
+	{
+		leaderBoards[name] = scorer;
+	}
 }
 
 (global as any).net = net;

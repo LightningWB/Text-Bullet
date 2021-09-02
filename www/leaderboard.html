@@ -1,0 +1,209 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>
+	the travelers: leaderboard
+</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="@&variable[title]&@" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://thetravelers.online" />
+<meta property="og:image" content="/imgs/logo2.png" />
+<meta property="og:description" content="leaderboard" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:image" content="/imgs/logo2.png" />
+<meta name="twitter:title" content="@&variable[title]&@" />
+<meta name="twitter:description" content="leaderboard" />
+<link rel="stylesheet" href="./resources_v114/__travelers.css" />
+<link rel="stylesheet" href="./resources_v114/_otherpages.css" />
+    <style>
+        div.content-dip {
+            max-width:550px;
+        }
+
+        div.leaderboard-select {
+            background-color: rgba(0,0,0,0.05);
+            display: inline-block;
+            width: calc(25% - 30px);
+            padding: 10px;
+            text-align: center;
+            border: 1px solid gray;
+            vertical-align: top;
+            height: 37px;
+            margin: 0 2px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        span.lb-list-unit {
+            font-size:14px;
+        }
+
+        @media only screen and (max-width:700px) {
+            div.leaderboard-select {
+                font-size:12px;
+                height: 28px;
+                padding: 10px 4px;
+                width: calc(25% - 18px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <form method="post" action="./leaderboard" id="form1">
+        <div class="other-siteback"></div>
+
+        <div class="header">
+            <h2 class="banner-title"><a class="title-link" href='./'>the&nbsp;travelers</a></h2>&nbsp;
+            <h3 class="game-subtitle">leaderboard</h3>
+        </div>
+
+        <div class="content-dip">
+            <div class="content-box">
+                <h3 class="post-title">leaderboard</h3>
+                <p class="post-body">select a leaderboard below to view the top players in that category. these lists update every two minutes.</p><!--
+
+            ---><div id="lbs-XP" class="leaderboard-select unselectable" onclick="ShowLeaderboard(0);" style="background-color:rgba(0,0,0,0.25);margin-left:10px;">experience</div><!--
+            ---><div id="lbs-Steps" class="leaderboard-select unselectable" onclick="ShowLeaderboard(2);">distance traveled</div><!--
+            ---><div id="lbs-Seconds" class="leaderboard-select unselectable" onclick="ShowLeaderboard(1);">hours played</div><!--
+            ---><div id="lbs-Locs" class="leaderboard-select unselectable" onclick="ShowLeaderboard(3);">locations explored</div><!--
+
+            ---><div style="text-align:center;background-color:rgba(0,0,0,0);">
+                    <div id="leaders_XP" style="display:inline-block;text-align:left;background-color:rgba(0,0,0,0);min-width: 70%;"></div>
+                    <div id="leaders_Seconds" style="display:none;text-align:left;background-color:rgba(0,0,0,0);min-width: 70%;"></div>
+                    <div id="leaders_Steps" style="display:none;text-align:left;background-color:rgba(0,0,0,0);min-width: 70%;"></div>
+                    <div id="leaders_Locs" style="display:none;text-align:left;background-color:rgba(0,0,0,0);min-width: 70%;"></div>
+                </div>
+            </div>
+			<!--
+            <div class="content-box" style="margin-top:25px;">
+                <h3 class="post-title">puzzle winners</h3>
+                <p class="post-body">below is a list of the first ten players to beat the game.</p>
+                <div style="text-align:center;background-color:rgba(0,0,0,0);">
+                    <div id="puzzlevictors" style="display:inline-block;text-align:left;background-color:rgba(0,0,0,0);min-width:70%;"><p class='lboard-wide clearback'>1)</p><span class='lboard-main'><b>LightningWB</b></span><br /><span class='lboard-sub'>Thursday, April 22, 2021</span><br /><span class='lboard-sub'>at 6728.2 hours played</span><br /><br /><p class='lboard-wide clearback'>2)</p><span class='lboard-main'><b>Bramblery</b></span><br /><span class='lboard-sub'>Thursday, April 22, 2021</span><br /><span class='lboard-sub'>at 6422.9 hours played</span><br /><br /><p class='lboard-wide clearback'>3)</p><span class='lboard-main'><b>alekaetor</b></span><br /><span class='lboard-sub'>Sunday, April 25, 2021</span><br /><span class='lboard-sub'>at 5643.8 hours played</span><br /><br /><p class='lboard-wide clearback'>4)</p><span class='lboard-main'><b>Slime_tiger</b></span><br /><span class='lboard-sub'>Tuesday, April 27, 2021</span><br /><span class='lboard-sub'>at 6827.4 hours played</span><br /><br /><p class='lboard-wide clearback'>5)</p><span class='lboard-main'><b>cohnon</b></span><br /><span class='lboard-sub'>Tuesday, April 27, 2021</span><br /><span class='lboard-sub'>at 3223.7 hours played</span><br /><br /><p class='lboard-wide clearback'>6)</p><span class='lboard-main'><b>SuperQGS</b></span><br /><span class='lboard-sub'>Sunday, May 2, 2021</span><br /><span class='lboard-sub'>at 2706.3 hours played</span><br /><br /><p class='lboard-wide clearback'>7)</p><span class='lboard-main'><b>Meepcom</b></span><br /><span class='lboard-sub'>Sunday, May 2, 2021</span><br /><span class='lboard-sub'>at 6691.2 hours played</span><br /><br /><p class='lboard-wide clearback'>8)</p><span class='lboard-main'><b>KingGlac</b></span><br /><span class='lboard-sub'>Tuesday, May 4, 2021</span><br /><span class='lboard-sub'>at 1438.2 hours played</span><br /><br /><p class='lboard-wide clearback'>9)</p><span class='lboard-main'><b>LogicM</b></span><br /><span class='lboard-sub'>Saturday, May 8, 2021</span><br /><span class='lboard-sub'>at 5930.5 hours played</span><br /><br /><p class='lboard-wide clearback'>10)</p><span class='lboard-main'><b>hentai</b></span><br /><span class='lboard-sub'>Monday, May 17, 2021</span><br /><span class='lboard-sub'>at 1446.1 hours played</span><br /><br /></div>
+                </div>
+            </div>
+            <div class="content-box" style="margin-top:25px;">
+                <h3 class="post-title">pre-release leaderboard</h3>
+                <p class="post-body">below are the top ten players leading by xp from before the game officially released. special thanks to these players for helping to make the game great.</p>
+                <div style="text-align:center;background-color:rgba(0,0,0,0);">
+                    <div id="preleaders" style="display:inline-block;text-align:left;background-color:rgba(0,0,0,0);min-width: 70%;">
+                        <p class="lboard-wide clearback">1)</p><span class="lboard-main"><b>pfg</b>: level 231</span><br /><span class="lboard-sub">18704177 total xp</span><br /><br />
+                        <p class="lboard-wide clearback">2)</p><span class="lboard-main"><b>LogicM</b>: level 151</span><br /><span class="lboard-sub">5733816 total xp</span><br /><br />
+                        <p class="lboard-wide clearback">3)</p><span class="lboard-main"><b>toragadude</b>: level 133</span><br /><span class="lboard-sub">4050163 total xp</span><br /><br />
+                        <p class="lboard-wide clearback">4)</p><span class="lboard-main"><b>man</b>: level 132</span><br /><span class="lboard-sub">3934729 total xp</span><br /><br />
+                        <p class="lboard-wide clearback">5)</p><span class="lboard-main"><b>pepsilord420</b>: level 123</span><br /><span class="lboard-sub">3272842 total xp</span><br /><br />
+                        <p class="lboard-wide clearback">6)</p><span class="lboard-main"><b>Jeevan</b>: level 117</span><br /><span class="lboard-sub">2823604 total xp</span><br /><br />
+                        <p class="lboard-wide clearback">7)</p><span class="lboard-main"><b>t3hmadhatter</b>: level 114</span><br /><span class="lboard-sub">2640530 total xp</span><br /><br />
+                        <p class="lboard-wide clearback">8)</p><span class="lboard-main"><b>Super3</b>: level 101</span><br /><span class="lboard-sub">1871080 total xp</span><br /><br />
+                        <p class="lboard-wide clearback">9)</p><span class="lboard-main"><b>bramblery</b>: level 101</span><br /><span class="lboard-sub">1857802 total xp</span><br /><br />
+                        <p class="lboard-wide clearback">10)</p><span class="lboard-main"><b>cool</b>: level 86</span><br /><span class="lboard-sub">1218435 total xp</span><br /><br />
+                    </div>
+                </div>
+            </div>-->
+            <div class='post-spacer'></div>
+        </div>
+		<input id="lb_data" type="hidden" value="@&returnFunction[getLeaderBoardData]&@">
+        <input name="lb_xp_JSON" type="hidden" id="lb_xp_JSON" value="[{&quot;rank&quot;:1,&quot;username&quot;:&quot;LightningWB&quot;,&quot;xp&quot;:61063094,&quot;level&quot;:354,&quot;is_you&quot;:false},{&quot;rank&quot;:2,&quot;username&quot;:&quot;Meepcom&quot;,&quot;xp&quot;:50571924,&quot;level&quot;:330,&quot;is_you&quot;:false},{&quot;rank&quot;:3,&quot;username&quot;:&quot;Slime_tiger&quot;,&quot;xp&quot;:33266729,&quot;level&quot;:284,&quot;is_you&quot;:false},{&quot;rank&quot;:4,&quot;username&quot;:&quot;cerbere&quot;,&quot;xp&quot;:27846699,&quot;level&quot;:266,&quot;is_you&quot;:false},{&quot;rank&quot;:5,&quot;username&quot;:&quot;Bramblery&quot;,&quot;xp&quot;:27463433,&quot;level&quot;:265,&quot;is_you&quot;:false},{&quot;rank&quot;:6,&quot;username&quot;:&quot;alekaetor&quot;,&quot;xp&quot;:23698241,&quot;level&quot;:251,&quot;is_you&quot;:false},{&quot;rank&quot;:7,&quot;username&quot;:&quot;LogicM&quot;,&quot;xp&quot;:20266227,&quot;level&quot;:237,&quot;is_you&quot;:false},{&quot;rank&quot;:8,&quot;username&quot;:&quot;rex_wrecks&quot;,&quot;xp&quot;:16636659,&quot;level&quot;:221,&quot;is_you&quot;:false},{&quot;rank&quot;:9,&quot;username&quot;:&quot;cohnon&quot;,&quot;xp&quot;:14928426,&quot;level&quot;:212,&quot;is_you&quot;:false},{&quot;rank&quot;:10,&quot;username&quot;:&quot;pfg&quot;,&quot;xp&quot;:14918766,&quot;level&quot;:212,&quot;is_you&quot;:false}]" />
+        <input name="lb_seconds_JSON" type="hidden" id="lb_seconds_JSON" value="[{&quot;rank&quot;:1,&quot;username&quot;:&quot;Meepcom&quot;,&quot;seconds_played&quot;:34044017,&quot;is_you&quot;:false},{&quot;rank&quot;:2,&quot;username&quot;:&quot;Slime_tiger&quot;,&quot;seconds_played&quot;:33314701,&quot;is_you&quot;:false},{&quot;rank&quot;:3,&quot;username&quot;:&quot;alekaetor&quot;,&quot;seconds_played&quot;:30126519,&quot;is_you&quot;:false},{&quot;rank&quot;:4,&quot;username&quot;:&quot;LightningWB&quot;,&quot;seconds_played&quot;:29661570,&quot;is_you&quot;:false},{&quot;rank&quot;:5,&quot;username&quot;:&quot;Bramblery&quot;,&quot;seconds_played&quot;:27337251,&quot;is_you&quot;:false},{&quot;rank&quot;:6,&quot;username&quot;:&quot;cerbere&quot;,&quot;seconds_played&quot;:25374495,&quot;is_you&quot;:false},{&quot;rank&quot;:7,&quot;username&quot;:&quot;LogicM&quot;,&quot;seconds_played&quot;:21687534,&quot;is_you&quot;:false},{&quot;rank&quot;:8,&quot;username&quot;:&quot;rex_wrecks&quot;,&quot;seconds_played&quot;:18246174,&quot;is_you&quot;:false},{&quot;rank&quot;:9,&quot;username&quot;:&quot;Tsukumizu&quot;,&quot;seconds_played&quot;:15483821,&quot;is_you&quot;:false},{&quot;rank&quot;:10,&quot;username&quot;:&quot;cohnon&quot;,&quot;seconds_played&quot;:13199870,&quot;is_you&quot;:false}]" />
+        <input name="lb_steps_JSON" type="hidden" id="lb_steps_JSON" value="[{&quot;rank&quot;:1,&quot;username&quot;:&quot;Meepcom&quot;,&quot;steps_taken&quot;:34309580,&quot;is_you&quot;:false},{&quot;rank&quot;:2,&quot;username&quot;:&quot;Slime_tiger&quot;,&quot;steps_taken&quot;:31913901,&quot;is_you&quot;:false},{&quot;rank&quot;:3,&quot;username&quot;:&quot;LightningWB&quot;,&quot;steps_taken&quot;:29215688,&quot;is_you&quot;:false},{&quot;rank&quot;:4,&quot;username&quot;:&quot;Bramblery&quot;,&quot;steps_taken&quot;:26526379,&quot;is_you&quot;:false},{&quot;rank&quot;:5,&quot;username&quot;:&quot;alekaetor&quot;,&quot;steps_taken&quot;:24898966,&quot;is_you&quot;:false},{&quot;rank&quot;:6,&quot;username&quot;:&quot;cerbere&quot;,&quot;steps_taken&quot;:22967383,&quot;is_you&quot;:false},{&quot;rank&quot;:7,&quot;username&quot;:&quot;LogicM&quot;,&quot;steps_taken&quot;:19530564,&quot;is_you&quot;:false},{&quot;rank&quot;:8,&quot;username&quot;:&quot;rex_wrecks&quot;,&quot;steps_taken&quot;:16534506,&quot;is_you&quot;:false},{&quot;rank&quot;:9,&quot;username&quot;:&quot;Tsukumizu&quot;,&quot;steps_taken&quot;:14493862,&quot;is_you&quot;:false},{&quot;rank&quot;:10,&quot;username&quot;:&quot;cohnon&quot;,&quot;steps_taken&quot;:12584606,&quot;is_you&quot;:false}]" />
+        <input name="lb_locs_JSON" type="hidden" id="lb_locs_JSON" value="[{&quot;rank&quot;:1,&quot;username&quot;:&quot;LightningWB&quot;,&quot;locs_explored&quot;:390650,&quot;is_you&quot;:false},{&quot;rank&quot;:2,&quot;username&quot;:&quot;Meepcom&quot;,&quot;locs_explored&quot;:345965,&quot;is_you&quot;:false},{&quot;rank&quot;:3,&quot;username&quot;:&quot;cerbere&quot;,&quot;locs_explored&quot;:150484,&quot;is_you&quot;:false},{&quot;rank&quot;:4,&quot;username&quot;:&quot;pfg&quot;,&quot;locs_explored&quot;:84581,&quot;is_you&quot;:false},{&quot;rank&quot;:5,&quot;username&quot;:&quot;alekaetor&quot;,&quot;locs_explored&quot;:29493,&quot;is_you&quot;:false},{&quot;rank&quot;:6,&quot;username&quot;:&quot;cohnon&quot;,&quot;locs_explored&quot;:22943,&quot;is_you&quot;:false},{&quot;rank&quot;:7,&quot;username&quot;:&quot;SuperQGS&quot;,&quot;locs_explored&quot;:20976,&quot;is_you&quot;:false},{&quot;rank&quot;:8,&quot;username&quot;:&quot;hentai&quot;,&quot;locs_explored&quot;:13171,&quot;is_you&quot;:false},{&quot;rank&quot;:9,&quot;username&quot;:&quot;ProfessorRework&quot;,&quot;locs_explored&quot;:8109,&quot;is_you&quot;:false},{&quot;rank&quot;:10,&quot;username&quot;:&quot;Slime_tiger&quot;,&quot;locs_explored&quot;:7518,&quot;is_you&quot;:false}]" />
+
+        <script>
+            var belXP = document.getElementById("leaders_XP"),
+                belSeconds = document.getElementById("leaders_Seconds"),
+                belSteps = document.getElementById("leaders_Steps"),
+                belLocs = document.getElementById("leaders_Locs"),
+                headerXP = document.getElementById("lbs-XP"),
+                headerSeconds = document.getElementById("lbs-Seconds"),
+                headerSteps = document.getElementById("lbs-Steps"),
+                headerLocs = document.getElementById("lbs-Locs");
+
+            (function () {
+                let jarXP = JSON.parse(document.getElementById("lb_xp_JSON").value),
+                    jarSeconds = JSON.parse(document.getElementById("lb_seconds_JSON").value),
+                    jarSteps = JSON.parse(document.getElementById("lb_steps_JSON").value),
+                    jarLocs = JSON.parse(document.getElementById("lb_locs_JSON").value);
+                
+                jarXP.sort(function (a, b) {
+                    return b.xp - a.xp;
+                });
+                jarSeconds.sort(function (a, b) {
+                    return b.seconds_played - a.seconds_played;
+                });
+                jarSteps.sort(function (a, b) {
+                    return b.steps_taken - a.steps_taken;
+                });
+                jarLocs.sort(function (a, b) {
+                    return b.locs_explored - a.locs_explored;
+                });
+                
+                for (let i = 0; i < jarXP.length; i++) {
+                    if (i === 10 && jarXP[11] !== undefined && jarXP[11].rank !== 12) {
+                        belXP.innerHTML += "<p class='lboard-wide clearback' style='margin-bottom: 5px;margin-left: 12px;'>.<br />.<br />.</p><br /><br />";
+                    }
+                    belXP.innerHTML += "<p class='lboard-wide clearback'>" + (jarXP[i].is_you ? "<b>" : "") + jarXP[i].rank + ")" + (jarXP[i].is_you ? "</b>" : "") + "</p><span class='lboard-main'><b>" + jarXP[i].username + (jarXP[i].is_you ? " (you)" : "") + "</b>: <span class='lb-list-unit'>level&nbsp;</span>" + (jarXP[i].level + 1) + "</span><br /><span class='lboard-sub'>" + jarXP[i].xp + " total xp</span><br /><br />";
+                }
+                for (let i = 0; i < jarSeconds.length; i++) {
+                    if (i === 10 && jarSeconds[11] !== undefined && jarSeconds[11].rank !== 12) {
+                        belSeconds.innerHTML += "<p class='lboard-wide clearback' style='margin-bottom: 5px;margin-left: 12px;'>.<br />.<br />.</p><br /><br />";
+                    }
+                    belSeconds.innerHTML += "<p class='lboard-wide clearback'>" + (jarSeconds[i].is_you ? "<b>" : "") + jarSeconds[i].rank + ")" + (jarSeconds[i].is_you ? "</b>" : "") + "</p><span class='lboard-main'><b>" + jarSeconds[i].username + (jarSeconds[i].is_you ? " (you)" : "") + "</b>: " + (jarSeconds[i].seconds_played / 3600).toFixed(1) + "<span class='lb-list-unit'>&nbsp;hours</span></span><br /><span class='lboard-sub'>" + jarSeconds[i].seconds_played + " total seconds</span><br /><br />";
+                }
+                for (let i = 0; i < jarSteps.length; i++) {
+                    if (i === 10 && jarSteps[11] !== undefined && jarSteps[11].rank !== 12) {
+                        belSteps.innerHTML += "<p class='lboard-wide clearback' style='margin-bottom: 5px;margin-left: 12px;'>.<br />.<br />.</p><br /><br />";
+                    }
+                    belSteps.innerHTML += "<p class='lboard-wide clearback'>" + (jarSteps[i].is_you ? "<b>" : "") + jarSteps[i].rank + ")" + (jarSteps[i].is_you ? "</b>" : "") + "</p><span class='lboard-main'><b>" + jarSteps[i].username + (jarSteps[i].is_you ? " (you)" : "") + "</b>: " + jarSteps[i].steps_taken + "<span class='lb-list-unit'>km</span></span><br /><br />";
+                }
+                for (let i = 0; i < jarLocs.length; i++) {
+                    if (i === 10 && jarLocs[11] !== undefined && jarLocs[11].rank !== 12) {
+                        belLocs.innerHTML += "<p class='lboard-wide clearback' style='margin-bottom: 5px;margin-left: 12px;'>.<br />.<br />.</p><br /><br />";
+                    }
+                    belLocs.innerHTML += "<p class='lboard-wide clearback'>" + (jarLocs[i].is_you ? "<b>" : "") + jarLocs[i].rank + ")" + (jarLocs[i].is_you ? "</b>" : "") + "</p><span class='lboard-main'><b>" + jarLocs[i].username + (jarLocs[i].is_you ? " (you)" : "") + "</b>: " + jarLocs[i].locs_explored + "<span class='lb-list-unit'>&nbsp;locations</span></span><br /><br />";
+                }
+            })();
+
+            function ShowLeaderboard(leaderboard) {
+                belXP.style.display = "none";
+                belSeconds.style.display = "none";
+                belSteps.style.display = "none";
+                belLocs.style.display = "none";
+                headerXP.style.backgroundColor = "";
+                headerSeconds.style.backgroundColor = "";
+                headerSteps.style.backgroundColor = "";
+                headerLocs.style.backgroundColor = "";
+
+                switch (leaderboard) {
+                    case 0: {
+                        belXP.style.display = "inline-block";
+                        headerXP.style.backgroundColor = "rgba(0,0,0,0.25)";
+
+                        break;
+                    }
+                    case 1: {
+                        belSeconds.style.display = "inline-block";
+                        headerSeconds.style.backgroundColor = "rgba(0,0,0,0.25)";
+
+                        break;
+                    }
+                    case 2: {
+                        belSteps.style.display = "inline-block";
+                        headerSteps.style.backgroundColor = "rgba(0,0,0,0.25)";
+
+                        break;
+                    }
+                    case 3: {
+                        belLocs.style.display = "inline-block";
+                        headerLocs.style.backgroundColor = "rgba(0,0,0,0.25)";
+
+                        break;
+                    }
+                }
+            }
+        </script>
+    </form>
+</body>
+</html>

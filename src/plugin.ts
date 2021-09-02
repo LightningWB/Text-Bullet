@@ -4,6 +4,7 @@ import * as player from './player';
 import * as utility from './util';
 import * as chunk from './chunks';
 import * as ops from './options';
+import net = require('./net');
 
 /**
  * plugins
@@ -220,6 +221,14 @@ namespace plugins
 				pluginStorage[this.id] = util.clone(storage);
 			}
 			else throw new TypeError('Expected type "object" but received type ' + (typeof storage === 'object'? 'Array' : typeof storage));
+		}
+
+		/**
+		 * 
+		 */
+		addLeaderboard(name: string, scorer: (player: player.playerData) => number):void
+		{
+			net.addLeaderboard(name, scorer);
 		}
 	}
 	const plugins:plugin[] = [];
