@@ -26,6 +26,7 @@ namespace net
 	const waitingUsers:{[key:string]:waitingUser} = {};
 	let allowSignup = true;
 	let adminHtml = '';
+	let leaders:{[key:string]:util.anyObject[]} = {};
 	const changelogsSorted = options.changelog.sort((l1, l2) => new Date(l2.date).getTime() - new Date(l1.date).getTime());
 	/**
 	 * starts the whole website
@@ -88,7 +89,24 @@ namespace net
 				},
 				worldGen: ()=>travelers.clientEval,
 				onlinePlayers: ()=>player.getOnlinePlayers().length,
-				adminFuncs: ()=>adminHtml
+				adminFuncs: ()=>adminHtml,
+				getLeaderBoardData: async (r)=> {
+					const p = await player.getPlayerFromToken(cookie.parse(r.headers.cookie || '').T);
+					let name = p?.data?.public?.username ? p.data.public.username : '';
+					const result = {};
+					for(const type in leaders) {
+						let mySelf = leaders[type].find(l => l.username === name);
+						let finalLeaders:util.anyObject[];
+						if(mySelf) {
+							finalLeaders = leaders[type].filter(l => l.rank <= 10 || (l.rank <= mySelf.rank + 1 && l.rank >= mySelf.rank - 1));
+							finalLeaders.forEach(l => l.is_you = l.username === name);
+						} else {
+							finalLeaders = leaders[type].filter(l => l.rank <= 10);
+						}
+						result[type] = finalLeaders;
+					}
+					return JSON.stringify(result);
+				}
 			},
 			variables: {
 				title: options.title,
@@ -544,10 +562,36 @@ namespace net
 
 	const leaderBoards = {};
 
-	export function addLeaderboard(name: string, scorer: (player: player.playerData) => number):void
+	export function addLeaderboard(name: string, scorer: (player: player.playerData) => number, maps:{[key:string]:(player: player.playerData) => any}):void
 	{
-		leaderBoards[name] = scorer;
+		leaderBoards[name] = [scorer, maps];
 	}
+
+	export function setLeaderBoards() {
+		const playerDataList = player.getPlayerNames().map(n => player.getPlayerFromUsername(n).data);
+		leaders = {};
+		for(const key in leaderBoards) {
+			const score = leaderBoards[key][0];
+			const maps = leaderBoards[key][1];
+			const sorted = playerDataList.sort((p1, p2) => score(p2) - score(p1));
+			leaders[key] = [];
+			for(let i = 0; i < sorted.length; i++) {
+				const p = {
+					rank: i + 1,
+					username: sorted[i].public.username
+				};
+				for(const e in maps) {
+					p[e] = maps[e](sorted[i])
+				}
+				leaders[key].push(p);
+			}
+		}
+	}
+
+	setInterval(() => {
+		setLeaderBoards();
+	}, 1000 * 60 * 2)// every two minutes
+
 }
 
 (global as any).net = net;

@@ -30,6 +30,8 @@ namespace travelers
 		loadPlugins();
 		await player.loadPlayers();
 		setInterval(()=>cycle(), 1000/options.tps);
+		util.debug('INFO', 'Setting leader boards');
+		net.setLeaderBoards();
 		util.debug('INFO', 'Server started successfully');
 
 	}

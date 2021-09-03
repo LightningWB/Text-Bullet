@@ -168,6 +168,11 @@ namespace player
 		return Object.keys(onlinePlayers).filter(p=>isOnline(p));
 	}
 
+	export function getPlayerNames():string[]
+	{
+		return Object.keys(playerData);
+	}
+
 	export function addNonDBProps(player: player)
 	{
 		const username = player.data.public.username;
