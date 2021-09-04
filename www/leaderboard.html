@@ -109,6 +109,12 @@
 		<script>
 			const data = JSON.parse(document.getElementById('lb_data').value);
 			const compiled = {};
+			const translators = @&returnFunction[getTranslators]&@;
+			for(const type in translators) {
+				for(const funcId in translators[type]) {
+					translators[type][funcId] = eval('(' + translators[type][funcId] + ')');
+				}
+			}
 			const ELEMS = {
 				span: (text, classList = '', escape = false) => {
 					const e = document.createElement('span');
@@ -200,13 +206,13 @@
 					container.id = 'lb_' + boardName;
 					container.style = 'display:inline-block;text-align:left;background-color:rgba(0,0,0,0);min-width: 70%;';
 					for(const member of board) {
-						if(boardName !== 'deaths') {
-							const html = ELEMS.user(member.username, member.rank, '`level `' + member.level, member.xp + ' total xp');
-							container.appendChild(html);
-						} else {
-							const html = ELEMS.user(member.username, member.rank, '`deaths `' + member.deaths);
-							container.appendChild(html);
+						const activeTranslator = translators[boardName];
+						let primary = '', caption;
+						primary = activeTranslator.primary(member);
+						if(activeTranslator.caption) {
+							caption = activeTranslator.caption(member);
 						}
+						container.appendChild(ELEMS.user(member.username, member.rank, primary, caption));
 					}
 					root.appendChild(container);
 				} catch(err) {

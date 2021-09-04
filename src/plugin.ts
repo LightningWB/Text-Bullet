@@ -226,9 +226,9 @@ namespace plugins
 		/**
 		 * 
 		 */
-		addLeaderboard(name: string, scorer: (player: player.playerData,) => number, maps:{[key:string]:(player: player.playerData) => any}):void
+		addLeaderboard(name: string, scorer: (player: player.playerData,) => number, maps:{[key:string]:(player: player.playerData) => any}, _translators:{[key:string]:(player: player.playerData) => string}):void
 		{
-			net.addLeaderboard(name, scorer, maps);
+			net.addLeaderboard(name, scorer, maps, _translators);
 		}
 	}
 	const plugins:plugin[] = [];

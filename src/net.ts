@@ -27,6 +27,7 @@ namespace net
 	let allowSignup = true;
 	let adminHtml = '';
 	let leaders:{[key:string]:util.anyObject[]} = {};
+	let translators = {};
 	const changelogsSorted = options.changelog.sort((l1, l2) => new Date(l2.date).getTime() - new Date(l1.date).getTime());
 	/**
 	 * starts the whole website
@@ -106,6 +107,9 @@ namespace net
 						result[type] = finalLeaders;
 					}
 					return JSON.stringify(result);
+				},
+				getTranslators: (req, q) => {
+					return JSON.stringify(translators);
 				}
 			},
 			variables: {
@@ -562,9 +566,13 @@ namespace net
 
 	const leaderBoards = {};
 
-	export function addLeaderboard(name: string, scorer: (player: player.playerData) => number, maps:{[key:string]:(player: player.playerData) => any}):void
+	export function addLeaderboard(name: string, scorer: (player: player.playerData) => number, maps:{[key:string]:(player: player.playerData) => any}, _translators:{[key:string]:(player: player.playerData) => string} ):void
 	{
 		leaderBoards[name] = [scorer, maps];
+		for(const key in _translators) {
+			_translators[key] = _translators[key].toString() as any;
+		}
+		translators[name] = _translators;
 	}
 
 	export function setLeaderBoards() {
