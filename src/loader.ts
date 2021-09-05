@@ -22,7 +22,7 @@ namespace loader
 		allowed(['Floating point number']),
 		'tps = 1.0',
 		'',
-		'# weather to store web pages in memory or not.',
+		'# whether to store web pages in memory or not.',
 		'# false decreases page loading speed, but decreases memory usage.',
 		allowed(['Boolean']),
 		'staticFiles = true',
