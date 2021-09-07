@@ -168,6 +168,7 @@ namespace plugins
 		on(event: 'playerSave', listener: (player:player.playerData) => any, priority:number):any
 		on(event: 'playerTick', listener: (player:player.playerData) => any, priority:number):any
 		on(event: 'saveChunk', listener: (chunk:chunk.chunk) => any, priority:number):any
+		on(event: 'ready', listener: () => any, priority:number):any
 		on(event: string, listener: (...args: any[])=>any, priority:number):any
 		{
 			(plugin.parent as any).on(event, listener, priority);
@@ -185,6 +186,7 @@ namespace plugins
 		once(event: 'playerSave', listener: (player:player.playerData) => any, priority:number):any
 		once(event: 'playerTick', listener: (player:player.playerData) => any, priority:number):any
 		once(event: 'saveChunk', listener: (chunk:chunk.chunk) => any, priority:number):any
+		once(event: 'ready', listener: () => any, priority:number):any
 		once(event: string, listener: (...args: any[])=>any, priority:number):any
 		{
 			(plugin.parent as any).once(event, listener, priority);

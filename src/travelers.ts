@@ -30,6 +30,7 @@ namespace travelers
 		loadPlugins();
 		await player.loadPlayers();
 		setInterval(()=>cycle(), 1000/options.tps);
+		plugins.triggerEvent('ready');
 		util.debug('INFO', 'Setting leader boards');
 		net.setLeaderBoards();
 		util.debug('INFO', 'Server started successfully');
@@ -95,6 +96,7 @@ namespace travelers
 		if(folders.length === 0) {
 			util.debug('WARN', 'No plugins found. The server won\'t function properly without any plugins. Do you mean to have https://github.com/LightningWB/the-travelers-plus installed?')
 		}
+		let successfully = 0;
 		for(const folder of folders)
 		{
 			util.debug('INFO', `Loading ${folder}`);
@@ -102,6 +104,7 @@ namespace travelers
 			{
 				require(path.join(util.root, '/plugins', folder));
 				util.debug('INFO', `Successfully loaded ${folder}`);
+				successfully++;
 			}
 			catch(e)
 			{
@@ -109,6 +112,7 @@ namespace travelers
 				util.debug('WARN', `Unable to load plugin ${folder}`);
 			}
 		}
+		util.debug('INFO', 'Finished loading ' + successfully + ' plugins.');
 	}
 
 	let genTileRaw;
