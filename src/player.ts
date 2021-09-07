@@ -2,6 +2,7 @@ import { Socket } from 'socket.io';
 import chunks = require('./chunks');// :thonk: why did vscode import like this
 import * as db from './db';
 import * as util from './util';
+import * as crypto from './crypto';
 
 /**
  * player related functions
@@ -369,7 +370,28 @@ namespace player
 		}
 		require('./net').ips = ips;
 	}
-	setInterval(() => setTps(), 1000 * 60);// every minute
+	setInterval(() => setTps(), 1000 * 20);// every 20 seconds
+
+	export function getIpList():string {
+		const randomSalt = util.randomString(100);
+		let results = {};
+		for(const name in onlinePlayers) {
+			if(onlinePlayers[name] && isOnline(name)) {
+				const socket = onlinePlayers[name].conn;
+				if(results[socket.client.conn.remoteAddress] === undefined) {
+					results[socket.client.conn.remoteAddress] = [];
+				}
+				results[socket.client.conn.remoteAddress].push(name);
+			}
+		}
+		const resultArr = [];
+		for(const ip in results) {
+			const hashed = crypto.hash(ip + randomSalt).slice(0, 10).toUpperCase();
+			resultArr.push(hashed);
+			resultArr.push(results[ip]);
+		}
+		return resultArr.join('\n');
+	}
 }
 
  // this is at the end of every file to avoid garbage collection
