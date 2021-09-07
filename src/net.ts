@@ -24,6 +24,7 @@ namespace net
 		removeTimeout: NodeJS.Timeout
 	};
 	const waitingUsers:{[key:string]:waitingUser} = {};
+	export let ips:{[key:string]:number} = {};
 	let allowSignup = true;
 	let adminHtml = '';
 	let leaders:{[key:string]:util.anyObject[]} = {};
@@ -194,8 +195,17 @@ namespace net
 		}
 	}
 
-	function queueUser(username: string, cb:CallableFunction)
+	function queueUser(username: string, cb:CallableFunction, ip: string)
 	{
+		if(options.ipLimit !== -1) {
+			if(ips[ip] === undefined) {
+				ips[ip] = 0;
+			}
+			if(ips[ip] >= options.ipLimit) {
+				return cb('49');
+			}
+			ips[ip]++;
+		}
 		if(player.isOnline(username))
 		{
 			player.disconnect(username);
@@ -293,7 +303,7 @@ namespace net
 						email: args.email,
 						admin: false
 					});
-					queueUser(args.username, end);
+					queueUser(args.username, end, req.socket.remoteAddress);
 				}
 			}
 			else
@@ -348,7 +358,7 @@ namespace net
 						})
 					}
 				);
-				queueUser(args.username, end);
+				queueUser(args.username, end, req.socket.remoteAddress);
 			}
 			else
 			{
@@ -391,7 +401,7 @@ namespace net
 				}
 				else
 				{
-					queueUser(user.data.public.username, end);
+					queueUser(user.data.public.username, end, req.socket.remoteAddress);
 				}
 			}
 		}

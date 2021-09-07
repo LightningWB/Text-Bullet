@@ -355,6 +355,21 @@ namespace player
 		}
 		util.debug('INFO', 'Players loaded');
 	}
+
+	function setTps() {
+		const ips = {};
+		for(const name in onlinePlayers) {
+			if(onlinePlayers[name] && isOnline(name)) {
+				const socket = onlinePlayers[name].conn;
+				if(ips[socket.client.conn.remoteAddress] === undefined) {
+					ips[socket.client.conn.remoteAddress] = 0;
+				}
+				ips[socket.client.conn.remoteAddress]++;
+			}
+		}
+		require('./net').ips = ips;
+	}
+	setInterval(() => setTps(), 1000 * 60);// every minute
 }
 
  // this is at the end of every file to avoid garbage collection

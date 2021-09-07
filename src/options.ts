@@ -34,6 +34,7 @@ type ops = {
 	port: number,
 	title: string,
 	description: string,
+	ipLimit: number | -1
 }
 const defaultOps: ops = {
 	port: 80,
@@ -50,7 +51,8 @@ const defaultOps: ops = {
 	crypto: {
 		pepper: util.randomString(50)
 	},
-	changelog: []
+	changelog: [],
+	ipLimit: -1,
 };
 const file = fs.readFileSync(path.join(util.root, 'config.toml')).toString();
 const options: ops = util.mergeObject(defaultOps, toml.parse(file));
