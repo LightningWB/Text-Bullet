@@ -1,3 +1,5 @@
+import chunks = require("./chunks");
+
 /**
  * utility functions
 */
@@ -226,6 +228,19 @@ namespace util
 	export function out<T>(val: T, t?:dataType)
 	{
 		return new Out(val, t);
+	}
+
+	/**
+	 * gets all the objects in a chunk
+	 */
+	export function getObjs(chunk:chunks.chunk): chunks.obj[] {
+		const objs = [];
+		for(const id in chunk) {
+			if(id !== 'meta' && chunk[id]) {
+				objs.push(chunk[id]);
+			}
+		}
+		return objs;
 	}
 }
  
