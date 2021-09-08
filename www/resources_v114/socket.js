@@ -198,6 +198,11 @@ var SOCKET = {
             resetFunc();
             return;
         }
+		if (grecaptcha/* only check if captcha loaded */ && captcha === "") {
+            badsignup.innerHTML = "please complete the captcha";
+            resetFunc();
+            return;
+        }
         if (email !== "" && !SOCKET.validateEmail(email)) {
             badsignup.innerHTML = "please enter a proper email, or none at all";
             resetFunc();

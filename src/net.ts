@@ -2,7 +2,8 @@ import * as lightspeed from 'lightspeedjs';
 import * as cookie from 'cookie';
 import * as socketIo from 'socket.io';
 import * as joi from 'joi';
-import * as path from 'path';
+import * as hcaptcha from 'hcaptcha';
+import * as recaptcha2 from 'recaptcha2';
 import * as db from './db';
 import * as crypto from './crypto';
 import * as player from './player';
@@ -30,6 +31,15 @@ namespace net
 	let leaders:{[key:string]:util.anyObject[]} = {};
 	let translators = {};
 	const changelogsSorted = options.changelog.sort((l1, l2) => new Date(l2.date).getTime() - new Date(l1.date).getTime());
+	let captchaHtml:string = '';
+	let captchaScript = '';
+	if(options.crypto.captcha === 'hcaptcha') {
+		captchaHtml = '<div class="h-captcha" data-sitekey="' + options.crypto.siteKey + '" data-callback="getCaptcha"></div>';
+		captchaScript = '<script src="https://js.hcaptcha.com/1/api.js" async defer></script>';
+	} else if(options.crypto.captcha === 'recaptchav2') {
+		captchaHtml = '<div class="g-recaptcha" data-sitekey="' + options.crypto.siteKey + '" data-callback="getCaptcha"></div>';
+		captchaScript = '<script src="https://www.google.com/recaptcha/api.js" async defer></script>';
+	}
 	/**
 	 * starts the whole website
 	 */
@@ -115,7 +125,9 @@ namespace net
 			},
 			variables: {
 				title: options.title,
-				description: options.description
+				description: options.description,
+				captchaHtml: captchaHtml,
+				captchaScript: captchaScript
 			},
 			// hides all logs so admins can't see ips easily
 			log:()=>{},
@@ -151,6 +163,27 @@ namespace net
 	async function isAdminReq(req):Promise<boolean>
 	{
 		return await isAdmin(cookie.parse(req.headers.cookie || '').T);
+	}
+
+	const recaptchaVerifier = new recaptcha2({
+		siteKey: options.crypto.siteKey,
+		secretKey: options.crypto.secretKey
+	})
+
+	/**
+	 * true is good, false is bad captcha
+	 */
+	async function verifyCaptcha(token: string, ip: string):Promise<boolean> {
+		switch(options.crypto.captcha) {
+			case 'none': return true;
+			case 'hcaptcha':return (await hcaptcha.verify(options.crypto.secretKey, token, ip, options.crypto.siteKey)).success;
+			case 'recaptchav2':
+				try {
+					return await recaptchaVerifier.validate(token, ip);
+				} catch(err) {
+					return false;
+				}
+		}
 	}
 
 	async function validateUser(socket:socketIo.Socket, next:Function)
@@ -250,7 +283,8 @@ namespace net
 			email: string,
 			password: string,
 			cpassword: string,
-			rememberMe: boolean
+			rememberMe: boolean,
+			captcha: string
 		}
 		const usernameChars = 'qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM1234567890-_';
 		function end(result, code = 200)
@@ -267,6 +301,9 @@ namespace net
 			const args:signupArgs = JSON.parse(data);
 			if(signupArgs.validate(args))
 			{
+				if(!await verifyCaptcha(args.captcha, req.connection.remoteAddress)) {
+					return end('spam');
+				}
 				// username exists
 				if((await db.query('players', {})).find(p=>p.data.public.username.toLowerCase() === args.username.toLowerCase()) !== undefined)
 				{
@@ -330,7 +367,8 @@ namespace net
 		type loginArgs = {
 			username: string,
 			password: string,
-			rememberMe: boolean
+			rememberMe: boolean,
+			captcha: string
 		}
 		function end(result, code = 200)
 		{
@@ -346,6 +384,9 @@ namespace net
 			}
 			if(loginArgs.validate(args).error === undefined)
 			{
+				if(!await verifyCaptcha(args.captcha, req.connection.remoteAddress)) {
+					return end('29');
+				}
 				const user:player.player = await player.getPlayerFromDBByUsername(args.username);
 				if(user === undefined)return end('');
 				const hash = crypto.hash(user.salt + args.password);
@@ -394,6 +435,9 @@ namespace net
 			}
 			else
 			{
+				if(!await verifyCaptcha(JSON.parse(data).captcha, req.connection.remoteAddress)) {
+					return end('39');
+				}
 				const user = await player.getPlayerFromToken(cookies.T);
 				if(user === undefined)
 				{

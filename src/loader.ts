@@ -79,7 +79,19 @@ namespace loader
 			'# a string added to every password to make it harder for an attacker to brute force passwords.',
 			'# NEVER TELL ANYONE THIS.',
 			allowed(['String']),
-			'pepper = "' + util.randomString(50) + '"'
+			'pepper = "' + util.randomString(50) + '"',
+			'',
+			'# captcha method to use.',
+			allowed(['"none"', '"recaptchav2"', '"hcaptcha"']),
+			'captcha = "none"',
+			'',
+			'# public site key to use for captcha.',
+			allowed(['String']),
+			'siteKey = ""',
+			'',
+			'# private secret key to use for captcha.',
+			allowed(['String']),
+			'secretKey = ""'
 		])
 		
 	].join('\n');

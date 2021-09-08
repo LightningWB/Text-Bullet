@@ -40,7 +40,9 @@
                         <input type='password' id='loginpass-txt' placeholder='password' maxlength="100" style='font-size: 20px;'/>
                 
                         <p id='badlogin' class="clearback"></p>
-
+						<div class="clearback" style="display:inline-block;">
+                            @&variable[captchaHtml]&@
+                        </div>
                         <br />
                 
                         <input type="checkbox" id="login-remember" /><label for="login-remember" class="rememberme">remember me</label><br />
@@ -62,7 +64,9 @@
                         <input type='password' id='signupconfirmpass-txt' placeholder='confirm password' maxlength="100" style='font-size: 20px;'/>
 
                         <p id='badsignup' class="clearback"></p>
-
+						<div class="clearback" style="display:inline-block;">
+                            @&variable[captchaHtml]&@
+                        </div>
                         <br />
 
                         <input type="checkbox" id="signup-remember" /><label for="signup-remember" class="rememberme">remember me</label><br />
@@ -94,6 +98,9 @@
                         <span id="autolog-username"></span>
                         <br />
                         <br />
+						<div class="clearback" style="display:inline-block;">
+                            @&variable[captchaHtml]&@
+                        </div>
                         <br />
                         <br />
                         <input type='button' id='autolog-btn' value='wake up' onclick="SOCKET.autologBtn(); this.setAttribute('onclick', '');" style="margin:10px 0 0;" />
@@ -742,7 +749,7 @@
         -torogadude, September 18th 2019  
 
     -->   
-
+	@&variable[captchaScript]&@
 	<script src="/socket.io/socket.io.min.js"></script>
     <!--my scripts-->
     <script src="./resources_v114/socket.js"></script>
@@ -830,12 +837,18 @@
                 console.log("\n\n\nWARNING! The Travelers has the developer's blessing to be used for mods, but if someone has linked you to install one, PLEASE make absolutely certain the source is trustworthy, or read through the JS yourself. " +
                     "XSS (cross-site scripting) is real and incredibly dangerous, and injections can even occur in seemingly harmless places, like the 'src' attribute in the 'img' tag if you want a fancy image for a texturepack. When in doubt, simply do not install the mod at all.\n\n\n");
             }
+
+			
 			document.onreadystatechange = function(e)
 			{
 				if(e.eventPhase !== 2)return;
 				@&returnFunction[worldGen]&@
 			}
         })();
+		
+		function getCaptcha(r) {
+			SOCKET.captcha = r;
+		}
     </script>
 </body>
 </html>

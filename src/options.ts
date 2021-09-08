@@ -19,7 +19,10 @@ type ops = {
 		url: string
 	}
 	crypto: {
-		pepper: string
+		pepper: string,
+		captcha: 'none' | 'recaptchav2' | 'hcaptcha',
+		siteKey: string,
+		secretKey: string
 	}
 	/**
 	 * make sure to not use console.log on this because toml parses each of these to have a null prototype
@@ -49,10 +52,13 @@ const defaultOps: ops = {
 		url: 'mongodb://localhost:27017'
 	},
 	crypto: {
-		pepper: util.randomString(50)
+		pepper: util.randomString(50),
+		captcha: 'none',
+		siteKey: '',
+		secretKey: ''
 	},
 	changelog: [],
-	ipLimit: -1,
+	ipLimit: -1
 };
 const file = fs.readFileSync(path.join(util.root, 'config.toml')).toString();
 const options: ops = util.mergeObject(defaultOps, toml.parse(file));
@@ -64,6 +70,10 @@ for(const log of options.changelog) {
 		body: log.body.trim(),
 		date: log.date
 	});
+}
+if(options.crypto.captcha !== 'hcaptcha' && options.crypto.captcha !== 'recaptchav2' && options.crypto.captcha !== 'none') {
+	util.debug('WARN', 'Invalid value for config.crypto.captcha passed of "' + options.crypto.captcha + '". Defaulting to "none"');
+	options.crypto.captcha = 'none';
 }
 options.changelog = newLogs;
 if(options.crypto.pepper === defaultOps.crypto.pepper) {
