@@ -50,6 +50,11 @@ namespace plugins
 		{
 			return player.getOnlinePlayers();
 		}
+
+		export function getPlayerNames(): string[]
+		{
+			return player.getPlayerNames()
+		}
 	}
 	export namespace chunks
 	{
