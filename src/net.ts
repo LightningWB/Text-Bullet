@@ -39,6 +39,8 @@ namespace net
 	} else if(options.crypto.captcha === 'recaptchav2') {
 		captchaHtml = '<div class="g-recaptcha" data-sitekey="' + options.crypto.siteKey + '" data-callback="getCaptcha"></div>';
 		captchaScript = '<script src="https://www.google.com/recaptcha/api.js" async defer></script>';
+	} else {
+		captchaScript = '<script>grecaptcha = {reset: () => {}};</script>'
 	}
 	/**
 	 * starts the whole website
