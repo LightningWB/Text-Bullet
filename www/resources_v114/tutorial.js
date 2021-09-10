@@ -87,7 +87,7 @@ var TUT = {
                 case 0: {
                     // go on, leave everything hidden.
                     if (ENGINE.wasAutoConnect) {
-                        SOCKET.hub.start().done(function () {
+                        ENGINE.addCycleTrigger(function () {
                             TUT.update();
                         });
                     }
