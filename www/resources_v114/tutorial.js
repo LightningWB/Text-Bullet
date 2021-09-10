@@ -87,9 +87,13 @@ var TUT = {
                 case 0: {
                     // go on, leave everything hidden.
                     if (ENGINE.wasAutoConnect) {
-                        ENGINE.addCycleTrigger(function () {
-                            TUT.update();
-                        });
+                       const int = setInterval(function () {
+                           if(SOCKET.conn.connected) {
+                               TUT.update();
+                               clearInterval(int);
+                            }
+                        }, 1);
+
                     }
                     break;
                 }
