@@ -207,9 +207,9 @@ namespace player
 			fromAuth[playAuth] = onlinePlayers[username];
 			await chunks.waitChunkLoads();
 			require('./plugin').triggerEvent('playerReady', player.data);
-			onlinePlayers[username].conn.emit('getGameObject', util.mergeObject(player.data.public, player.data.temp || {}));
 			sockets[username] = socket;
 			util.debug('INFO', `${username} connected`);
+			sendPlayerDataFor(username);
 		}
 	}
 
