@@ -75,6 +75,7 @@ namespace travelers
 			plugins.triggerEvent('gameTickPre');
 			player.tickPlayers();
 			plugins.triggerEvent('gameTick');
+			player.sendPlayerData();
 			cycleAlign++;
 			if(cycleAlign / tps % chunks.SAVE_INTERVAL === 0)
 			{

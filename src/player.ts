@@ -275,7 +275,6 @@ namespace player
 				catch(err){db.addErrorRaw(err);}
 			}
 		}
-		sendPlayerData();
 	}
 
 	let saving = false;
