@@ -28,6 +28,7 @@ namespace net
 	export let ips:{[key:string]:number} = {};
 	let allowSignup = true;
 	let adminHtml = '';
+	let howToPlayHtml = '';
 	let leaders:{[key:string]:util.anyObject[]} = {};
 	let translators = {};
 	const changelogsSorted = options.changelog.sort((l1, l2) => new Date(l2.date).getTime() - new Date(l1.date).getTime());
@@ -123,6 +124,9 @@ namespace net
 				},
 				getTranslators: (req, q) => {
 					return JSON.stringify(translators);
+				},
+				getHowToPlay: (req, q) => {
+					return howToPlayHtml;
 				}
 			},
 			variables: {
@@ -622,6 +626,43 @@ namespace net
 		};
 		adminHtml += 'text("' + lightspeed.htmlEscape(text) + '", "plugins.' + lightspeed.htmlEscape(id) + '", "' + placeHolder + '");\n';
 		server.reloadPosts();
+	}
+
+	type howToPlayPart = {
+		type: 'img',
+		data: string | Buffer
+	} | {
+		type: 'text',
+		content: string
+	} | {
+		type: 'lineBreak'
+	};
+	export function addHowToPlayText(title: string, body: howToPlayPart[]): void {
+		title = lightspeed.htmlEscape(title);
+		let result = [`<a class="mini-header" name="${title}">${title}</a>`];
+		for(const part of body) {
+			switch(part.type) {
+				case 'img':
+					let b64 = '';
+					if(Buffer.isBuffer(part.data)) {
+						b64 = part.data.toString('base64');
+					} else {
+						b64 = lightspeed.htmlEscape(part.data);
+					}
+					result.push(`<img class="inline-img" src="data:image/png;base64,${b64}" />`);
+					break;
+				case 'lineBreak':
+					result.push('<br /><br />');
+					break;
+				case 'text':
+					result.push(lightspeed.htmlEscape(part.content));
+					break
+				default:
+					// @ts-expect-error
+					throw new Error(`Unknown how to play text type of "${part.type}"`);
+			}
+		}
+		howToPlayHtml += result.join('');
 	}
 
 	const leaderBoards = {};
