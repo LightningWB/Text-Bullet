@@ -237,6 +237,15 @@ namespace plugins
 		{
 			net.addLeaderboard(name, scorer, maps, _translators);
 		}
+
+		/**
+		 * add a how to play section to the how to play page
+		 * @param name 
+		 * @param values 
+		 */
+		addHowToPlaySection(name: string, values: net.howToPlayPart[]) {
+			net.addHowToPlayText(name, values);
+		}
 	}
 	const plugins:plugin[] = [];
 	plugin.parent = new (require('priority-events'))() as events.EventEmitter;

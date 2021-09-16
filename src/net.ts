@@ -628,7 +628,7 @@ namespace net
 		server.reloadPosts();
 	}
 
-	type howToPlayPart = {
+	export type howToPlayPart = {
 		type: 'img',
 		data: string | Buffer
 	} | {
