@@ -56,10 +56,6 @@
 		return noise.simplex2(x / s, y / s);
 	}
 	function generateTileAt(x, y) {
-        if (x === 0 && y === 0) {
-            YOU.biome = "wasteland";
-            return TILES.monument;
-        }
 
         // ground
         let bottomtile = TILES.sand,
