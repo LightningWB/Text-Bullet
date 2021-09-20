@@ -317,7 +317,7 @@ var WORLD = {
             };
 
         // notify for travelers
-        if (!SETTINGS.notifTraveler === "true" && WORLD.otherPlayers.length > 0 && !WORLD.prevStepHadPlayers) {
+        if (SETTINGS.notifTraveler === "true" && WORLD.otherPlayers.length > 0 && !WORLD.prevStepHadPlayers) {
             NOTIF.new("traveler nearby", 500);
             ENGINE.log("in the distance, faint against the dark horizon, a traveler appears.");
             WORLD.prevStepHadPlayers = true;
