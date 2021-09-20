@@ -453,7 +453,7 @@ var ENGINE = {
                 }
                 if (!changed) {
                     for (let i = 0; i < objs; i++) {
-                        if (prox.objs[i].x !== WORLD.otherObjs[i].x || prox.objs[i].y !== WORLD.otherObjs[i].y || prox.objs[i].is_door !== WORLD.otherObjs[i].is_door) {
+                        if (prox.objs[i].x !== WORLD.otherObjs[i].x || prox.objs[i].y !== WORLD.otherObjs[i].y || prox.objs[i].is_door !== WORLD.otherObjs[i].is_door || prox.objs[i].char !== WORLD.otherObjs[i].char) {
                             changed = true;
                             break;
                         }
