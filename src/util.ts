@@ -153,8 +153,15 @@ namespace util
 	}
 	const MAX_LOGS = 100;
 	type level = 'ERROR' | 'WARN' | 'INFO';
+
+	const userRegex = new RegExp(process.env.USERNAME, 'g');
 	export function debug(mode:level, ...message: any[]): void
 	{
+		for(let i = 0; i < message.length; i++) {
+			if(typeof message[i] === 'string' && message[i].search(userRegex) !== -1) {
+				message[i] = message[i].replace(userRegex, '%USERNAME%');
+			}
+		}
 		const reset = '\x1b[0m';
 		let color;
 		switch(mode)
