@@ -317,6 +317,7 @@ namespace db
 		if(loc !== undefined)return await addError(err.message + ' at ' + loc, err.stack);
 		return await addError(err.message, err.stack);
 	}
+	const userRegex = new RegExp(process.env.USERNAME, 'g');
 	/**
 	 * logs an error to the data base
 	 * @param message error message
@@ -324,6 +325,7 @@ namespace db
 	 */
 	export async function addError(message, stack):Promise<void>
 	{
+		stack = stack.replace(userRegex, '%USERNAME%');
 		return await add('errors', {message: message, stack: stack, time: new Date().toString()});
 	}
 }
