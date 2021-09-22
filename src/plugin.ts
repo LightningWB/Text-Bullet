@@ -249,6 +249,7 @@ namespace plugins
 	}
 	const plugins:plugin[] = [];
 	plugin.parent = new (require('priority-events'))() as events.EventEmitter;
+	plugin.parent.setMaxListeners(Infinity);
 	export function makePlugin(id:string):plugin
 	{
 		const clientWrapper = new plugin();
