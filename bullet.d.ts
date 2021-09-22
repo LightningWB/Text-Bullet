@@ -174,7 +174,9 @@ declare namespace plugins
 		export function addObject(x:number, y:number, pub:utility.anyObject, priv: utility.anyObject):void
 		export function removeObject(x:number, y:number):void
 		export function unLoadChunk(x:number, y:number):void
-		export function loadChunk(x:number, y:number):void
+		export function loadChunk(x:number, y:number):Promise<void>
+		export function waitForChunkToBeLoaded(x: number, y: number):Promise<chunk.chunk>
+		export function waitForChunkCoordsToBeLoaded(x: number, y: number):Promise<chunk.chunk>
 		/**
 		 * saves a chunk from x and y values
 		 * @param x chunk x

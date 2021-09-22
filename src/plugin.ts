@@ -112,9 +112,21 @@ namespace plugins
 		{
 			chunk.unLoadChunk(x, y);
 		}
-		export function loadChunk(x:number, y:number):void
+		export function loadChunk(x:number, y:number):Promise<void>
 		{
-			chunk.loadChunk(x, y);
+			return chunk.loadChunk(x, y);
+		}
+
+		export function waitForChunkToBeLoaded(x: number, y: number):Promise<chunk.chunk> {
+			const chunkCoords = chunk.coordsToChunk(x, y);
+			return waitForChunkCoordsToBeLoaded(chunkCoords.x, chunkCoords.y);
+		}
+
+		export async function waitForChunkCoordsToBeLoaded(x: number, y: number):Promise<chunk.chunk> {
+			if(!isChunkCoordsLoaded(x, y)) {
+				await loadChunk(x, y);
+			}
+			return getChunkFromChunkCoords(x, y) as chunk.chunk;
 		}
 		/**
 		 * saves a chunk from x and y values
