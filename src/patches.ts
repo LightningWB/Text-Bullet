@@ -21,12 +21,14 @@ namespace patches {
 	};
 
 	type patchStorage = {
-		patches: patch[]
+		patches: patch[],
+		js: string[]
 	};
 
 	const patches: patchStorage = {
-		patches: []
-	}
+		patches: [],
+		js: []
+	};
 
 	function verifyLocation(location: string): boolean {
 		if(
@@ -60,6 +62,10 @@ namespace patches {
 		};
 
 		patches.patches.push(patch);
+	}
+
+	export function addJs(js: string): void {
+		patches.js.push(js);
 	}
 
 	function generateJsFromPatch(patch: patch): string {
