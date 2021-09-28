@@ -68,8 +68,26 @@ namespace patches {
 		patches.js.push(js);
 	}
 
+	/**
+	 * @param event property sent to the client to wait for
+	 * @param handler handler for when that property is found
+	 */
+	export function addListener(event: string, handler: string | Function) {
+		if(handler instanceof Function) {
+			handler = handler.toString();
+		}
+		patches.listeners.push({
+			event: event,
+			handler: handler
+		});
+	}
+
 	function generateJsFromPatch(patch: patch): string {
-		return `${patch.location} = eval('(' + ${patch.location}.toString().replace('${patch.replace.replace(/\\/g, '\\\\').replace(/'/g, '\\\'')}', '${patch.injected.replace(/\\/g, '\\\\').replace(/'/g, '\\\'')}') + ')')`;
+		return `${patch.location} = eval('(' + ${patch.location}.toString().replace('${patch.replace.replace(/\\/g, '\\\\').replace(/'/g, '\\\'').replace(/\n/g, '\\n')}', '${patch.injected.replace(/\\/g, '\\\\').replace(/'/g, '\\\'').replace(/\n/g, '\\n')}') + ')')`;
+	}
+
+	function generateListener(listener: listener) {
+		return `if(ENGINE.listeners['${listener.event.replace(/'/g, '\\\'')}']===undefined)ENGINE.listeners['${listener.event.replace(/'/g, '\\\'')}']=[];ENGINE.listeners['${listener.event.replace(/'/g, '\\\'')}'].push(${listener.handler})`;
 	}
 
 	/**
@@ -81,10 +99,29 @@ namespace patches {
 			result += `;${generateJsFromPatch(patch)};`;
 		}
 
+		for(const js of patches.js) {
+			result += `;${js};`;
+		}
+
+		for(const listener of patches.listeners) {
+			result += `;${generateListener(listener)};`;
+		}
+
 		console.log('\n', result, '\n');
 		return result;
 	}
 
 }
+
+patches.addPatch(
+	'ENGINE.applyData',
+	'\n',
+	`for(const key in json) {
+		if(ENGINE.listeners[key]) {
+			ENGINE.listeners[key].forEach(e => e(json[key], key));
+		}
+	}`
+);
+patches.addJs('ENGINE.listeners = {};');
 
 export = patches;
