@@ -1,5 +1,10 @@
+import uglify = require("uglify-js");
 import util = require("./util");
 import options = require("./options");
+
+function minify(js: string) {
+	return uglify.minify(js).code;
+}
 
 namespace patches {
 	type toStringAble = {toString: () => string};
@@ -53,13 +58,17 @@ namespace patches {
 	 * @param target the target code to remove
 	 * @param newCode the code to replace it with
 	 */
-	export function addPatch(location: patch["location"], target: patch["replace"], newCode: patch["injected"] | toStringAble): void {
+	export function addPatch(location: patch["location"], target: patch["replace"], newCode: patch["injected"] | toStringAble, compress: boolean = true): void {
 		if(typeof newCode !== 'string') {
 			newCode = newCode.toString();
 		}
 
 		if(!verifyLocation(location)) {
 			return util.debug('ERROR', `Invalid patch location of "${location}"`);
+		}
+
+		if(compress) {
+			newCode = minify(newCode as string);
 		}
 
 		const patch: patch = {
@@ -112,6 +121,11 @@ namespace patches {
 
 		for(const listener of patches.listeners) {
 			result += `;${generateListener(listener)};`;
+		}
+
+		console.log('\n', result, '\n');
+		if(options.compressPatches) {
+			result = minify(result);
 		}
 
 		console.log('\n', result, '\n');
