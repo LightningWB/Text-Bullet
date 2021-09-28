@@ -20,14 +20,21 @@ namespace patches {
 		location: string
 	};
 
+	type listener = {
+		event: string,
+		handler: string
+	};
+
 	type patchStorage = {
 		patches: patch[],
-		js: string[]
+		js: string[],
+		listeners: listener[]
 	};
 
 	const patches: patchStorage = {
 		patches: [],
-		js: []
+		js: [],
+		listeners: []
 	};
 
 	function verifyLocation(location: string): boolean {
