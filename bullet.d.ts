@@ -189,6 +189,26 @@ declare namespace plugins
 		export function isObjectHere(x:number, y:number):boolean
 		export function toChunkCoords(x:number, y:number):{x:number, y:number}
 	}
+	export namespace patches {
+		/**
+		 * adds a new patch to the client
+		 * @param location the function location. ex WORLD.checkPlayersAndObjs
+		 * @param target the target code to replace
+		 * @param newCode the new code to be used to overwrite target
+		 */
+		export function addPatch(location: string, target: string, newCode: string): void
+		/**
+		 * adds javascript to the client. this is automatically wrapped in error handling.
+		 * @param js javascript
+		 */
+		export function addJs(js: string): void
+		/**
+		 * registers a listener to fire whenever certain data is sent to the client
+		 * @param event property of client sent data to wait for
+		 * @param handler how to handle the data. can be a stringified function or a function that'll be converted automatically.
+		 */
+		export function addListener(event: string, handler: string | ((value?: any, key?: any) => any)): void
+	}
 	export const util: typeof utility;
 	export const options: ops;
 	class plugin

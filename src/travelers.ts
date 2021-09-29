@@ -33,6 +33,9 @@ namespace travelers
 		plugins.triggerEvent('ready');
 		util.debug('INFO', 'Setting leader boards');
 		net.setLeaderBoards();
+		net.state.starting = false;
+		util.debug('INFO', 'Compiling patches');
+		net.reloadPatches();
 		util.debug('INFO', 'Server started successfully');
 
 	}

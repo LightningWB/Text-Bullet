@@ -37,7 +37,8 @@ type ops = {
 	port: number,
 	title: string,
 	description: string,
-	ipLimit: number | -1
+	ipLimit: number | -1,
+	compressPatches: boolean
 }
 const defaultOps: ops = {
 	port: 80,
@@ -58,7 +59,8 @@ const defaultOps: ops = {
 		secretKey: ''
 	},
 	changelog: [],
-	ipLimit: -1
+	ipLimit: -1,
+	compressPatches: true
 };
 const file = fs.readFileSync(path.join(util.root, 'config.toml')).toString();
 const options: ops = util.mergeObject(defaultOps, toml.parse(file));
