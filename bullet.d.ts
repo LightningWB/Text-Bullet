@@ -128,6 +128,7 @@ declare namespace plugins
 	}
 	export type storage = fullStorage["data"];
 	export const SAVE_INTERVAL:number;
+	export const VERSION: string;
 	export namespace players
 	{
 		export type player = player.playerData

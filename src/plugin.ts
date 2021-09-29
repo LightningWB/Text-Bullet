@@ -5,6 +5,7 @@ import * as utility from './util';
 import * as chunk from './chunks';
 import * as ops from './options';
 import net = require('./net');
+import path = require('path');
 
 /**
  * plugins
@@ -18,6 +19,7 @@ namespace plugins
 	export type storage = fullStorage["data"];
 	const pluginStorage = {};
 	export const SAVE_INTERVAL:number = chunk.SAVE_INTERVAL;
+	export const VERSION: string = require(path.join(utility.root, 'package.json')).version;
 	export namespace players
 	{
 		export type player = player.playerData
