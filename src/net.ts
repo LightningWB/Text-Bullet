@@ -9,6 +9,7 @@ import * as crypto from './crypto';
 import * as player from './player';
 import * as options from './options';
 import * as util from './util';
+import patches = require('./patches');
 
 /**
  * the website part of the travelers.
@@ -26,9 +27,13 @@ namespace net
 	};
 	const waitingUsers:{[key:string]:waitingUser} = {};
 	export let ips:{[key:string]:number} = {};
+	export let state = {
+		starting: true
+	};
 	let allowSignup = true;
 	let adminHtml = '';
 	let howToPlayHtml = '';
+	let patchHtml = '';
 	let leaders:{[key:string]:util.anyObject[]} = {};
 	let translators = {};
 	const changelogsSorted = options.changelog.sort((l1, l2) => new Date(l2.date).getTime() - new Date(l1.date).getTime());
@@ -127,7 +132,8 @@ namespace net
 				},
 				getHowToPlay: (req, q) => {
 					return howToPlayHtml;
-				}
+				},
+				getPatchScript: () => patchHtml
 			},
 			variables: {
 				title: options.title,
@@ -663,6 +669,12 @@ namespace net
 			}
 		}
 		howToPlayHtml += result.join('');
+	}
+
+	export function reloadPatches() {
+		if(!state.starting) {
+			patchHtml = patches.computePatches();
+		}
 	}
 
 	const leaderBoards = {};
