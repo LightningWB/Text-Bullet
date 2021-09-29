@@ -144,7 +144,7 @@ namespace patches {
 patches.addPatch(
 	'ENGINE.applyData',
 	'\n',
-	`for(const key in json) {
+	`\nfor(const key in json) {
 		if(ENGINE.listeners[key]) {
 			ENGINE.listeners[key].forEach(e => e(json[key], key));
 		}
