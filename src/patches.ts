@@ -3,7 +3,8 @@ import util = require("./util");
 import options = require("./options");
 
 function minify(js: string) {
-	return uglify.minify(js).code;
+	const result =  uglify.minify(js);
+	return result.code;
 }
 
 namespace patches {
@@ -107,28 +108,34 @@ namespace patches {
 	}
 
 	/**
+	 * @param js 
+	 * @param message please note there is no quote checking here
+	 */
+	function errorCatch(js: string, message: string = 'failed applying server js') {
+		return `try{${js}}catch(e){console.error('${message}');console.error(e);}`
+	}
+
+	/**
 	 * converts all the patches into a string of js that can be sent to the client page
 	 */
 	export function computePatches(): string {
 		let result = '';
 		for(const patch of patches.patches) {
-			result += `;${generateJsFromPatch(patch)};`;
+			result += `;${errorCatch(generateJsFromPatch(patch), `failed applying server patch to ${patch.location}`)};`;
 		}
 
 		for(const js of patches.js) {
-			result += `;${js};`;
+			result += `;${errorCatch(js)};`;
 		}
 
 		for(const listener of patches.listeners) {
-			result += `;${generateListener(listener)};`;
+			result += `;${errorCatch(generateListener(listener), `failed adding server listener to ${listener.event}`)};`;
 		}
 
-		console.log('\n', result, '\n');
 		if(options.compressPatches) {
 			result = minify(result);
 		}
 
-		console.log('\n', result, '\n');
 		return result;
 	}
 
