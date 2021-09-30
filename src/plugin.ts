@@ -21,7 +21,7 @@ namespace plugins
 	export type storage = fullStorage["data"];
 	const pluginStorage = {};
 	export const SAVE_INTERVAL:number = chunk.SAVE_INTERVAL;
-	export const VERSION: string = require(path.join(utility.root, 'package.json')).version;
+	export const VERSION: string = require('../package.json').version;
 	export namespace players
 	{
 		export type player = player.playerData
