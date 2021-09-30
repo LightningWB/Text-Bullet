@@ -1,5 +1,5 @@
 // avoid messing with globals
-(function(){
+function initializeGeneration(){
 	const isNode = typeof window === 'undefined';
 	if(isNode)
 	{
@@ -44,4 +44,5 @@
 			return tile;
 		};
 	}
-})();
+};
+initializeGeneration();

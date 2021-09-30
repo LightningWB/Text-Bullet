@@ -26,6 +26,7 @@ namespace travelers
 		db.start(options.db.mode as any, options.db);
 		util.debug('INFO', 'Initializing world generation');
 		worldGen.initialize();
+		worldGen.computeGenerator();
 		net.start(travelers);
 		await plugins.init();
 		loadPlugins();
@@ -34,7 +35,7 @@ namespace travelers
 		plugins.triggerEvent('ready');
 		util.debug('INFO', 'Compiling world generation');
 		worldGen.computeGenerator();
-		clientEval = worldGen.getCompiledGeneratorString();
+		setGenerator();
 		util.debug('INFO', 'Setting leader boards');
 		net.setLeaderBoards();
 		net.state.starting = false;
@@ -43,6 +44,11 @@ namespace travelers
 		util.debug('INFO', 'Server started successfully');
 
 	}
+
+	export function setGenerator(): void {
+		clientEval = worldGen.getCompiledGeneratorString();
+	}
+
 	export function handelMessage(packet:any, auth: string)
 	{
 		try
@@ -123,11 +129,9 @@ namespace travelers
 		util.debug('INFO', 'Finished loading ' + successfully + ' plugins.');
 	}
 
-	let genTileRaw;
-
 	export function genTile(x:number, y:number):string
 	{
-		return genTileRaw(x, y);
+		return worldGen.getGenerator().generateTileAt(x, y);
 	}
 
 	export let allowConnections = true;

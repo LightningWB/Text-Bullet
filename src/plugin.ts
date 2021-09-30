@@ -7,6 +7,7 @@ import * as ops from './options';
 import net = require('./net');
 import path = require('path');
 import patch = require('./patches');
+import world = require('./worldgen');
 
 /**
  * plugins
@@ -191,6 +192,67 @@ namespace plugins
 		export function addListener(event: string, handler: string | ((value?: any, key?: any) => any)) {
 			patch.addListener(event, handler);
 			net.reloadPatches();
+		}
+	}
+	export namespace worldGen {
+		export type generator = world.generator
+		/**
+		 * @returns the world generation string
+		 */
+		export function getGeneratorRaw(): string {
+			return world.getGeneratorString();
+		}
+
+		/**
+		 * @returns the current generators
+		 */
+		export function getGenerators(): generator {
+			return world.getGenerator();
+		}
+
+		/**
+		 * sets the icon for a tile
+		 * @param tile tile name
+		 * @param texture texture of the tile
+		 */
+		export function setTileTexture(tile: string, texture: string): void {
+			world.setTileCharacter(tile, texture);
+			if(!net.state.starting) {
+				world.computeGenerator();
+				require('./travelers').setGenerator();
+				const genString = world.getCompiledGeneratorString();
+				player.getOnlinePlayers().map(n => player.getOnlinePlayer(n)).forEach(p => p.data.raw(genString + ';WORLD.build();WORLD.checkPlayersAndObjs();'));
+			}
+		}
+
+		/**
+		 * gets the icon for a tile
+		 * @param tile tile name
+		 * @returns texture
+		 */
+		export function getTileTexture(tile: string): string {
+			return world.getTileCharacter(tile);
+		}
+
+		/**
+		 * @returns current registered tile textures
+		 */
+		export function getTileNames(): string[] {
+			return world.getTileNames();
+		}
+
+		/**
+		 * @param location code to replace
+		 * @param code code to use to fill in
+		 */
+		export function patchGenerator(location: string, code: string): void {
+			world.patchGenerator(location, code);
+			if(!net.state.starting) {
+				world.computeGenerator();
+				require('./travelers').setGenerator();
+				const genString = world.getCompiledGeneratorString();
+				player.getOnlinePlayers().map(n => player.getOnlinePlayer(n)).forEach(p => p.data.raw(genString + ';WORLD.build();WORLD.checkPlayersAndObjs();'));
+			}
 		}
 	}
 	export const util = utility;

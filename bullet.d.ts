@@ -100,6 +100,7 @@ declare namespace player
 		cache?: utility.anyObject
 		addPropToQueue(...string):any
 		sendMidCycleCall(data:utility.anyObject):any
+		raw(js:string)
 	}
 }
 
@@ -209,6 +210,46 @@ declare namespace plugins
 		 * @param handler how to handle the data. can be a stringified function or a function that'll be converted automatically.
 		 */
 		export function addListener(event: string, handler: string | ((value?: any, key?: any) => any)): void
+	}
+	export namespace worldGen {
+		export type generator = {
+			generateTileAt: (x: number, y: number) => string,
+			getBiomeAt: (x: number, y: number) => string
+		};
+		/**
+		 * @returns the world generation string
+		 */
+		export function getGeneratorRaw(): string
+
+		/**
+		 * @returns the current generators
+		 */
+		export function getGenerators(): generator
+
+		/**
+		 * sets the icon for a tile
+		 * @param tile tile name
+		 * @param texture texture of the tile
+		 */
+		export function setTileTexture(tile: string, texture: string): void
+
+		/**
+		 * gets the icon for a tile
+		 * @param tile tile name
+		 * @returns texture
+		 */
+		export function getTileTexture(tile: string): string
+
+		/**
+		 * @returns current registered tile textures
+		 */
+		export function getTileNames(): string[]
+
+		/**
+		 * @param location code to replace
+		 * @param code code to use to fill in
+		 */
+		export function patchGenerator(location: string, code: string): void
 	}
 	export const util: typeof utility;
 	export const options: ops;

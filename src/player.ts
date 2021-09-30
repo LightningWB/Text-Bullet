@@ -34,7 +34,8 @@ namespace player
 		 */
 		cache?: util.anyObject
 		addPropToQueue(...string):any
-		sendMidCycleCall(data:util.anyObject):any
+		sendMidCycleCall(data:util.anyObject):any,
+		raw(string):any,
 	}
 	type secureData = {
 		hash: string,
@@ -91,7 +92,8 @@ namespace player
 					id: data.id
 				},
 				addPropToQueue: (...prop)=>resultingPLayer.queue.push.apply(resultingPLayer.queue, prop),
-				sendMidCycleCall: (d)=>{if(socket)socket.emit('getGameObjectNoCountdown', d)}
+				sendMidCycleCall: (d)=>{if(socket)socket.emit('getGameObjectNoCountdown', d)},
+				raw: (d)=>{if(socket)socket.emit('raw', d)}
 			}
 		};
 		if(data.id === 0)resultingPLayer.admin = true;// always have initial player an admin
@@ -181,6 +183,7 @@ namespace player
 		player.queue = [];
 		player.data.addPropToQueue = (...prop)=>player.queue.push.apply(player.queue, prop);
 		player.data.sendMidCycleCall = (d)=>{if(sockets[username])sockets[username].emit('getGameObjectNoCountdown', d);};
+		player.data.raw = (d)=>{if(sockets[username])sockets[username].emit('raw', d);}
 		player.data.temp = {};
 	}
 
@@ -190,6 +193,7 @@ namespace player
 		player.queue = undefined;
 		player.data.addPropToQueue = undefined;
 		player.data.sendMidCycleCall = undefined;
+		player.data.raw = undefined;
 		player.data.temp = undefined;
 	}
 

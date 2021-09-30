@@ -12,7 +12,7 @@ function minify(js: string) {
 }
 
 namespace worldGen {
-	type generator = {
+	export type generator = {
 		generateTileAt: (x: number, y: number) => string,
 		getBiomeAt: (x: number, y: number) => string
 	};
@@ -81,7 +81,7 @@ namespace worldGen {
 		if(options.obscureWorldGen) {
 			result = minify(result);
 		}
-
+		
 		generator = eval(result);
 		currentGeneratorString = result;
 		return getGenerator();
