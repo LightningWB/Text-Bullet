@@ -148,7 +148,9 @@
         if (x === YOU.x && y === YOU.y) {
             YOU.biome = biome;
         }
-		YOU._biome = biome;
+		if(isNode) {
+			YOU._biome = biome;
+		}
         return bottomtile;
     }
 
