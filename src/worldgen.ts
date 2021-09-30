@@ -1,4 +1,14 @@
 import { readFileSync } from "fs";
+import options = require("./options");
+import uglify = require("uglify-js");
+
+function minify(js: string) {
+	const result =  uglify.minify(js);
+	if(result.error) {
+		throw result.error;
+	}
+	return result.code;
+}
 
 namespace worldGen {
 	type generator = {
@@ -61,10 +71,14 @@ namespace worldGen {
 		let result = baseWorldGen.replace('__TILES__', JSON.stringify(tiles))
 			.replace('__GENERATOR__', generatorString);
 
+		if(options.obscureWorldGen) {
+			result = minify(result);
+		}
+
+
 		generator = eval(result);
 		return getGenerator();
 	}
-	computeGenerator();// set the initial generator
 }
 
 export = worldGen;
