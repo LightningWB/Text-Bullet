@@ -8,6 +8,7 @@ import * as plugins from './plugin';
 import * as chunks from './chunks';
 import * as util from './util';
 import { tps } from './options';
+import worldGen = require('./worldgen');
 
 /**
  * main travelers stuff
@@ -22,15 +23,18 @@ namespace travelers
 	export async function main()
 	{
 		util.debug('INFO', 'Starting server...');
-		clientEval = fs.readFileSync(path.join(__dirname, './worldgen.js')).toString();
-		genTileRaw = require('./worldgen').generateTileAt;
 		db.start(options.db.mode as any, options.db);
+		util.debug('INFO', 'Initializing world generation');
+		worldGen.initialize();
 		net.start(travelers);
 		await plugins.init();
 		loadPlugins();
 		await player.loadPlayers();
 		setInterval(()=>cycle(), 1000/options.tps);
 		plugins.triggerEvent('ready');
+		util.debug('INFO', 'Compiling world generation');
+		worldGen.computeGenerator();
+		clientEval = worldGen.getCompiledGeneratorString();
 		util.debug('INFO', 'Setting leader boards');
 		net.setLeaderBoards();
 		net.state.starting = false;

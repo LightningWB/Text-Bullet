@@ -1,6 +1,7 @@
 import { readFileSync } from "fs";
 import options = require("./options");
 import uglify = require("uglify-js");
+import util = require("./util");
 
 function minify(js: string) {
 	const result =  uglify.minify(js);
@@ -23,11 +24,13 @@ namespace worldGen {
 
 	let generatorString: string;
 
+	
 	export function initialize(): void {
-		baseWorldGen = readFileSync('./worldgenRaw.js').toString();
-		generatorString = readFileSync('./generator.js').toString();
+		baseWorldGen = readFileSync(__dirname + '/worldgenRaw.js').toString();
+		generatorString = readFileSync(__dirname + '/generator.js').toString();
 	}
 	let generator: generator;
+	let currentGeneratorString: string = '';
 	let tiles: tileStorage = {
 		traveler: '&',
 		sand: ' ',
@@ -48,6 +51,10 @@ namespace worldGen {
 	export function getGeneratorString(): string {return generatorString}
 	export function patchGenerator(location:string, code: string, ): void {
 		generatorString = generatorString.replace(location, code);
+	}
+
+	export function getCompiledGeneratorString(): string {
+		return currentGeneratorString;
 	}
 	
 	export function getGenerator(): generator {
@@ -75,8 +82,8 @@ namespace worldGen {
 			result = minify(result);
 		}
 
-
 		generator = eval(result);
+		currentGeneratorString = result;
 		return getGenerator();
 	}
 }
