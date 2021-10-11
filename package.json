@@ -14,7 +14,7 @@
       "build/index.js",
       "build/www/*",
       "build/www/**/*",
-	  "build/package.json"
+      "build/package.json"
     ],
     "targets": [
       "node14-win-x64",
