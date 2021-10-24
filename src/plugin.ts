@@ -254,6 +254,20 @@ namespace plugins
 				player.getOnlinePlayers().map(n => player.getOnlinePlayer(n)).forEach(p => p.data.raw(genString + ';WORLD.build();WORLD.checkPlayersAndObjs();'));
 			}
 		}
+
+		/**
+		 * @param seed seed to use
+		 */
+		export function setSeed(seed: number): void {
+			world.setSeed(seed);
+		}
+
+		/**
+		 * @returns the current seed
+		 */
+		export function getSeed(): number {
+			return world.getSeed();
+		}
 	}
 	export const util = utility;
 	const cloned = util.clone(ops);

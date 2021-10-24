@@ -31,6 +31,7 @@ namespace worldGen {
 	}
 	let generator: generator;
 	let currentGeneratorString: string = '';
+	let seed = 20171007;
 	let tiles: tileStorage = {
 		traveler: '&',
 		sand: ' ',
@@ -73,10 +74,19 @@ namespace worldGen {
 		return Object.keys(tiles);
 	}
 
+	export function setSeed(newSeed: number): void {
+		seed = newSeed;
+	}
+	
+	export function getSeed(): number {
+		return seed;
+	}
+
 	export function computeGenerator(): generator {
 
 		let result = baseWorldGen.replace('__TILES__', JSON.stringify(tiles))
-			.replace('__GENERATOR__', generatorString);
+			.replace('__GENERATOR__', generatorString)
+			.replace('__SEED__', seed.toString());
 
 		if(options.obscureWorldGen) {
 			result = minify(result);

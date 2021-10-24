@@ -250,6 +250,16 @@ declare namespace plugins
 		 * @param code code to use to fill in
 		 */
 		export function patchGenerator(location: string, code: string): void
+
+		/**
+		 * @param seed seed to use
+		 */
+		export function setSeed(seed: number): void
+
+		/**
+		 * @returns the current seed
+		 */
+		export function getSeed(): number
 	}
 	export const util: typeof utility;
 	export const options: ops;
