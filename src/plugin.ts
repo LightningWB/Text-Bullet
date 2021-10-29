@@ -170,8 +170,8 @@ namespace plugins
 		 * @param target the target code to replace
 		 * @param newCode the new code to be used to overwrite target
 		 */
-		export function addPatch(location: string, target: string, newCode: string) {
-			patch.addPatch(location, target, newCode);
+		export function addPatch(location: string, target: string, newCode: string, compress: boolean = true): void {
+			patch.addPatch(location, target, newCode, compress);
 			net.reloadPatches();
 		}
 

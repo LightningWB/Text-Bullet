@@ -198,7 +198,7 @@ declare namespace plugins
 		 * @param target the target code to replace
 		 * @param newCode the new code to be used to overwrite target
 		 */
-		export function addPatch(location: string, target: string, newCode: string): void
+		export function addPatch(location: string, target: string, newCode: string, compress: boolean): void
 		/**
 		 * adds javascript to the client. this is automatically wrapped in error handling.
 		 * @param js javascript
