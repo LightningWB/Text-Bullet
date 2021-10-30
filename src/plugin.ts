@@ -1,4 +1,6 @@
 import * as events from 'events';
+import * as fs from 'fs';
+import * as toml from 'toml';
 import * as db from './db';
 import * as player from './player';
 import * as utility from './util';
@@ -274,6 +276,41 @@ namespace plugins
 	cloned.crypto = undefined;
 	cloned.db = undefined;
 	export const options: typeof ops = JSON.parse(JSON.stringify(cloned));
+	namespace config {
+		export type schema = {
+			header?: string,
+			options: {
+				[key: string]: {
+					allowed: string,
+					default: number | string | boolean,
+					description: string
+				}
+			}
+		}
+		export type options = {
+			[key: string]: any
+		}
+		function tomlFriendlyDefault(value: any): string {
+			if(typeof value === 'string') {
+				return `"${value}"`;
+			}
+			if(typeof value === 'boolean') {
+				return value ? 'true' : 'false';
+			}
+			return value;
+		}
+		export function generateTextFromSchema(schema: schema): string {
+			let text = '';
+			if(schema.header) {
+				text += `# ${schema.header.replace(/\n/g, '\n# ')}\n\n`;
+			}
+			for(const key in schema.options) {
+				const value = schema.options[key];
+				text += `# ${value.description.replace(/\n/g, '\n# ')}\n# Allowed: ${value.allowed.replace(/\n/g, '\n# ')}\n${key.replace(/ /g, '_')} = ${tomlFriendlyDefault(value.default)}\n`;
+			}
+			return text;
+		}
+	}
 	// dummy class to allow type definitions
 	class plugin
 	{
@@ -367,6 +404,21 @@ namespace plugins
 		 */
 		addHowToPlaySection(name: string, values: net.howToPlayPart[]) {
 			net.addHowToPlayText(name, values);
+		}
+
+		/**
+		 * synchronously loads a toml config file
+		 * @param path
+		 */
+		loadConfig(path: string, schema: config.schema): config.options {
+			if(!path.endsWith('.toml'))path += '.toml';
+			if(!fs.existsSync(path)) {
+				const configString = config.generateTextFromSchema(schema);
+				fs.writeFileSync(path, configString);
+			}
+			const unparsed = fs.readFileSync(path);
+			const parsed = toml.parse(unparsed.toString());
+			return parsed;
 		}
 	}
 	const plugins:plugin[] = [];
