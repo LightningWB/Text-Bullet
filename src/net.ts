@@ -10,6 +10,7 @@ import * as player from './player';
 import * as options from './options';
 import * as util from './util';
 import patches = require('./patches');
+import { profanity } from '@2toad/profanity';
 
 /**
  * the website part of the travelers.
@@ -324,7 +325,7 @@ namespace net
 				else
 				{
 					// if username is too long or invalid chars
-					if(args.username.length < 3 || args.username.length > 16)return end(29);
+					if(args.username.length < 3 || args.username.length > 16 || profanity.exists(args.username))return end('29');
 					for(let i=0; i<args.username.length; i++)
 					{
 						if(usernameChars.indexOf(args.username.charAt(i)) === -1)

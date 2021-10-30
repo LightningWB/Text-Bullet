@@ -17,11 +17,11 @@
       "build/package.json"
     ],
     "targets": [
-	  "node14-linux-x64",
+      "node14-linux-x64",
       "node14-win-x64",
       "node14-macos-x64",
       "node14-macos-arm64",
-	  "node14-linux-arm64"
+      "node14-linux-arm64"
     ],
     "outputPath": "./dist"
   },
@@ -29,6 +29,7 @@
   "author": "LightningWB",
   "license": "MIT",
   "dependencies": {
+    "@2toad/profanity": "^1.3.1",
     "@replit/database": "^2.0.1",
     "@types/webgl-ext": "0.0.32",
     "cookie": "^0.4.1",
