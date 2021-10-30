@@ -310,7 +310,7 @@ namespace db
 		}
 	}
 
-	export async function addErrorRaw(err:Error, loc?:string,  log?: boolean):Promise<void>
+	export async function addErrorRaw(err:Error, loc:string = undefined,  log: boolean = true):Promise<void>
 	{
 		if(log)util.debug('ERROR', err.message + '\n' + err.stack);
 		if(loc !== undefined)return await addError(err.message + ' at ' + loc, err.stack);
