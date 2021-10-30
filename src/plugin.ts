@@ -412,7 +412,6 @@ namespace plugins
 
 		/**
 		 * synchronously loads a toml config file
-		 * @param path
 		 */
 		loadConfig(schema: config.schema): config.options {
 			// filter out values that aren't path friendly

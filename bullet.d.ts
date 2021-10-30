@@ -118,6 +118,24 @@ type ops = {
 	ipLimit: number
 }
 
+declare namespace config {
+	export type schema = {
+		header?: string,
+		options: {
+			[key: string]: {
+				allowed: string,
+				default: number | string | boolean,
+				description: string
+			}
+		}
+	}
+	export type options = {
+		[key: string]: any
+	}
+	export function optionString(key: string, value: any): string
+	export function generateTextFromSchema(schema: schema): string
+}
+
 /**
  * plugins
  */
@@ -312,6 +330,10 @@ declare namespace plugins
 		setStorage(storage: storage): void
 		addLeaderboard(name: string, scorer: (player: player.playerData,) => number, maps:{[key:string]:(player: player.playerData) => any}, _translators:{[key:string]:(player: player.playerData) => string}):void
 		addHowToPlaySection(name: string, values: howToPlayPart[]):void
+		/**
+		 * synchronously loads a toml config file
+		 */
+		 loadConfig(schema: config.schema): config.options
 	}
 	export function makePlugin(id:string):plugin
 	export function emit(namespace: string, method: string, ...args):void
