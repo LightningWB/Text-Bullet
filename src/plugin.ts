@@ -299,14 +299,18 @@ namespace plugins
 			}
 			return value;
 		}
+
+		export function optionString(key: string, value: any): string {
+			return `# ${value.description.replace(/\n/g, '\n# ')}\n# Allowed: ${value.allowed.replace(/\n/g, '\n# ')}\n${key.replace(/ /g, '_')} = ${tomlFriendlyDefault(value.default)}\n\n`;
+		}
+
 		export function generateTextFromSchema(schema: schema): string {
 			let text = '';
 			if(schema.header) {
-				text += `# ${schema.header.replace(/\n/g, '\n# ')}\n\n`;
+				text += `# ${schema.header.replace(/\n/g, '\n# ')}\n\n\n`;
 			}
 			for(const key in schema.options) {
-				const value = schema.options[key];
-				text += `# ${value.description.replace(/\n/g, '\n# ')}\n# Allowed: ${value.allowed.replace(/\n/g, '\n# ')}\n${key.replace(/ /g, '_')} = ${tomlFriendlyDefault(value.default)}\n`;
+				text += optionString(key, schema.options[key]);
 			}
 			return text;
 		}
@@ -418,7 +422,21 @@ namespace plugins
 			}
 			const unparsed = fs.readFileSync(path);
 			const parsed = toml.parse(unparsed.toString());
-			return parsed;
+			const result = {};
+			for(const key in parsed) {
+				result[key] = parsed[key];
+			}
+			let appendToFile = '';
+			for(const key in schema.options) {
+				if(result[key.replace(/ /g, '_')] === undefined) {
+					result[key] = schema.options[key].default;
+					appendToFile += config.optionString(key, schema.options[key]);
+				}
+			}
+			if(appendToFile !== '') {
+				fs.appendFileSync(path, appendToFile);
+			}
+			return result;
 		}
 	}
 	const plugins:plugin[] = [];
