@@ -113,17 +113,19 @@ namespace travelers
 		let successfully = 0;
 		for(const folder of folders)
 		{
-			util.debug('INFO', `Loading ${folder}`);
-			try
-			{
-				require(path.join(util.root, '/plugins', folder));
-				util.debug('INFO', `Successfully loaded ${folder}`);
-				successfully++;
-			}
-			catch(e)
-			{
-				db.addErrorRaw(e);
-				util.debug('WARN', `Unable to load plugin ${folder}`);
+			if(fs.statSync(path.join(util.root, '/plugins/', folder)).isDirectory()) {
+				util.debug('INFO', `Loading ${folder}`);
+				try
+				{
+					require(path.join(util.root, '/plugins', folder));
+					util.debug('INFO', `Successfully loaded ${folder}`);
+					successfully++;
+				}
+				catch(e)
+				{
+					db.addErrorRaw(e);
+					util.debug('WARN', `Unable to load plugin ${folder}`);
+				}
 			}
 		}
 		util.debug('INFO', 'Finished loading ' + successfully + ' plugins.');

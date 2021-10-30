@@ -414,8 +414,12 @@ namespace plugins
 		 * synchronously loads a toml config file
 		 * @param path
 		 */
-		loadConfig(path: string, schema: config.schema): config.options {
-			if(!path.endsWith('.toml'))path += '.toml';
+		loadConfig(schema: config.schema): config.options {
+			// filter out values that aren't path friendly
+			if(this.id.length < 1) {
+				throw new Error('Plugin id cannot be empty to use a config file.');
+			}
+			const path = util.root + '/plugins/config_' + this.id.replace(/ /g, '_').replace(/[^a-zA-Z0-9_]/g, '-') + '.toml';
 			if(!fs.existsSync(path)) {
 				const configString = config.generateTextFromSchema(schema);
 				fs.writeFileSync(path, configString);
