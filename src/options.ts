@@ -39,7 +39,8 @@ type ops = {
 	description: string,
 	ipLimit: number | -1,
 	compressPatches: boolean,
-	obscureWorldGen: boolean
+	obscureWorldGen: boolean,
+	allowObsceneNames: boolean
 }
 const defaultOps: ops = {
 	port: 80,
@@ -62,7 +63,8 @@ const defaultOps: ops = {
 	changelog: [],
 	ipLimit: -1,
 	compressPatches: true,
-	obscureWorldGen: false
+	obscureWorldGen: false,
+	allowObsceneNames: false
 };
 const file = fs.readFileSync(path.join(util.root, 'config.toml')).toString();
 const options: ops = util.mergeObject(defaultOps, toml.parse(file));

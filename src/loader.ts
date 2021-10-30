@@ -49,6 +49,10 @@ namespace loader
 		allowed(['String']),
 		'description = "a text-based adventure mmo"',
 		'',
+		'# whether to allow obscene usernames or not',
+		allowed(['Boolean']),
+		'allowObsceneNames = false',
+		'',
 		'# changelogs for the server. Copy paste more in if needed',
 		'[[changelog]]',
 		indent([
