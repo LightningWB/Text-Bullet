@@ -198,7 +198,7 @@ var SOCKET = {
             resetFunc();
             return;
         }
-		if (grecaptcha/* only check if captcha loaded */ && captcha === "") {
+		if (CAPTCHA_EXISTS/* only check if captcha loaded */ && captcha === "") {
             badsignup.innerHTML = "please complete the captcha";
             resetFunc();
             return;

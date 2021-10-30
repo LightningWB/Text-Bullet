@@ -42,12 +42,12 @@ namespace net
 	let captchaScript = '';
 	if(options.crypto.captcha === 'hcaptcha') {
 		captchaHtml = '<div class="h-captcha" data-sitekey="' + options.crypto.siteKey + '" data-callback="getCaptcha"></div>';
-		captchaScript = '<script src="https://js.hcaptcha.com/1/api.js" async defer></script>';
+		captchaScript = '<script src="https://js.hcaptcha.com/1/api.js" async defer>const CAPTCHA_EXISTS = true;</script>';
 	} else if(options.crypto.captcha === 'recaptchav2') {
 		captchaHtml = '<div class="g-recaptcha" data-sitekey="' + options.crypto.siteKey + '" data-callback="getCaptcha"></div>';
-		captchaScript = '<script src="https://www.google.com/recaptcha/api.js" async defer></script>';
+		captchaScript = '<script src="https://www.google.com/recaptcha/api.js" async defer>const CAPTCHA_EXISTS = true;</script>';
 	} else {
-		captchaScript = '<script>grecaptcha = {reset: () => {}};</script>'
+		captchaScript = '<script>grecaptcha = {reset: () => {}};const CAPTCHA_EXISTS = false;</script>'
 	}
 	/**
 	 * starts the whole website
