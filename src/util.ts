@@ -243,11 +243,46 @@ namespace util
 	export function getObjs(chunk:chunks.chunk): chunks.obj[] {
 		const objs = [];
 		for(const id in chunk) {
-			if(id !== 'meta' && chunk[id]) {
-				objs.push(chunk[id]);
+			if(id !== 'meta' && chunk[id] && chunk[id].length > 0) {
+				objs.push(chunk[id][0]);
 			}
 		}
 		return objs;
+	}
+
+	/**
+	 * finds all world objects within an inclusive radius of a location that satisfy a condition
+	 * @param loc
+	 * @param radius 
+	 * @param cb 
+	 */
+	export function findObjectsInRadius(loc: {x:number, y:number}, radius:number, cb: ((obj:chunks.obj) => boolean) = ()=>true): chunks.obj[] {
+		const chunks = (global as any).chunks;
+		// get all chunks ids that will be in the area
+		const chunkIds = [];
+		for(let x = loc.x - radius; x <= loc.x + radius; x++) {
+			for(let y = loc.y - radius; y <= loc.y + radius; y++) {
+				const id = chunks.coordsToChunk(x, y);
+				if(chunkIds.find(i => i.x === id.x && i.y === id.y) === undefined) {
+					chunkIds.push(id);
+				}
+			}
+		}
+		// now search each chunk for valid objects
+		const validObjs = [];
+		for(const id of chunkIds) {
+			if(chunks.isChunkLoaded(id.x, id.y)) {
+				const objs = getObjs(chunks.getChunk(id.x, id.y));
+				for(const obj of objs) {
+					if(obj.public.x >= loc.x - radius && obj.public.x <= loc.x + radius && obj.public.y >= loc.y - radius && obj.public.y <= loc.y + radius) {
+						if(cb(obj)) {
+							validObjs.push(obj);
+						}
+					}
+				}
+			}
+		}
+		return validObjs;
 	}
 }
  

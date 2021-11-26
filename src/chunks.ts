@@ -11,7 +11,7 @@ namespace chunks
 	// chunk saving would mess with databases, and a chunk size of 10 is fine so I am not making this an option
 	const CHUNK_SIZE = 100;
 	// every 15 minutes
-	export const SAVE_INTERVAL = /*60 * */ 15;
+	export const SAVE_INTERVAL = 60 * 15;
 	export type obj = {
 		public: {
 			x: number,
