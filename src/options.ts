@@ -11,12 +11,14 @@ type ops = {
 		key: string
 	} | {
 		mode: 'mongo',
-		url: string
+		url: string,
+		name: string
 	} | {
 		mode: 'fs'| 'repl.it' | 'mongo',
 		path: string,
 		key: string,
-		url: string
+		url: string,
+		name: string
 	}
 	crypto: {
 		pepper: string,
@@ -52,7 +54,8 @@ const defaultOps: ops = {
 		mode: 'fs',
 		path: './db.json',
 		key: 'default',
-		url: 'mongodb://localhost:27017'
+		url: 'mongodb://localhost:27017',
+		name: 'the-travelers'
 	},
 	crypto: {
 		pepper: util.randomString(50),
@@ -84,5 +87,13 @@ if(options.crypto.captcha !== 'hcaptcha' && options.crypto.captcha !== 'recaptch
 options.changelog = newLogs;
 if(options.crypto.pepper === defaultOps.crypto.pepper) {
 	util.debug('WARN', 'No password pepper found. Defaulting to a random string. This will not allow users to log in after a restart.');
+}
+
+if(options.db.mode === 'mongo' && options.db.name) {
+	const invalidRegex = /[/\\. "$*<>:|?]/g;
+	if(invalidRegex.test(options.db.name) || options.db.name.length > 64) {
+		options.db.name = options.db.name.replace(invalidRegex, '_').substr(0, 64);
+		util.debug('WARN', 'Database name contains invalid characters or is greater than 64 characters long. Filtering bad characters to use "' + options.db.name + '"');
+	}
 }
 export = options;
