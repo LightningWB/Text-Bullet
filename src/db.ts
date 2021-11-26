@@ -90,60 +90,65 @@ namespace db
 	 */
 	export async function query(table:string, query:object = {}, limit:number=Infinity):Promise<any[]>
 	{
-		if(mode === 'repl.it')
-		{
-			const db = conn as replitDb.Client;
-			const data = await db.get(table) || [];
-			const arr = (data as Array<any>).filter(item=>{
-				// check each value to see if the condition isn't met and then delete it
-				for(const prop in query)
-				{
-					if(!util.checkProp(item, query, prop))return false;
-				}
-				return true;
-			});
-			arr.length = Math.min(arr.length, limit);
-			return arr;
-		}
-		else if(mode === 'mongo')
-		{
-			const db = conn as mongoDb.Db;
-			const data = await db.collection(table).find(query).limit(limit).toArray();
-			const removeNullProps = (obj:object)=>{
-				for(const prop in obj)
-				{
-					if(obj[prop] === null)
-					{
-						delete obj[prop];
-					}
-					else if(typeof obj[prop] === 'object' && !Array.isArray(obj[prop]))
-					{
-						removeNullProps(obj[prop]);
-					}
-				}
-				return obj;
-			};
-			for(const item of data)
+		try {
+			if(mode === 'repl.it')
 			{
-				delete item._id;
-				removeNullProps(item);
+				const db = conn as replitDb.Client;
+				const data = await db.get(table) || [];
+				const arr = (data as Array<any>).filter(item=>{
+					// check each value to see if the condition isn't met and then delete it
+					for(const prop in query)
+					{
+						if(!util.checkProp(item, query, prop))return false;
+					}
+					return true;
+				});
+				arr.length = Math.min(arr.length, limit);
+				return arr;
 			}
-			return data;
-		}
-		else if(mode === 'fs')
-		{
-			const db = conn as jsonDb;
-			const data = db.get(table) || [];
-			const arr = (data as Array<any>).filter(item=>{
-				// check each value to see if the condition isn't met and then delete it
-				for(const prop in query)
+			else if(mode === 'mongo')
+			{
+				const db = conn as mongoDb.Db;
+				const data = await db.collection(table).find(query).limit(limit).toArray();
+				const removeNullProps = (obj:object)=>{
+					for(const prop in obj)
+					{
+						if(obj[prop] === null)
+						{
+							delete obj[prop];
+						}
+						else if(typeof obj[prop] === 'object' && !Array.isArray(obj[prop]))
+						{
+							removeNullProps(obj[prop]);
+						}
+					}
+					return obj;
+				};
+				for(const item of data)
 				{
-					if(!util.checkProp(item, query, prop))return false;
+					delete item._id;
+					removeNullProps(item);
 				}
-				return true;
-			});
-			arr.length = Math.min(arr.length, limit);
-			return util.cloneArray(arr);
+				return data;
+			}
+			else if(mode === 'fs')
+			{
+				const db = conn as jsonDb;
+				const data = db.get(table) || [];
+				const arr = (data as Array<any>).filter(item=>{
+					// check each value to see if the condition isn't met and then delete it
+					for(const prop in query)
+					{
+						if(!util.checkProp(item, query, prop))return false;
+					}
+					return true;
+				});
+				arr.length = Math.min(arr.length, limit);
+				return util.cloneArray(arr);
+			}
+		} catch(error) {
+			util.debug('ERROR', `failed querying db table "${table}" because of ${error.name} with query of`, query, 'and limit of ' + limit);
+			throw error;
 		}
 	}
 
@@ -154,27 +159,32 @@ namespace db
 	 */
 	export async function add(table:string, object:any):Promise<void>
 	{
-		if(mode === 'repl.it')
-		{
-			const values = await query(table, {});
-			values.push(object);
-			const db = conn as replitDb.Client;
-			db.set(table, values);
-			return;
-		}
-		else if(mode === 'mongo')
-		{
-			const db = conn as mongoDb.Db;
-			await db.collection(table).insertOne(object);
-			return;
-		}
-		else if(mode === 'fs')
-		{
-			const values = await query(table, {});
-			values.push(object);
-			const db = conn as jsonDb;
-			db.set(table, values);
-			return;
+		try {
+			if(mode === 'repl.it')
+			{
+				const values = await query(table, {});
+				values.push(object);
+				const db = conn as replitDb.Client;
+				db.set(table, values);
+				return;
+			}
+			else if(mode === 'mongo')
+			{
+				const db = conn as mongoDb.Db;
+				await db.collection(table).insertOne(object);
+				return;
+			}
+			else if(mode === 'fs')
+			{
+				const values = await query(table, {});
+				values.push(object);
+				const db = conn as jsonDb;
+				db.set(table, values);
+				return;
+			}
+		} catch (error) {
+			util.debug('INFO', `failed adding to db table "${table}" because of ${error.name} when adding`, object);
+			throw error;
 		}
 	}
 	/**
@@ -184,23 +194,28 @@ namespace db
 	 */
 	export async function set(table:string, object:any[]):Promise<void>
 	{
-		if(mode === 'repl.it')
-		{
-			const db = conn as replitDb.Client;
-			db.set(table, object);
-			return;
-		}
-		else if(mode === 'mongo')
-		{
-			const db = conn as mongoDb.Db;
-			await deleteTable(table);
-			await db.collection(table).insertMany(object);
-			return;
-		}
-		else if(mode === 'fs')
-		{
-			const db = conn as jsonDb;
-			db.set(table, object);
+		try {
+			if(mode === 'repl.it')
+			{
+				const db = conn as replitDb.Client;
+				db.set(table, object);
+				return;
+			}
+			else if(mode === 'mongo')
+			{
+				const db = conn as mongoDb.Db;
+				await deleteTable(table);
+				await db.collection(table).insertMany(object);
+				return;
+			}
+			else if(mode === 'fs')
+			{
+				const db = conn as jsonDb;
+				db.set(table, object);
+			}
+		} catch (error) {
+			util.debug('ERROR', `failed setting db table "${table}" because of ${error.name} when adding`, object);
+			throw error;
 		}
 	}
 
@@ -211,42 +226,52 @@ namespace db
 	 */
 	export async function deleteTable(table:string):Promise<void>
 	{
-		if(mode === 'repl.it')
-		{
-			const db = conn as replitDb.Client;
-			db.delete(table);
-		}
-		else if(mode === 'mongo')
-		{
-			const db = conn as mongoDb.Db;
-			if((await getTables()).includes(table))
+		try {
+			if(mode === 'repl.it')
 			{
-				await db.collection(table).drop();
+				const db = conn as replitDb.Client;
+				db.delete(table);
 			}
-		}
-		else if(mode === 'fs')
-		{
-			const db = conn as jsonDb;
-			db.delete(table);
+			else if(mode === 'mongo')
+			{
+				const db = conn as mongoDb.Db;
+				if((await getTables()).includes(table))
+				{
+					await db.collection(table).drop();
+				}
+			}
+			else if(mode === 'fs')
+			{
+				const db = conn as jsonDb;
+				db.delete(table);
+			}
+		} catch (error) {
+			util.debug('ERROR', `failed deleting db table "${table}" because of ${error.name}`);
+			throw error;
 		}
 	}
 
 	export async function getTables():Promise<string[]>
 	{
-		if(mode === 'repl.it')
-		{
-			const db = conn as replitDb.Client;
-			return db.list();
-		}
-		else if(mode === 'mongo')
-		{
-			const db = conn as mongoDb.Db;
-			return await (await db.listCollections().toArray()).map(item=>item.name);
-		}
-		else if(mode === 'fs')
-		{
-			const db = conn as jsonDb;
-			return Object.keys(db.JSON());
+		try {
+			if(mode === 'repl.it')
+			{
+				const db = conn as replitDb.Client;
+				return db.list();
+			}
+			else if(mode === 'mongo')
+			{
+				const db = conn as mongoDb.Db;
+				return await (await db.listCollections().toArray()).map(item=>item.name);
+			}
+			else if(mode === 'fs')
+			{
+				const db = conn as jsonDb;
+				return Object.keys(db.JSON());
+			}
+		} catch (error) {
+			util.debug('ERROR', `failed getting db table names because of ${error.name}`);
+			throw error;
 		}
 	}
 
@@ -282,7 +307,10 @@ namespace db
 				await db.collection(table).updateMany(target, {$set:object});
 			}
 		}
-		catch(err){db.addErrorRaw(err);}
+		catch(err){
+			util.debug('ERROR', `failed updating db table "${table}" because of ${err.name} when updating`, target, 'with', object, 'with limit of ' + limit);
+			throw err;
+		}
 	}
 
 	/**
@@ -293,54 +321,59 @@ namespace db
 	 */
 	export async function remove(table:string, deleteQuery:any, limit:number = Infinity)
 	{
-		if(mode === 'repl.it')
-		{
-			const values = await query(table, {});
-			let deleted = 0;
-			const arr = (values as Array<any>).filter(item=>{
-				// limiting
-				if(deleted >= limit)return true;
-				// check each value to see if the condition is met and then delete it
-				for(const prop in deleteQuery)
-				{
-					const val:any = deleteQuery[prop];
-					if(item[prop] !== val)
+		try {
+			if(mode === 'repl.it')
+			{
+				const values = await query(table, {});
+				let deleted = 0;
+				const arr = (values as Array<any>).filter(item=>{
+					// limiting
+					if(deleted >= limit)return true;
+					// check each value to see if the condition is met and then delete it
+					for(const prop in deleteQuery)
 					{
-						return true;
+						const val:any = deleteQuery[prop];
+						if(item[prop] !== val)
+						{
+							return true;
+						}
 					}
-				}
-				deleted++;
-				return false;
-			});
-			const db = conn as replitDb.Client;
-			db.set(table, arr);
-		}
-		else if(mode === 'mongo')
-		{
-			const db = conn as mongoDb.Db;
-			await db.collection(table).deleteMany(deleteQuery);
-		}
-		else if(mode === 'fs')
-		{
-			const values = await query(table, {});
-			let deleted = 0;
-			const arr = (values as Array<any>).filter(item=>{
-				// limiting
-				if(deleted >= limit)return true;
-				// check each value to see if the condition is met and then delete it
-				for(const prop in deleteQuery)
-				{
-					const val:any = deleteQuery[prop];
-					if(item[prop] !== val)
+					deleted++;
+					return false;
+				});
+				const db = conn as replitDb.Client;
+				db.set(table, arr);
+			}
+			else if(mode === 'mongo')
+			{
+				const db = conn as mongoDb.Db;
+				await db.collection(table).deleteMany(deleteQuery);
+			}
+			else if(mode === 'fs')
+			{
+				const values = await query(table, {});
+				let deleted = 0;
+				const arr = (values as Array<any>).filter(item=>{
+					// limiting
+					if(deleted >= limit)return true;
+					// check each value to see if the condition is met and then delete it
+					for(const prop in deleteQuery)
 					{
-						return true;
+						const val:any = deleteQuery[prop];
+						if(item[prop] !== val)
+						{
+							return true;
+						}
 					}
-				}
-				deleted++;
-				return false;
-			});
-			const db = conn as jsonDb;
-			db.set(table, arr);
+					deleted++;
+					return false;
+				});
+				const db = conn as jsonDb;
+				db.set(table, arr);
+			}
+		} catch (error) {
+			util.debug('ERROR', `failed deleting from db table of "${table}" because of ${error.name} with query of`, deleteQuery, 'with limit of', limit);
+			throw error;
 		}
 	}
 
@@ -359,7 +392,11 @@ namespace db
 	export async function addError(message, stack):Promise<void>
 	{
 		stack = stack.replace(userRegex, '%USERNAME%');
-		return await add('errors', {message: message, stack: stack, time: new Date().toString()});
+		try {
+			await add('errors', {message: message, stack: stack, time: new Date().toString()});
+		} catch (error) {
+			util.debug('ERROR', `failed adding error to db because of ${error.name}`, error);
+		}
 	}
 }
 
