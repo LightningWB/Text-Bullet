@@ -11,7 +11,8 @@ type ops = {
 		key: string
 	} | {
 		mode: 'mongo',
-		url: string
+		url: string,
+		name: string
 	} | {
 		mode: 'fs'| 'repl.it' | 'mongo',
 		path: string,
@@ -52,7 +53,8 @@ const defaultOps: ops = {
 		mode: 'fs',
 		path: './db.json',
 		key: 'default',
-		url: 'mongodb://localhost:27017'
+		url: 'mongodb://localhost:27017',
+		name: 'the-travelers'
 	},
 	crypto: {
 		pepper: util.randomString(50),

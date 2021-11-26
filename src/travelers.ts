@@ -23,7 +23,7 @@ namespace travelers
 	export async function main()
 	{
 		util.debug('INFO', 'Starting server...');
-		db.start(options.db.mode as any, options.db);
+		await db.start(options.db.mode as any, options.db);
 		util.debug('INFO', 'Initializing world generation');
 		worldGen.initialize();
 		worldGen.computeGenerator();

@@ -24,7 +24,8 @@ namespace db
 		/**
 		 * the path for a disk db
 		 */
-		path?:string
+		path?:string,
+		name?:string
 	};
 	let mode:mode;
 	let conn: mongoDb.Db | replitDb.Client | jsonDb;
@@ -34,7 +35,7 @@ namespace db
 	 * @param m mode to use
 	 * @param options options
 	 */
-	export function start(m:mode, options:ops):void
+	export async function start(m:mode, options:ops):Promise<void>
 	{
 		util.debug('INFO', 'Connecting to database');
 		util.debug('INFO', `Using database type of ${m}`);
@@ -42,7 +43,9 @@ namespace db
 		if(mode === 'mongo')
 		{
 			const client = new mongoDb.MongoClient(options.url);
-			conn = client.db('travelers');
+			await client.connect();
+			conn = client.db(options.name);
+			process.on('exit', () => client.close());
 		}
 		else if(mode === 'repl.it')
 		{
@@ -70,7 +73,7 @@ namespace db
 		}
 		else
 		{
-			util.debug('ERROR', `Database type of ${m} not a valid database type`);
+			util.debug('ERROR', `Database type ${m} not supported`);
 			process.exit(1);
 		}
 		util.debug('INFO', `Successfully connected to database type of ${m}`);

@@ -85,7 +85,11 @@ namespace loader
 			'',
 			'# the url for a mongo database.',
 			allowed(['string']),
-			'url = "mongodb://localhost:27017"'
+			'url = "mongodb://localhost:27017"',
+			'',
+			'# the name of the mongo database.',
+			allowed(['string']),
+			'name = "the-travelers"'
 		]),
 		'',
 		'[crypto]',
