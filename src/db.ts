@@ -42,7 +42,9 @@ namespace db
 		mode = m;
 		if(mode === 'mongo')
 		{
-			const client = new mongoDb.MongoClient(options.url);
+			const client = new mongoDb.MongoClient(options.url, {
+				useUnifiedTopology: true
+			});
 			await client.connect();
 			conn = client.db(options.name);
 			process.on('exit', () => client.close());
@@ -105,7 +107,28 @@ namespace db
 		}
 		else if(mode === 'mongo')
 		{
-			throw Error('not implemented yet');
+			const db = conn as mongoDb.Db;
+			const data = await db.collection(table).find(query).limit(limit).toArray();
+			const removeNullProps = (obj:object)=>{
+				for(const prop in obj)
+				{
+					if(obj[prop] === null)
+					{
+						delete obj[prop];
+					}
+					else if(typeof obj[prop] === 'object' && !Array.isArray(obj[prop]))
+					{
+						removeNullProps(obj[prop]);
+					}
+				}
+				return obj;
+			};
+			for(const item of data)
+			{
+				delete item._id;
+				removeNullProps(item);
+			}
+			return data;
 		}
 		else if(mode === 'fs')
 		{
@@ -141,7 +164,8 @@ namespace db
 		}
 		else if(mode === 'mongo')
 		{
-			throw Error('not implemented yet');
+			const db = conn as mongoDb.Db;
+			await db.collection(table).insertOne(object);
 			return;
 		}
 		else if(mode === 'fs')
@@ -168,7 +192,9 @@ namespace db
 		}
 		else if(mode === 'mongo')
 		{
-			throw Error('not implemented yet');
+			const db = conn as mongoDb.Db;
+			await deleteTable(table);
+			await db.collection(table).insertMany(object);
 			return;
 		}
 		else if(mode === 'fs')
@@ -192,8 +218,11 @@ namespace db
 		}
 		else if(mode === 'mongo')
 		{
-			throw Error('not implemented yet');
-			return;
+			const db = conn as mongoDb.Db;
+			if((await getTables()).includes(table))
+			{
+				await db.collection(table).drop();
+			}
 		}
 		else if(mode === 'fs')
 		{
@@ -211,8 +240,8 @@ namespace db
 		}
 		else if(mode === 'mongo')
 		{
-			throw Error('not implemented yet');
-			return;
+			const db = conn as mongoDb.Db;
+			return await (await db.listCollections().toArray()).map(item=>item.name);
 		}
 		else if(mode === 'fs')
 		{
@@ -249,7 +278,8 @@ namespace db
 			}
 			else if(mode === 'mongo')
 			{
-				throw Error('not implemented yet');
+				const db = conn as mongoDb.Db;
+				await db.collection(table).updateMany(target, {$set:object});
 			}
 		}
 		catch(err){db.addErrorRaw(err);}
@@ -287,7 +317,8 @@ namespace db
 		}
 		else if(mode === 'mongo')
 		{
-			throw Error('not implemented yet');
+			const db = conn as mongoDb.Db;
+			await db.collection(table).deleteMany(deleteQuery);
 		}
 		else if(mode === 'fs')
 		{

@@ -97,9 +97,9 @@ namespace player
 			}
 		};
 		if(data.id === 0)resultingPLayer.admin = true;// always have initial player an admin
-		await db.add('players', resultingPLayer);
 		require('./plugin').triggerEvent('playerCreate', resultingPLayer.data);
 		playerData[data.username] = resultingPLayer;
+		await db.add('players', resultingPLayer);
 		return resultingPLayer;
 	}
 
