@@ -11,6 +11,7 @@ import * as options from './options';
 import * as util from './util';
 import patches = require('./patches');
 import { profanity } from '@2toad/profanity';
+import base64 = require('base-64');
 
 /**
  * the website part of the travelers.
