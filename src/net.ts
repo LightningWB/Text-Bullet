@@ -336,7 +336,7 @@ namespace net
 					// all checks are good
 					const salt = lightspeed.randomString(25);
 					const hash = crypto.hash(salt + args.password);
-					const token = lightspeed.randomString(30);
+					const token = base64.encode(util.rand(0, 2**64));
 					res.writeHead(200, {
 						'set-cookie': cookie.serialize('T', token, {
 							httpOnly:true,
