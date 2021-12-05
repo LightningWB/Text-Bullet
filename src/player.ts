@@ -389,6 +389,7 @@ namespace player
 		}
 		const resultArr = [];
 		for(const ip in results) {
+			// gets the first 10 characters to not allow brute forcing hashes
 			const hashed = crypto.hash(ip + randomSalt).slice(0, 10).toUpperCase();
 			resultArr.push(hashed);
 			resultArr.push(results[ip]);

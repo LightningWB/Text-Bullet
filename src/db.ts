@@ -157,7 +157,7 @@ namespace db
 	 * @param table table to append to
 	 * @param object thing to append to the table
 	 */
-	export async function add(table:string, object:any):Promise<void>
+	export async function add(table:string, object:util.anyObject):Promise<void>
 	{
 		try {
 			if(mode === 'repl.it')
@@ -171,6 +171,7 @@ namespace db
 			else if(mode === 'mongo')
 			{
 				const db = conn as mongoDb.Db;
+				object = util.clone(object);// don't want to change the original object with _id
 				await db.collection(table).insertOne(object);
 				return;
 			}
@@ -205,6 +206,10 @@ namespace db
 			{
 				const db = conn as mongoDb.Db;
 				await deleteTable(table);
+				for(let i = 0; i < object.length; i++)
+				{
+					object[i] = util.clone(object[i]);// don't want to change the original object with _id
+				}
 				await db.collection(table).insertMany(object);
 				return;
 			}
@@ -304,11 +309,28 @@ namespace db
 			else if(mode === 'mongo')
 			{
 				const db = conn as mongoDb.Db;
-				await db.collection(table).updateMany(target, {$set:object});
+				const values = await query(table, target);
+				object = util.clone(object);// don't want to change the original object with _id
+				let usingLimit = limit;
+				const promises = [];
+				for(let i = 0; i < values.length; i++)
+				{
+					if(usingLimit === 0)
+					{
+						break;
+					}
+					const value = values[i];
+					if(util.checkProp({d:value}, {d:target}, 'd'))
+					{
+						promises.push(db.collection(table).updateOne({_id:value._id}, {$set:object}));
+						usingLimit--;
+					}
+				}
+				await Promise.all(promises);
 			}
 		}
 		catch(err){
-			util.debug('ERROR', `failed updating db table "${table}" because of ${err.name} when updating`, target, 'with', object, 'with limit of ' + limit);
+			util.debug('ERROR', `failed updating db table "${table}" because of ${err.name} when updating`, target, 'with', object, 'with limit of ' + limit, err);
 			throw err;
 		}
 	}
