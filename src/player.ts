@@ -411,7 +411,12 @@ namespace player
 		{
 			try
 			{
-				const id = player.data.id || player.data.private.id;
+				let id = player.data.id;
+				// migrate old players
+				if(id === undefined) {
+					id = player.data.private.id;
+					player.data.id = id;
+				}
 				playerData[id] = player;
 			}
 			catch(err)
