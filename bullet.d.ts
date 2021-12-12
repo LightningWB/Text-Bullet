@@ -83,6 +83,10 @@ declare namespace player
 {
 	export type playerData = {
 		/**
+		 * player id
+		 */
+		id: number,
+		/**
 		 * data free to see to the client
 		 */
 		public: {
@@ -94,9 +98,7 @@ declare namespace player
 		/**
 		 * data not available to the client like anchor coords and such
 		 */
-		private: {
-			id: number
-		} & utility.anyObject,
+		private: {} & utility.anyObject,
 		/**
 		 * data to get cleared every cycle, but still gets sent to the client. useful for stuff like engine logs.
 		 */
