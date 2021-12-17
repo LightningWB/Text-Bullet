@@ -146,7 +146,7 @@ namespace net
 			// hides all logs so admins can't see ips easily
 			log:()=>{},
 			printErrors: false,
-			streamFiles:{
+			streamFiles: options.staticFiles ? {} : {
 				js:true,
 				css:true,
 				ico:true,
