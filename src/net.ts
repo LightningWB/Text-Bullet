@@ -146,12 +146,12 @@ namespace net
 			// hides all logs so admins can't see ips easily
 			log:()=>{},
 			printErrors: false,
-			streamFiles: options.staticFiles ? {} : {
-				js:true,
-				css:true,
-				ico:true,
-				png:true,
-				jpg:true
+			streamFiles: {
+				js:!options.staticFiles,
+				css:!options.staticFiles,
+				ico:!options.staticFiles,
+				png:!options.staticFiles,
+				jpg:!options.staticFiles
 			},
 			postPerMinute: 100
 		});
