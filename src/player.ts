@@ -237,11 +237,12 @@ namespace player
 	export function addNonDBProps(player: player)
 	{
 		const username = player.data.public.username;
+		const id = player.data.id;
 		player.data.cache = {};
 		player.queue = [];
 		player.data.addPropToQueue = (...prop)=>player.queue.push.apply(player.queue, prop);
-		player.data.sendMidCycleCall = (d)=>{if(sockets[username])sockets[username].emit('getGameObjectNoCountdown', d);};
-		player.data.raw = (d)=>{if(sockets[username])sockets[username].emit('raw', d);}
+		player.data.sendMidCycleCall = (d)=>{if(sockets[id])sockets[id].emit('getGameObjectNoCountdown', d);};
+		player.data.raw = (d)=>{if(sockets[id])sockets[id].emit('raw', d);}
 		player.data.temp = {};
 	}
 
