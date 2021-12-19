@@ -588,17 +588,19 @@ namespace net
 			let coords = data.split(':')[1].split(',');
 			if(coords.length === 2 && !isNaN(parseInt(coords[0])) && !isNaN(parseInt(coords[1])))
 			{
-				const p = player.getOnlinePlayer(username);
+				const p = player.getPlayerFromUsername(username);
 				if(p)
 				{
 					p.data.public.x = parseInt(coords[0]);
 					p.data.public.y = parseInt(coords[1]);
-					p.data.addPropToQueue('x', 'y');
+					if(player.isOnline(username)) {
+						p.data.addPropToQueue('x', 'y');
+					}
 					res.end('{"d":"Moved Player"}');
 				}
 				else
 				{
-					res.end('{"d":"Player isn\'t online"}');
+					res.end('{"d":"Couldn\'t find player"}');
 				}
 			}
 			else res.end('{"d":"Do username:x,y"}');
