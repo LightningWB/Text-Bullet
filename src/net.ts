@@ -616,6 +616,35 @@ namespace net
 		getIps: async (data, req, res) => {
 			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
 			res.end(JSON.stringify({d: player.getIpList()}));
+		},
+		getPlayerJson: async (data, req, res) => {
+			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
+			if(typeof data === 'string') {
+				const username = data.replace(/ /g, '');
+				const user = player.getPlayerFromUsername(username);
+				if(user) {
+					let json;
+					if(player.isOnline(username)) {
+						json = {
+							public: user.data.public,
+							private: user.data.private,
+							cache: user.data.cache,
+							temp: user.data.temp,
+							id: user.data.id
+						};
+					} else {
+						json = {
+							public: user.data.public,
+							private: user.data.private,
+							id: user.data.id
+						};
+					}
+					return res.end(JSON.stringify({d: util.htmlEscape(JSON.stringify(json, null, 4)).replace(/\n/g, '<br>')}));
+				}
+				else {
+					res.end('{"d":"Couldn\'t find player"}');
+				}
+			}
 		}
 	}
 

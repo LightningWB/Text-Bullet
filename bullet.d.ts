@@ -54,6 +54,11 @@ declare namespace utility
 	 * @param cb 
 	 */
 	 export function findObjectsInRadius(loc: {x:number, y:number}, radius:number, cb?:((obj:chunk.obj) => boolean)): chunk.obj[]
+	/**
+	 * escapes html
+	 * @param str
+	 */
+	export function htmlEscape(str:string):string
 }
 
 declare namespace chunk

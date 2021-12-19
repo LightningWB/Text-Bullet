@@ -284,6 +284,11 @@ namespace util
 		}
 		return validObjs;
 	}
+
+	export function htmlEscape(str:string):string
+	{
+		return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;').replace(/\//g, '&#x2F;').replace(/ /g, '&nbsp;');
+	}
 }
  
  // this is at the end of every file to avoid garbage collection
