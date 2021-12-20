@@ -644,6 +644,54 @@ namespace net
 				else {
 					res.end('{"d":"Couldn\'t find player"}');
 				}
+			} else {
+				res.end('{"d":"Invalid username"}');
+			}
+		},
+		setPlayerJson: async (data, req, res) => {
+			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
+			if(typeof data === 'string') {
+				const splitUp = data.split(':');
+				if(splitUp.length !== 3) {
+					return res.end('{"d":"Invalid Arguments"}');
+				}
+				const user = player.getPlayerFromUsername(splitUp[0].replace(/ /g, ''));
+				if(user) {
+					if(splitUp[1] === 'id' || splitUp[1] === 'private.id') {
+						return res.end('{"d":"Can\'t change id"}');
+					}
+					const keySplitUp = splitUp[1].split('.');
+					let replaceValue;
+					try {
+						if(splitUp[2] === 'delete') {
+							replaceValue = 'delete';
+						} else {
+							replaceValue = JSON.parse(splitUp[2]);
+						}
+					} catch(e) {
+						return res.end('{"d":"Invalid JSON in replace value"}');
+					}
+					const editKey = (obj, keys, val) => {
+						if(keys.length === 1) {
+							if(val === 'delete') {
+								delete obj[keys[0]];
+							} else {
+								obj[keys[0]] = val;
+							}
+						} else {
+							if(typeof obj[keys[0]] !== 'object' || Array.isArray(obj[keys[0]])) {
+								obj[keys[0]] = {};
+							}
+							editKey(obj[keys[0]], keys.slice(1), val);
+						}
+					}
+					editKey(user.data, keySplitUp, replaceValue);
+					res.end('{"d":"Edited Player JSON"}');
+				} else {
+					res.end('{"d":"Couldn\'t find player"}');
+				}
+			} else {
+				return res.end('{"d":"Invalid Arguments"}');
 			}
 		}
 	}
