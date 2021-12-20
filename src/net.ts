@@ -534,7 +534,8 @@ namespace net
 		},
 		turnOffServer: async(d, req, res)=>{
 			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
-			res.end('{"d":"Turning Off Server"}');
+			res.end('{"d":"Turning Off Server After saving"}');
+			await require('./travelers').save();
 			process.exit(0);
 		},
 		getErrorLog: async(d, req, res)=>{
