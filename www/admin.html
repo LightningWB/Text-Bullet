@@ -69,7 +69,8 @@
 		text('Global Message', 'globalMessage', 'Message');
 		button('Disable Signup', 'disableSignup');
 		button('Enable Signup', 'enableSignup');
-		button('Turn Off', 'turnOffServer', alert, ()=>confirm('press "OK" to turn off server'));
+		button('Turn Off Immediately', 'turnOffServer', alert, ()=>confirm('press "OK" to turn off server'));
+		text('Turn Off Server In X Minutes', 'serverGoingDown', 'reason:minutes');
 		html('pluginMarker', '<hr>');
 		@&returnFunction[adminFuncs]&@
 	</script>

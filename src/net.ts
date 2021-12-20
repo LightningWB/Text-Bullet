@@ -699,13 +699,37 @@ namespace net
 			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
 			if(typeof data === 'string') {
 				if(data.length > 0) {
-					require('./plugin').triggerEvent('globalMessage', data);
+					require('./plugin').triggerEvent('globalMessage', util.htmlEscape(data));
 					res.end('{"d":"Sent Global Message"}');
 				} else {
 					res.end('{"d":"Message is empty"}');
 				}
 			} else {
 				res.end('{"d":"Invalid Message"}');
+			}
+		},
+		serverGoingDown: async (data, req, res) => {
+			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
+			const splitUp = data.split(':');
+			if(splitUp.length !== 2) {
+				return res.end('{"d":"Invalid Arguments"}');
+			}
+			const reason = util.htmlEscape(splitUp[0]);
+			const minutes = parseInt(splitUp[1]);
+			if(!isNaN(minutes)) {
+				if(minutes > 0) {
+					require('./plugin').triggerEvent('globalMessage', `Server is going down for ${reason} in ${minutes} minutes.`);
+					setTimeout(async () => {
+						await require('./travelers').save();
+						process.exit(0);
+					}, minutes * 60000);
+					util.debug('INFO', `Server is going down for ${reason} in ${minutes} minutes.`);
+					res.end('{"d":"Sent message and turning off in ' + minutes + ' minutes"}');
+				} else {
+					res.end('{"d":"Minutes must be greater than 0"}');
+				}
+			} else {
+				res.end('{"d":"Invalid Minutes"}');
 			}
 		}
 	}
