@@ -162,12 +162,12 @@ namespace player
 	{
 		if(isOnline(id))
 		{
-			const username = onlinePlayers[id].player.data.public.username;
-			require('./plugin').triggerEvent('disconnect', getPlayerFromUsername(username));// if disconnect is called then the event should be fired
+			const player = getPlayerFromId(id);
+			require('./plugin').triggerEvent('disconnect', player.data);// if disconnect is called then the event should be fired
 			onlinePlayers[id].conn.disconnect();
 			delete fromAuth[onlinePlayers[id].playAuth];
 			delete sockets[id];
-			util.debug('INFO', `${username} disconnected`);
+			util.debug('INFO', `${player.data.public.username} disconnected`);
 		}
 	}
 
