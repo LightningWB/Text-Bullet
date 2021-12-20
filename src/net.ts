@@ -694,6 +694,19 @@ namespace net
 			} else {
 				return res.end('{"d":"Invalid Arguments"}');
 			}
+		},
+		globalMessage: async (data, req, res) => {
+			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
+			if(typeof data === 'string') {
+				if(data.length > 0) {
+					require('./plugin').triggerEvent('globalMessage', data);
+					res.end('{"d":"Sent Global Message"}');
+				} else {
+					res.end('{"d":"Message is empty"}');
+				}
+			} else {
+				res.end('{"d":"Invalid Message"}');
+			}
 		}
 	}
 
