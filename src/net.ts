@@ -573,14 +573,13 @@ namespace net
 			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
 			// bypass circular dependencies and it caches after one go
 			allowSignup = false;
-			player.disconnectAll();
-			res.end('{"d":"Disabled Connections"}');
+			res.end('{"d":"Disabled Signups"}');
 		},
 		enableSignup: async (data, req, res)=>{
 			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
 			// bypass circular dependencies and it caches after one go
 			allowSignup = true;
-			res.end('{"d":"Enabled Connections"}');
+			res.end('{"d":"Enabled Signups"}');
 		},
 		tpPlayer: async (data, req, res)=>{
 			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
