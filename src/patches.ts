@@ -100,7 +100,7 @@ namespace patches {
 	}
 
 	function generateJsFromPatch(patch: patch): string {
-		return `${patch.location} = eval('(' + ${JSON.stringify(patch.location)}.toString().replace(${JSON.stringify(patch.replace)}, ${JSON.stringify(patch.injected)}) + ')')`;
+		return `${patch.location} = eval('(' + ${patch.location}.toString().replace(${JSON.stringify(patch.replace)}, ${JSON.stringify(patch.injected)}) + ')')`;
 	}
 
 	function generateListener(listener: listener) {
