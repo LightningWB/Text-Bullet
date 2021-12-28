@@ -1,5 +1,8 @@
-import * as lightspeed from 'lightspeedjs';
+import * as express from 'express';
+import { create } from 'express-handlebars';
+import rateLimit from 'express-rate-limit';
 import * as cookie from 'cookie';
+import * as path from 'path';
 import * as socketIo from 'socket.io';
 import * as joi from 'joi';
 import * as hcaptcha from 'hcaptcha';
@@ -19,9 +22,9 @@ import base64 = require('base-64');
 namespace net
 {
 	/**
-	 * the lightspeed server
+	 * the express server
 	 */
-	let server:lightspeed.server;
+	let server:express.Express;
 	let io:socketIo.Server;
 	type waitingUser = {
 		user: util.anyObject,
@@ -59,110 +62,176 @@ namespace net
 		util.debug('INFO', 'Starting HTTP server');
 		io = new socketIo.Server();
 		io.use(validateUser);
-		server = lightspeed({
-			pagesLocation: './www',
-			staticPage: options.staticFiles,
-			port:options.port,
-			posts: {
-				'default.aspx': {
-					Signup: (data, req, res)=>signup(data, req, res),
-					Login: (data, req, res)=>login(data, req, res),
-					GetAutolog: (data, req, res)=>autoLog(data, req, res),
-					Logout: (data, req, res)=> {
-						res.writeHead(200, {
-							'set-cookie': cookie.serialize('T', '', {
-								httpOnly:true,
-								maxAge: 1,
-								path:'/'
-							})
-						});
-						res.end('{"d":""}')
-					},
-					GetPlayersOnline: (d, r, res)=>res.end('{"d":'+player.getOnlinePlayers().length+'}')
+		// server and not app because other stuff uses server
+		server = express();
+		server.use('/default.aspx', rateLimit({
+			windowMs: 15 * 60 * 1000,
+			max: 100,
+			standardHeaders: true,
+			legacyHeaders: true
+		}));
+		server.disable('x-powered-by');
+		const hbs = create({
+			helpers: {
+				title: () => {
+					return options.title;
 				},
-				'changelog.aspx': {
-					GetSpecificChangelog: (d, req, res) => {
-						const data = JSON.parse(d);
-						let log = options.changelog[0];
-						if(typeof data.ver === 'number' && data.ver > 0) {
-							log = options.changelog[changelogsSorted.length - data.ver]
-						}
-						res.end(JSON.stringify({d: JSON.stringify({...log, leaders: []})}))
-					},
-					GetChangelogs: (d, req, res) => {
-						const data = JSON.parse(d);
-						const logs = []
-						const index = data.page * 10;// 10 logs at a time
-						for(let i = 0; changelogsSorted.length > i + index && i < 10; i++) {
-							logs.push(util.clone(changelogsSorted[index + i]));
-							logs[index + i].id = changelogsSorted.length - (index + i);
-						}
-						res.end(JSON.stringify({d: JSON.stringify(logs)}));
-					}
+				description: () => {
+					return options.description;
 				},
-				'admin.aspx': adminTree
-			},
-			returnFunctions: {
-				token: async (r, q)=>{
-					return (await player.getPlayerFromToken(cookie.parse(r.headers.cookie || '').T) || {data:{public:{username:'0'}}}).data.public.username;
+				captchaHtml: () => {
+					return captchaHtml;
 				},
-				isAdmin: async (r, q)=>{
-					return await isAdmin(cookie.parse(r.headers.cookie || '').T);
+				captchaScript: () => {
+					return captchaScript;
 				},
-				worldGen: ()=>travelers.clientEval,
-				onlinePlayers: ()=>player.getOnlinePlayers().length,
-				adminFuncs: ()=>adminHtml,
-				getLeaderBoardData: async (r)=> {
-					const p = await player.getPlayerFromToken(cookie.parse(r.headers.cookie || '').T);
-					let name = p?.data?.public?.username ? p.data.public.username : '';
-					const result = {};
-					for(const type in leaders) {
-						let mySelf = leaders[type].find(l => l.username === name);
-						let finalLeaders:util.anyObject[];
-						if(mySelf) {
-							finalLeaders = leaders[type].filter(l => l.rank <= 10 || (l.rank <= mySelf.rank + 1 && l.rank >= mySelf.rank - 1));
-							finalLeaders.forEach(l => l.is_you = l.username === name);
-						} else {
-							finalLeaders = leaders[type].filter(l => l.rank <= 10);
-						}
-						result[type] = finalLeaders;
-					}
-					return JSON.stringify(result);
+				worldGen: () => {
+					return travelers.clientEval;
 				},
-				getTranslators: (req, q) => {
+				onlinePlayers: () => {
+					return player.getOnlinePlayers().length;
+				},
+				adminFuncs: () => {
+					return adminHtml;
+				},
+				getTranslators: () => {
 					return JSON.stringify(translators);
 				},
-				getHowToPlay: (req, q) => {
+				getHowToPlay: () => {
 					return howToPlayHtml;
 				},
-				getPatchScript: () => patchHtml
-			},
-			variables: {
-				title: options.title,
-				description: options.description,
-				captchaHtml: captchaHtml,
-				captchaScript: captchaScript
-			},
-			// hides all logs so admins can't see ips easily
-			log:()=>{},
-			printErrors: false,
-			streamFiles: {
-				js:!options.staticFiles,
-				css:!options.staticFiles,
-				ico:!options.staticFiles,
-				png:!options.staticFiles,
-				jpg:!options.staticFiles
-			},
-			postPerMinute: 100
+				getPatchScript: () => {
+					return patchHtml;
+				}
+			}
 		});
+		server.engine('handlebars', hbs.engine);
+		server.set('view engine', 'handlebars');
+		server.set('views', path.join(__dirname, '../views'));
+		server.get('/', async (req, res) => {
+			const token = (await player.getPlayerFromToken(cookie.parse(req.headers.cookie || '').T) || {data:{public:{username:'0'}}}).data.public.username;
+			res.render('index', {
+				helpers: {
+					token: () => token
+				}
+			});
+		});
+		server.get('/admin', async (req, res) => {
+			const admin = await isAdmin(cookie.parse(req.headers.cookie || '').T);
+			res.render('admin', {
+				helpers: {
+					isAdmin: () => admin
+				}
+			});
+		});
+		server.get('/leaderboard', async (req, res) => {
+			const getLeaders = async (r)=> {
+				const p = await player.getPlayerFromToken(cookie.parse(r.headers.cookie || '').T);
+				let name = p?.data?.public?.username ? p.data.public.username : '';
+				const result = {};
+				for(const type in leaders) {
+					let mySelf = leaders[type].find(l => l.username === name);
+					let finalLeaders:util.anyObject[];
+					if(mySelf) {
+						finalLeaders = leaders[type].filter(l => l.rank <= 10 || (l.rank <= mySelf.rank + 1 && l.rank >= mySelf.rank - 1));
+						finalLeaders.forEach(l => l.is_you = l.username === name);
+					} else {
+						finalLeaders = leaders[type].filter(l => l.rank <= 10);
+					}
+					result[type] = finalLeaders;
+				}
+				return JSON.stringify(result);
+			};
+			const leads = await getLeaders(req);
+			console.log(leads);
+			res.render('leaderboard', {
+				helpers: {
+					getLeaders: () => leads
+				}
+			});
+		});
+		server.get('/changelog', (req, res) => {
+			res.render('changelog');
+		});
+		server.get('/howtoplay', (req, res) => {
+			res.render('howtoplay');
+		});
+		// default.aspx
+		server.use((req, res, next) => {
+			if(req.method === 'POST' && !req.body) {
+				let sentData = '';
+				req.on('data', (chunk) => {
+					sentData += chunk;
+				});
+				req.on('end', () => {
+					req.body = sentData;
+					next();
+				});
+			} else {
+				next();
+			}
+		})
+		server.post('/default.aspx/Signup', (req, res) => {
+			signup(req.body, req, res);
+		});
+		server.post('/default.aspx/Login', (req, res) => {
+			login(req.body, req, res);
+		});
+		server.post('/default.aspx/GetAutolog', (req, res) => {
+			autoLog(req.body, req, res);
+		});
+		server.post('/default.aspx/Logout', (req, res) => {
+			res.writeHead(200, {
+				'set-cookie': cookie.serialize('T', '', {
+					httpOnly:true,
+					maxAge: 1,
+					path:'/'
+				})
+			});
+			res.end('{"d":""}');
+		});
+		server.post('/default.aspx/GetPlayersOnline', (req, res) => {
+			res.end('{"d":'+player.getOnlinePlayers().length+'}');
+		});
+		// changelog.aspx
+		server.post('/changelog.aspx/GetSpecificChangelog', (req, res) => {
+			const d = req.body;
+			const data = JSON.parse(d);
+			let log = options.changelog[0];
+			if(typeof data.ver === 'number' && data.ver > 0) {
+				log = options.changelog[changelogsSorted.length - data.ver]
+			}
+			res.end(JSON.stringify({d: JSON.stringify({...log, leaders: []})}))
+		});
+		server.post('/changelog.aspx/GetChangelogs', (req, res) => {
+			const d = req.body;
+			const data = JSON.parse(d);
+			const logs = []
+			const index = data.page * 10;// 10 logs at a time
+			for(let i = 0; changelogsSorted.length > i + index && i < 10; i++) {
+				logs.push(util.clone(changelogsSorted[index + i]));
+				logs[index + i].id = changelogsSorted.length - (index + i);
+			}
+			res.end(JSON.stringify({d: JSON.stringify(logs)}));
+		});
+		// admin.aspx
+		server.post('/admin.aspx', async (req, res) => {
+			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
+			const parsed = JSON.parse(req.body);
+			if(typeof parsed.command === 'string' && (typeof parsed.data === 'string' || typeof parsed.data === 'undefined') && adminTree[parsed.command]) {
+				adminTree[parsed.command](parsed.data, req, res);
+			}
+		});
+		server.use(express.static(path.join(__dirname, '../www')));
+		const live = server.listen(options.port);
 		util.debug('INFO', 'HTTP server started');
 		util.debug('INFO', 'Attaching socket server');
-		io.attach(server.server);
+		io.attach(live);
 		util.debug('INFO', 'Socket server attached');
 		io.on('connect', async (socket)=>{
 			const cookies = cookie.parse(socket.handshake.headers.cookie);
 			const user = await player.getPlayerFromToken(cookies.T);
-			const PLAY_AUTH = lightspeed.randomString(30);
+			const PLAY_AUTH = util.randomString(30);
 			player.loadToOnline(user.data.public.username, socket, PLAY_AUTH);
 			socket.on('message', (p,a)=>travelers.handelMessage(p,a));
 			socket.emit('play_auth', PLAY_AUTH);
@@ -335,7 +404,7 @@ namespace net
 						}
 					}
 					// all checks are good
-					const salt = lightspeed.randomString(25);
+					const salt = util.randomString(25);
 					const hash = crypto.hash(salt + args.password);
 					const token = base64.encode(util.rand(0, 2**64));
 					res.writeHead(200, {
@@ -611,7 +680,7 @@ namespace net
 		},
 		logs: async (data, req, res)=>{
 			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
-			res.end(JSON.stringify({d: lightspeed.htmlEscape(util.getLogs().join('\n'))}));
+			res.end(JSON.stringify({d: util.htmlEscape(util.getLogs().join('\n'))}));
 		},
 		getIps: async (data, req, res) => {
 			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
@@ -739,8 +808,7 @@ namespace net
 			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
 			res.end(JSON.stringify({d:onSend()}));
 		};
-		adminHtml += 'button("' + lightspeed.htmlEscape(text) + '", "plugins.' + lightspeed.htmlEscape(id) + '");\n';
-		server.reloadPosts();
+		adminHtml += 'button("' + util.htmlEscape(text) + '", "plugins.' + util.htmlEscape(id) + '");\n';
 	}
 	export function addAdminText(id:string, placeHolder: string, text: string, onSend: Function):any
 	{
@@ -748,8 +816,7 @@ namespace net
 			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
 			res.end(JSON.stringify({d:onSend(d)}));
 		};
-		adminHtml += 'text("' + lightspeed.htmlEscape(text) + '", "plugins.' + lightspeed.htmlEscape(id) + '", "' + placeHolder + '");\n';
-		server.reloadPosts();
+		adminHtml += 'text("' + util.htmlEscape(text) + '", "plugins.' + util.htmlEscape(id) + '", "' + placeHolder + '");\n';
 	}
 
 	export type howToPlayPart = {
@@ -762,7 +829,7 @@ namespace net
 		type: 'lineBreak'
 	};
 	export function addHowToPlayText(title: string, body: howToPlayPart[]): void {
-		title = lightspeed.htmlEscape(title);
+		title = util.htmlEscape(title);
 		let result = [`<a class="mini-header" name="${title}">${title}</a>`];
 		for(const part of body) {
 			switch(part.type) {
@@ -771,7 +838,7 @@ namespace net
 					if(Buffer.isBuffer(part.data)) {
 						b64 = part.data.toString('base64');
 					} else {
-						b64 = lightspeed.htmlEscape(part.data);
+						b64 = util.htmlEscape(part.data);
 					}
 					result.push(`<img class="inline-img" src="data:image/png;base64,${b64}" />`);
 					break;
@@ -779,7 +846,7 @@ namespace net
 					result.push('<br /><br />');
 					break;
 				case 'text':
-					result.push(lightspeed.htmlEscape(part.content));
+					result.push(util.htmlEscape(part.content));
 					break
 				default:
 					// @ts-expect-error

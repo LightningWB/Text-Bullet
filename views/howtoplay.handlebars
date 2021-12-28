@@ -4,17 +4,17 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head><title>
-	@&variable[title]&@: how to play
+	{{title}}: how to play
 </title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta property="og:title" content="@&variable[title]&@" />
+<meta property="og:title" content="{{title}}" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://thetravelers.online" />
 <meta property="og:image" content="/imgs/logo2.png" />
 <meta property="og:description" content="how to play" />
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:image" content="/imgs/logo2.png" />
-<meta name="twitter:title" content="@&variable[title]&@" />
+<meta name="twitter:title" content="{{title}}" />
 <meta name="twitter:description" content="how to play" />
 <link rel="stylesheet" href="./resources_v114/__travelers.css" />
 <link rel="stylesheet" href="./resources_v114/_otherpages.css" />
@@ -80,7 +80,7 @@
         <div class="other-siteback"></div>
 
         <div class="header">
-            <h2 class="banner-title"><a class="title-link" href='./'>@&variable[title]&@</a></h2>&nbsp;
+            <h2 class="banner-title"><a class="title-link" href='./'>{{title}}</a></h2>&nbsp;
             <h3 class="game-subtitle">how to play</h3>
         </div><!--
 
@@ -90,7 +90,7 @@
             ---><p class="post-body" style="margin-bottom: 5px;padding-bottom: 0;">table of contents:</p><!--
             ---><div id="toc"></div><!--
             ---><p class="post-body">
-					@&returnFunction[getHowToPlay]&@
+					{{{getHowToPlay}}}
                 </p>
             </div>
             <div class='post-spacer'></div>
