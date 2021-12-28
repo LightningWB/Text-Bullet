@@ -34,7 +34,6 @@ type ops = {
 		title: string,
 		body: string
 	}[]
-	staticFiles: boolean,
 	tps: number,
 	port: number,
 	title: string,
@@ -47,7 +46,6 @@ type ops = {
 const defaultOps: ops = {
 	port: 80,
 	tps: 1,
-	staticFiles: true,
 	title: 'the travelers',
 	description: 'a text-based adventure mmo',
 	db: {
