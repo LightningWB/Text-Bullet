@@ -1,5 +1,6 @@
 import * as express from 'express';
 import { create } from 'express-handlebars';
+import rateLimit from 'express-rate-limit';
 import * as cookie from 'cookie';
 import * as path from 'path';
 import * as socketIo from 'socket.io';
@@ -63,6 +64,13 @@ namespace net
 		io.use(validateUser);
 		// server and not app because other stuff uses server
 		server = express();
+		server.use('/default.aspx', rateLimit({
+			windowMs: 15 * 60 * 1000,
+			max: 100,
+			standardHeaders: true,
+			legacyHeaders: true
+		}));
+		server.disable('x-powered-by');
 		const hbs = create({
 			helpers: {
 				title: () => {
