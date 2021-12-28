@@ -146,12 +146,12 @@ namespace net
 			// hides all logs so admins can't see ips easily
 			log:()=>{},
 			printErrors: false,
-			streamFiles:{
-				js:true,
-				css:true,
-				ico:true,
-				png:true,
-				jpg:true
+			streamFiles: {
+				js:!options.staticFiles,
+				css:!options.staticFiles,
+				ico:!options.staticFiles,
+				png:!options.staticFiles,
+				jpg:!options.staticFiles
 			},
 			postPerMinute: 100
 		});
@@ -534,7 +534,8 @@ namespace net
 		},
 		turnOffServer: async(d, req, res)=>{
 			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
-			res.end('{"d":"Turning Off Server"}');
+			res.end('{"d":"Turning Off Server After saving"}');
+			await require('./travelers').save();
 			process.exit(0);
 		},
 		getErrorLog: async(d, req, res)=>{
@@ -572,14 +573,13 @@ namespace net
 			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
 			// bypass circular dependencies and it caches after one go
 			allowSignup = false;
-			player.disconnectAll();
-			res.end('{"d":"Disabled Connections"}');
+			res.end('{"d":"Disabled Signups"}');
 		},
 		enableSignup: async (data, req, res)=>{
 			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
 			// bypass circular dependencies and it caches after one go
 			allowSignup = true;
-			res.end('{"d":"Enabled Connections"}');
+			res.end('{"d":"Enabled Signups"}');
 		},
 		tpPlayer: async (data, req, res)=>{
 			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
@@ -588,17 +588,19 @@ namespace net
 			let coords = data.split(':')[1].split(',');
 			if(coords.length === 2 && !isNaN(parseInt(coords[0])) && !isNaN(parseInt(coords[1])))
 			{
-				const p = player.getOnlinePlayer(username);
+				const p = player.getPlayerFromUsername(username);
 				if(p)
 				{
 					p.data.public.x = parseInt(coords[0]);
 					p.data.public.y = parseInt(coords[1]);
-					p.data.addPropToQueue('x', 'y');
+					if(player.isOnline(username)) {
+						p.data.addPropToQueue('x', 'y');
+					}
 					res.end('{"d":"Moved Player"}');
 				}
 				else
 				{
-					res.end('{"d":"Player isn\'t online"}');
+					res.end('{"d":"Couldn\'t find player"}');
 				}
 			}
 			else res.end('{"d":"Do username:x,y"}');
@@ -614,6 +616,120 @@ namespace net
 		getIps: async (data, req, res) => {
 			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
 			res.end(JSON.stringify({d: player.getIpList()}));
+		},
+		getPlayerJson: async (data, req, res) => {
+			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
+			if(typeof data === 'string') {
+				const username = data.replace(/ /g, '');
+				const user = player.getPlayerFromUsername(username);
+				if(user) {
+					let json;
+					if(player.isOnline(username)) {
+						json = {
+							public: user.data.public,
+							private: user.data.private,
+							cache: user.data.cache,
+							temp: user.data.temp,
+							id: user.data.id
+						};
+					} else {
+						json = {
+							public: user.data.public,
+							private: user.data.private,
+							id: user.data.id
+						};
+					}
+					return res.end(JSON.stringify({d: util.htmlEscape(JSON.stringify(json, null, 4)).replace(/\n/g, '<br>')}));
+				}
+				else {
+					res.end('{"d":"Couldn\'t find player"}');
+				}
+			} else {
+				res.end('{"d":"Invalid username"}');
+			}
+		},
+		setPlayerJson: async (data, req, res) => {
+			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
+			if(typeof data === 'string') {
+				const splitUp = data.split(':');
+				if(splitUp.length !== 3) {
+					return res.end('{"d":"Invalid Arguments"}');
+				}
+				const user = player.getPlayerFromUsername(splitUp[0].replace(/ /g, ''));
+				if(user) {
+					if(splitUp[1] === 'id' || splitUp[1] === 'private.id') {
+						return res.end('{"d":"Can\'t change id"}');
+					}
+					const keySplitUp = splitUp[1].split('.');
+					let replaceValue;
+					try {
+						if(splitUp[2] === 'delete') {
+							replaceValue = 'delete';
+						} else {
+							replaceValue = JSON.parse(splitUp[2]);
+						}
+					} catch(e) {
+						return res.end('{"d":"Invalid JSON in replace value"}');
+					}
+					const editKey = (obj, keys, val) => {
+						if(keys.length === 1) {
+							if(val === 'delete') {
+								delete obj[keys[0]];
+							} else {
+								obj[keys[0]] = val;
+							}
+						} else {
+							if(typeof obj[keys[0]] !== 'object' || Array.isArray(obj[keys[0]])) {
+								obj[keys[0]] = {};
+							}
+							editKey(obj[keys[0]], keys.slice(1), val);
+						}
+					}
+					editKey(user.data, keySplitUp, replaceValue);
+					res.end('{"d":"Edited Player JSON"}');
+				} else {
+					res.end('{"d":"Couldn\'t find player"}');
+				}
+			} else {
+				return res.end('{"d":"Invalid Arguments"}');
+			}
+		},
+		globalMessage: async (data, req, res) => {
+			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
+			if(typeof data === 'string') {
+				if(data.length > 0) {
+					require('./plugin').triggerEvent('globalMessage', util.htmlEscape(data));
+					res.end('{"d":"Sent Global Message"}');
+				} else {
+					res.end('{"d":"Message is empty"}');
+				}
+			} else {
+				res.end('{"d":"Invalid Message"}');
+			}
+		},
+		serverGoingDown: async (data, req, res) => {
+			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
+			const splitUp = data.split(':');
+			if(splitUp.length !== 2) {
+				return res.end('{"d":"Invalid Arguments"}');
+			}
+			const reason = util.htmlEscape(splitUp[0]);
+			const minutes = parseInt(splitUp[1]);
+			if(!isNaN(minutes)) {
+				if(minutes > 0) {
+					require('./plugin').triggerEvent('globalMessage', `Server is going down for ${reason} in ${minutes} minutes.`);
+					setTimeout(async () => {
+						await require('./travelers').save();
+						process.exit(0);
+					}, minutes * 60000);
+					util.debug('INFO', `Server is going down for ${reason} in ${minutes} minutes.`);
+					res.end('{"d":"Sent message and turning off in ' + minutes + ' minutes"}');
+				} else {
+					res.end('{"d":"Minutes must be greater than 0"}');
+				}
+			} else {
+				res.end('{"d":"Invalid Minutes"}');
+			}
 		}
 	}
 

@@ -23,7 +23,7 @@
 			root.appendChild(btnElem);
 			root.insertAdjacentHTML('beforeend', '<br>');
 		}
-		function text(label, endPoint, placeholder = label)
+		function text(label, endPoint, placeholder = label, handler = alert)
 		{
 			const btnElem = document.createElement('input');
 			const inputElem = document.createElement('input');
@@ -33,7 +33,7 @@
 			btnElem.onclick = async ()=>(f = await fetch('admin.aspx/' + endPoint, {
 				method: 'POST',
 				body: inputElem.value
-			})).json().then(r=>alert(r.d));
+			})).json().then(r=>handler(r.d));
 			btnElem.value = label;
 			inputElem.placeholder = placeholder;
 			root.appendChild(inputElem);
@@ -60,12 +60,17 @@
 		text('Join Date', 'joinDate', 'Username');
 		text('Move Player', 'tpPlayer', 'username:x,y');
 		button('Get Online Players', 'onlinePlayers', (r)=>document.getElementById('onlinePlayers').innerText = r);
-		html('onlinePlayers')
+		html('onlinePlayers');
+		text('Get Player JSON', 'getPlayerJson', 'Username', (r)=>document.getElementById('playerJson').innerHTML = r);
+		html('playerJson');
+		text('Set Player JSON', 'setPlayerJson', 'Username:key:value');
 		button('Go Down For Maintenance', 'disableConnections');
 		button('Come Back Up', 'enableConnections');
+		text('Global Message', 'globalMessage', 'Message');
 		button('Disable Signup', 'disableSignup');
 		button('Enable Signup', 'enableSignup');
-		button('Turn Off', 'turnOffServer', alert, ()=>confirm('press "OK" to turn off server'));
+		button('Turn Off Immediately', 'turnOffServer', alert, ()=>confirm('press "OK" to turn off server'));
+		text('Turn Off Server In X Minutes', 'serverGoingDown', 'reason:minutes');
 		html('pluginMarker', '<hr>');
 		@&returnFunction[adminFuncs]&@
 	</script>

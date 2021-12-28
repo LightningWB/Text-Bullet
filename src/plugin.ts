@@ -315,7 +315,21 @@ namespace plugins
 			return text;
 		}
 	}
-	// dummy class to allow type definitions
+	export interface pluginEvents {
+		'chunkSave': (chunk: chunk.chunk) => any,
+		'disconnect': (player: player.playerData) => any,
+		'gameTickPre': () => any,
+		'gameTick': () => any,
+		'loadChunk': (chunk: chunk.chunk) => any,
+		'playerConnect': (player: player.playerData) => any,
+		'playerCreate': (player: player.playerData) => any,
+		'playerReady': (player: player.playerData) => any,
+		'playerSave': (player: player.playerData) => any,
+		'playerTick': (player: player.playerData) => any,
+		'saveChunk': (chunk: chunk.chunk) => any,
+		'ready': () => any,
+		'globalMessage': (message: string) => any
+	}
 	class plugin
 	{
 		id: string;
@@ -325,37 +339,15 @@ namespace plugins
 			this.addAdminButton = require('./net').addAdminButton;
 			this.addAdminText = require('./net').addAdminText;
 		}
-		on(event: 'chunkSave', listener: (chunk:chunk.chunk) => any, priority:number):any
-		on(event: 'disconnect', listener: (player:player.playerData) => any, priority:number):any
-		on(event: 'gameTickPre', listener: () => any, priority:number):any
-		on(event: 'gameTick', listener: () => any, priority:number):any
-		on(event: 'loadChunk', listener: (chunk:chunk.chunk) => any, priority:number):any
-		on(event: 'playerConnect', listener: (player:player.playerData) => any, priority:number):any
-		on(event: 'playerCreate', listener: (player:player.playerData) => any, priority:number):any
-		on(event: 'playerReady', listener: (player:player.playerData) => any, priority:number):any
-		on(event: 'playerSave', listener: (player:player.playerData) => any, priority:number):any
-		on(event: 'playerTick', listener: (player:player.playerData) => any, priority:number):any
-		on(event: 'saveChunk', listener: (chunk:chunk.chunk) => any, priority:number):any
-		on(event: 'ready', listener: () => any, priority:number):any
-		on(event: string, listener: (...args: any[])=>any, priority:number):any
+		
+		on<K extends keyof pluginEvents>(event: K | string, handler: pluginEvents[K] | Function, priority?: number): void
+		on(event: string, listener: (...args: any[])=>any, priority:number = 0):any
 		{
 			(plugin.parent as any).on(event, listener, priority);
 		}
 
-		// pretty bad copy pasting but not too bad
-		once(event: 'chunkSave', listener: (chunk:chunk.chunk) => any, priority:number):any
-		once(event: 'disconnect', listener: (player:player.playerData) => any, priority:number):any
-		once(event: 'gameTickPre', listener: () => any, priority:number):any
-		once(event: 'gameTick', listener: () => any, priority:number):any
-		once(event: 'loadChunk', listener: (chunk:chunk.chunk) => any, priority:number):any
-		once(event: 'playerConnect', listener: (player:player.playerData) => any, priority:number):any
-		once(event: 'playerCreate', listener: (player:player.playerData) => any, priority:number):any
-		once(event: 'playerReady', listener: (player:player.playerData) => any, priority:number):any
-		once(event: 'playerSave', listener: (player:player.playerData) => any, priority:number):any
-		once(event: 'playerTick', listener: (player:player.playerData) => any, priority:number):any
-		once(event: 'saveChunk', listener: (chunk:chunk.chunk) => any, priority:number):any
-		once(event: 'ready', listener: () => any, priority:number):any
-		once(event: string, listener: (...args: any[])=>any, priority:number):any
+		once<K extends keyof pluginEvents>(event: K | string, handler: pluginEvents[K] | Function, priority?: number): void
+		once(event: string, listener: (...args: any[])=>any, priority:number = 0):any
 		{
 			(plugin.parent as any).once(event, listener, priority);
 		}

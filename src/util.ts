@@ -154,7 +154,7 @@ namespace util
 	const MAX_LOGS = 100;
 	type level = 'ERROR' | 'WARN' | 'INFO';
 
-	const userRegex = new RegExp(process.env.USERNAME, 'g');
+	const userRegex = new RegExp(process.env.USERNAME || process.env.USER, 'g');
 	export function debug(mode:level, ...message: any[]): void
 	{
 		for(let i = 0; i < message.length; i++) {
@@ -283,6 +283,11 @@ namespace util
 			}
 		}
 		return validObjs;
+	}
+
+	export function htmlEscape(str:string):string
+	{
+		return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;').replace(/\//g, '&#x2F;').replace(/ /g, '&nbsp;');
 	}
 }
  

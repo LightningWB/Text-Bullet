@@ -54,8 +54,10 @@ namespace travelers
 		try
 		{
 			const user = player.getPlayerFromAuth(auth);
-			plugins.triggerEvent('actions::' + packet.action, packet, user.data);
-			plugins.triggerEvent('actions::*', packet, user.data);
+			if(user) {
+				plugins.triggerEvent('actions::' + packet.action, packet, user.data);
+				plugins.triggerEvent('actions::*', packet, user.data);
+			}
 		}
 		catch(err)
 		{

@@ -10,6 +10,10 @@ import * as crypto from './crypto';
 namespace player
 {
 	export type playerData = {
+		/*
+		 * player id
+		 */
+		id: number,
 		/**
 		 * data free to see to the client
 		 */
@@ -22,9 +26,7 @@ namespace player
 		/**
 		 * data not available to the client like anchor coords and such
 		 */
-		private: {
-			id: number
-		} & util.anyObject,
+		private: {} & util.anyObject,
 		/**
 		 * data to get cleared every cycle, but still gets sent to the client. useful for stuff like engine logs.
 		 */
@@ -46,9 +48,8 @@ namespace player
 	}
 	export type player = secureData & {
 		data: playerData,
-		joinDate: number,
-		queue: string[]
-	}
+		joinDate: number
+	} & Partial<{queue: string[]}>
 
 	type playerCreation = secureData & {
 		username: string,
@@ -61,10 +62,10 @@ namespace player
 		playAuth:string
 	}
 
-	const playerData: {[key:string]:Partial<player>} = {};
-	const onlinePlayers:{[key:string]:playerConn} = {};
-	const fromAuth:{[key:string]:playerConn} = {};
-	const sockets:{[key:string]:Socket} = {};
+	const playerData: Array<player> = [];
+	const onlinePlayers: Array<playerConn> = [];
+	const fromAuth: {[key:string]:playerConn} = {};
+	const sockets: Array<Socket> = [];
 
 
 	/**
@@ -82,6 +83,7 @@ namespace player
 			joinDate: new Date().getTime(),
 			queue: [],
 			data: {
+				id: data.id,
 				public: {
 					username: data.username,
 					state: 'travel',
@@ -97,8 +99,8 @@ namespace player
 			}
 		};
 		if(data.id === 0)resultingPLayer.admin = true;// always have initial player an admin
+		playerData[data.id] = resultingPLayer;
 		require('./plugin').triggerEvent('playerCreate', resultingPLayer.data);
-		playerData[data.username] = resultingPLayer;
 		await db.add('players', resultingPLayer);
 		return resultingPLayer;
 	}
@@ -111,7 +113,12 @@ namespace player
 
 	export function getPlayerFromUsername(username:string):player
 	{
-		return playerData[username] as player;
+		return playerData.find(p => p.data.public.username === username);
+	}
+
+	export function getPlayerFromId(id:number):player
+	{
+		return playerData[id];
 	}
 
 	export async function getPlayerFromDBByUsername(username:string):Promise<player>
@@ -120,11 +127,27 @@ namespace player
 		return player[0];
 	}
 
+	export function getPlayerIdFromUsername(username:string):number
+	{
+		const player = getPlayerFromUsername(username);
+		if(player)return player.data.id;	
+		return null;
+	}
+
 	export function getOnlinePlayer(username:string):player
 	{
 		if(isOnline(username))
 		{
-			return onlinePlayers[username].player;
+			return onlinePlayers.find(p => p && p.player.data.public.username === username).player;
+		}
+		else return null;
+	}
+
+	export function getOnlinePlayerById(id:number):player
+	{
+		if(isOnline(id))
+		{
+			return onlinePlayers.find(p => p && p.player.data.id === id).player;
 		}
 		else return null;
 	}
@@ -135,55 +158,91 @@ namespace player
 		return fromAuth[auth].player;
 	}
 
+	export function disconnectId(id:number):void
+	{
+		if(isOnline(id))
+		{
+			const player = getPlayerFromId(id);
+			require('./plugin').triggerEvent('disconnect', player.data);// if disconnect is called then the event should be fired
+			onlinePlayers[id].conn.disconnect();
+			delete fromAuth[onlinePlayers[id].playAuth];
+			delete sockets[id];
+			util.debug('INFO', `${player.data.public.username} disconnected`);
+		}
+	}
+
 	export function disconnect(username:string):void
 	{
 		if(isOnline(username))
 		{
-			require('./plugin').triggerEvent('disconnect', playerData[username].data);// if disconnect is called then the event should be fired
-			onlinePlayers[username].conn.disconnect();
-			fromAuth[username] = undefined;
-			sockets[username] = undefined;
-			util.debug('INFO', `${username} disconnected`);
+			const player = getOnlinePlayer(username);
+			const id = player.data.id;
+			disconnectId(id);
 		}
 	}
 
 	export function disconnectAll():void
 	{
-		const players = getOnlinePlayers();
-		for(const player of players)
+		const players = getOnlinePlayerIds();
+		for(const id of players)
 		{
-			if(isOnline(player))
+			if(isOnline(id))
 			{
-				onlinePlayers[player].conn.emit('raw', 'TIME.server_dc=true;POPUP.new("disconnected", "the site is going down for maintenance. please check back in a few minutes.", [{disp: \'continue\', func: function () { window.location.reload(false); }, disable: false } ]);');
-				savePlayer(player);
+				onlinePlayers[id].conn.emit('raw', 'TIME.server_dc=true;POPUP.new("disconnected", "the site is going down for maintenance. please check back in a few minutes.", [{disp: \'continue\', func: function () { window.location.reload(false); }, disable: false } ]);');
+				savePlayer(id);
 			}
-			disconnect(player);
+			disconnectId(id);
 		}
 	}
 
-	export function isOnline(username: string):boolean
+	export function isOnline(identifier: string | number | playerConn):boolean
 	{
-		return onlinePlayers[username] !== undefined && onlinePlayers[username] !== null && onlinePlayers[username].conn !== null && onlinePlayers[username].conn.connected;
+		let p: playerConn;
+		switch(typeof identifier)
+		{
+			case 'string':
+				p = onlinePlayers.find(p => p && p.player.data.public.username === identifier)
+				return p !== undefined && p !== null && p.conn !== null && p.conn.connected;
+			case 'number':
+				p = onlinePlayers[identifier]
+				return p !== undefined && p !== null && p.conn !== null && p.conn.connected;
+			case 'object':
+				p = identifier;
+				return p !== undefined && p !== null && p.conn !== null && p.conn.connected;
+			default:
+				return false;
+		}
 	}
 
 	export function getOnlinePlayers():string[]
 	{
-		return Object.keys(onlinePlayers).filter(p=>isOnline(p));
+		return onlinePlayers.filter(isOnline).map(p => p.player.data.public.username);
+	}
+
+	export function getOnlinePlayerIds():number[]
+	{
+		return onlinePlayers.filter(isOnline).map(p => p.player.data.id);
 	}
 
 	export function getPlayerNames():string[]
 	{
-		return Object.keys(playerData);
+		return playerData.map(p => p.data.public.username);
+	}
+
+	export function getPlayerIds():number[]
+	{
+		return playerData.map(p => p.data.id);
 	}
 
 	export function addNonDBProps(player: player)
 	{
 		const username = player.data.public.username;
+		const id = player.data.id;
 		player.data.cache = {};
 		player.queue = [];
 		player.data.addPropToQueue = (...prop)=>player.queue.push.apply(player.queue, prop);
-		player.data.sendMidCycleCall = (d)=>{if(sockets[username])sockets[username].emit('getGameObjectNoCountdown', d);};
-		player.data.raw = (d)=>{if(sockets[username])sockets[username].emit('raw', d);}
+		player.data.sendMidCycleCall = (d)=>{if(sockets[id])sockets[id].emit('getGameObjectNoCountdown', d);};
+		player.data.raw = (d)=>{if(sockets[id])sockets[id].emit('raw', d);}
 		player.data.temp = {};
 	}
 
@@ -203,17 +262,17 @@ namespace player
 		if(player !== undefined)
 		{
 			addNonDBProps(player);
-			onlinePlayers[username] = {
+			onlinePlayers[player.data.id] = {
 				playAuth: playAuth,
 				player: player,
 				conn: socket
 			}
-			fromAuth[playAuth] = onlinePlayers[username];
+			fromAuth[playAuth] = onlinePlayers[player.data.id];
 			await chunks.waitChunkLoads();
 			require('./plugin').triggerEvent('playerReady', player.data);
-			sockets[username] = socket;
+			sockets[player.data.id] = socket;
 			util.debug('INFO', `${username} connected`);
-			sendPlayerDataFor(username);
+			sendPlayerDataFor(player.data.id);
 		}
 	}
 
@@ -222,15 +281,15 @@ namespace player
 		if(!isOnline(username))
 		{
 			const player = getPlayerFromUsername(username);
-			onlinePlayers[username] = {player: player, playAuth: '', conn: null};
+			onlinePlayers[player.data.id] = {player: player, playAuth: '', conn: null};
 		}
 	}
 
-	export function sendPlayerDataFor(username: string)
+	export function sendPlayerDataFor(id: number)
 	{
-		if(isOnline(username))
+		if(isOnline(id))
 		{
-			const player = onlinePlayers[username];
+			const player = onlinePlayers[id];
 			let sendObj:util.anyObject = {};
 			const combined = util.mergeObject(player.player.data.public, player.player.data.temp);
 			if(player.player.queue.includes('*'))sendObj = combined;
@@ -247,36 +306,39 @@ namespace player
 	
 	export function sendPlayerData()
 	{
-		for(const username in onlinePlayers)
+		for(const player of onlinePlayers)
 		{
-			if(isOnline(username))
+			if(isOnline(player))
 			{
-				sendPlayerDataFor(username);
+				sendPlayerDataFor(player.player.data.id);
 			}
 		}
 	}
 
 	export function tickPlayers()
 	{
-		for(const username in onlinePlayers)
+		for(const traveler of onlinePlayers)
 		{
-			const traveler:playerConn = onlinePlayers[username];
-			// make sure they are online
-			if(!isOnline(username) && traveler)
-			{
-				require('./plugin').triggerEvent('disconnect', traveler.player.data);
-				savePlayer(username).then(()=>{
-					fromAuth[traveler.playAuth] = null;
-					onlinePlayers[username] = null;
-				});
-			}
-			else if(traveler)
-			{
-				try
+			// there are blank spots in the array since not all players are online
+			if(traveler) {
+				const id = traveler.player.data.id;
+				// make sure they are online
+				if(!isOnline(id) && traveler)
 				{
-					require('./plugin').triggerEvent('playerTick', traveler.player.data);
+					require('./plugin').triggerEvent('disconnect', traveler.player.data);
+					savePlayer(id).then(()=>{
+						fromAuth[traveler.playAuth] = null;
+						onlinePlayers[id] = null;
+					});
 				}
-				catch(err){db.addErrorRaw(err);}
+				else if(traveler)
+				{
+					try
+					{
+						require('./plugin').triggerEvent('playerTick', traveler.player.data);
+					}
+					catch(err){db.addErrorRaw(err);}
+				}
 			}
 		}
 	}
@@ -291,10 +353,11 @@ namespace player
 		{
 			const data = [];
 			// stop duping with loot changing accounts
-			for(const username in playerData)
+			for(const traveler of playerData)
 			{
-				const player = util.clone(playerData[username]);
-				if(isOnline(username))
+				const id = traveler.data.id;
+				const player = util.clone(playerData[id]);
+				if(isOnline(id))
 				{
 					require('./plugin').triggerEvent('playerSave', player.data);
 				}
@@ -309,7 +372,7 @@ namespace player
 		catch(err){saving = false;db.addErrorRaw(err, 'player.save');}
 		saving = false;		
 	}
-	async function savePlayer(username: string):Promise<void>
+	async function savePlayer(id: number):Promise<void>
 	{
 		try
 		{
@@ -325,13 +388,13 @@ namespace player
 			});
 			saving = true;
 			setTimeout(()=>saving = false, 60 * 1000);// ignore the save after 60 seconds
-			require('./plugin').triggerEvent('playerSave', onlinePlayers[username].player.data);
-			const player = util.clone(onlinePlayers[username].player) as player;
+			require('./plugin').triggerEvent('playerSave', onlinePlayers[id].player.data);
+			const player = util.clone(onlinePlayers[id].player) as player;
 			player.data.cache = undefined;
 			player.data.temp = undefined;
 			player.queue = undefined;
 			player.data.addPropToQueue = undefined;
-			await db.update('players', {data:{public:{username:username}}}, player, 1);
+			await db.update('players', {data:{private:{id:id}}}, player, 1);
 		}
 		catch(err)
 		{
@@ -349,8 +412,13 @@ namespace player
 		{
 			try
 			{
-				const username = player.data.public.username;
-				playerData[username] = player;
+				let id = player.data.id;
+				// migrate old players
+				if(id === undefined) {
+					id = player.data.private.id;
+					player.data.id = id;
+				}
+				playerData[id] = player;
 			}
 			catch(err)
 			{
@@ -360,11 +428,11 @@ namespace player
 		util.debug('INFO', 'Players loaded');
 	}
 
-	function setTps() {
+	function setIps() {
 		const ips = {};
-		for(const name in onlinePlayers) {
-			if(onlinePlayers[name] && isOnline(name)) {
-				const socket = onlinePlayers[name].conn;
+		for(const id in onlinePlayers) {
+			if(onlinePlayers[id] && isOnline(id)) {
+				const socket = onlinePlayers[id].conn;
 				if(ips[socket.client.conn.remoteAddress] === undefined) {
 					ips[socket.client.conn.remoteAddress] = 0;
 				}
@@ -373,18 +441,18 @@ namespace player
 		}
 		require('./net').ips = ips;
 	}
-	setInterval(() => setTps(), 1000 * 20);// every 20 seconds
+	setInterval(() => setIps(), 1000 * 20);// every 20 seconds
 
 	export function getIpList():string {
 		const randomSalt = util.randomString(100);
 		let results = {};
-		for(const name in onlinePlayers) {
-			if(onlinePlayers[name] && isOnline(name)) {
-				const socket = onlinePlayers[name].conn;
+		for(const id in onlinePlayers) {
+			if(onlinePlayers[id] && isOnline(id)) {
+				const socket = onlinePlayers[id].conn;
 				if(results[socket.client.conn.remoteAddress] === undefined) {
 					results[socket.client.conn.remoteAddress] = [];
 				}
-				results[socket.client.conn.remoteAddress].push(name);
+				results[socket.client.conn.remoteAddress].push(onlinePlayers[id].player.data.public.username);
 			}
 		}
 		const resultArr = [];
@@ -392,7 +460,7 @@ namespace player
 			// gets the first 10 characters to not allow brute forcing hashes
 			const hashed = crypto.hash(ip + randomSalt).slice(0, 10).toUpperCase();
 			resultArr.push(hashed);
-			resultArr.push(results[ip]);
+			resultArr.push(results[ip].join(', '));
 		}
 		return resultArr.join('\n');
 	}

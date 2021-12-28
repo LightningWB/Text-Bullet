@@ -54,6 +54,11 @@ declare namespace utility
 	 * @param cb 
 	 */
 	 export function findObjectsInRadius(loc: {x:number, y:number}, radius:number, cb?:((obj:chunk.obj) => boolean)): chunk.obj[]
+	/**
+	 * escapes html
+	 * @param str
+	 */
+	export function htmlEscape(str:string):string
 }
 
 declare namespace chunk
@@ -83,6 +88,10 @@ declare namespace player
 {
 	export type playerData = {
 		/**
+		 * player id
+		 */
+		id: number,
+		/**
 		 * data free to see to the client
 		 */
 		public: {
@@ -94,9 +103,7 @@ declare namespace player
 		/**
 		 * data not available to the client like anchor coords and such
 		 */
-		private: {
-			id: number
-		} & utility.anyObject,
+		private: {} & utility.anyObject,
 		/**
 		 * data to get cleared every cycle, but still gets sent to the client. useful for stuff like engine logs.
 		 */
@@ -288,39 +295,29 @@ declare namespace plugins
 	}
 	export const util: typeof utility;
 	export const options: ops;
+	export interface pluginEvents {
+		'chunkSave': (chunk: chunk.chunk) => any,
+		'disconnect': (player: player.playerData) => any,
+		'gameTickPre': () => any,
+		'gameTick': () => any,
+		'loadChunk': (chunk: chunk.chunk) => any,
+		'playerConnect': (player: player.playerData) => any,
+		'playerCreate': (player: player.playerData) => any,
+		'playerReady': (player: player.playerData) => any,
+		'playerSave': (player: player.playerData) => any,
+		'playerTick': (player: player.playerData) => any,
+		'saveChunk': (chunk: chunk.chunk) => any,
+		'ready': () => any,
+		'globalMessage': (message: string) => any
+	}
 	class plugin
 	{
 		id: string;
 		private parent: events.EventEmitter;
 		constructor(parent: events.EventEmitter)
-		on(event: 'chunkSave', listener: (chunk:chunk.chunk) => any, priority:number):any
-		on(event: 'disconnect', listener: (player:player.playerData) => any, priority:number):any
-		on(event: 'gameTickPre', listener: () => any, priority:number):any
-		on(event: 'gameTick', listener: () => any, priority:number):any
-		on(event: 'loadChunk', listener: (chunk:chunk.chunk) => any, priority:number):any
-		on(event: 'playerConnect', listener: (player:player.playerData) => any, priority:number):any
-		on(event: 'playerCreate', listener: (player:player.playerData) => any, priority:number):any
-		on(event: 'playerReady', listener: (player:player.playerData) => any, priority:number):any
-		on(event: 'playerSave', listener: (player:player.playerData) => any, priority:number):any
-		on(event: 'playerTick', listener: (player:player.playerData) => any, priority:number):any
-		on(event: 'saveChunk', listener: (chunk:chunk.chunk) => any, priority:number):any
-		on(event: 'ready', listener: () => any, priority:number):any
-		on(event: string, listener: (...args: any[])=>any, priority:number):any
+		on<K extends keyof pluginEvents>(event: K | string, handler: pluginEvents[K] | Function, priority?: number): void
 
-		// pretty bad copy pasting but not too bad
-		once(event: 'chunkSave', listener: (chunk:chunk.chunk) => any, priority:number):any
-		once(event: 'disconnect', listener: (player:player.playerData) => any, priority:number):any
-		once(event: 'gameTickPre', listener: () => any, priority:number):any
-		once(event: 'gameTick', listener: () => any, priority:number):any
-		once(event: 'loadChunk', listener: (chunk:chunk.chunk) => any, priority:number):any
-		once(event: 'playerConnect', listener: (player:player.playerData) => any, priority:number):any
-		once(event: 'playerCreate', listener: (player:player.playerData) => any, priority:number):any
-		once(event: 'playerReady', listener: (player:player.playerData) => any, priority:number):any
-		once(event: 'playerSave', listener: (player:player.playerData) => any, priority:number):any
-		once(event: 'playerTick', listener: (player:player.playerData) => any, priority:number):any
-		once(event: 'saveChunk', listener: (chunk:chunk.chunk) => any, priority:number):any
-		once(event: 'ready', listener: () => any, priority:number):any
-		once(event: string, listener: (...args: any[])=>any, priority:number):any
+		once<K extends keyof pluginEvents>(event: K | string, handler: pluginEvents[K] | Function, priority?: number): void
 
 		emit(event: string, ...args: any[]):any
 		addAdminButton(id:string, text: string, onSend: Function):any

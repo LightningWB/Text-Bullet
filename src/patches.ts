@@ -100,11 +100,11 @@ namespace patches {
 	}
 
 	function generateJsFromPatch(patch: patch): string {
-		return `${patch.location} = eval('(' + ${patch.location}.toString().replace('${patch.replace.replace(/\\/g, '\\\\').replace(/'/g, '\\\'').replace(/\n/g, '\\n')}', '${patch.injected.replace(/\\/g, '\\\\').replace(/'/g, '\\\'').replace(/\n/g, '\\n')}') + ')')`;
+		return `${patch.location} = eval('(' + ${JSON.stringify(patch.location)}.toString().replace(${JSON.stringify(patch.replace)}, ${JSON.stringify(patch.injected)}) + ')')`;
 	}
 
 	function generateListener(listener: listener) {
-		return `if(ENGINE.listeners['${listener.event.replace(/'/g, '\\\'')}']===undefined)ENGINE.listeners['${listener.event.replace(/'/g, '\\\'')}']=[];ENGINE.listeners['${listener.event.replace(/'/g, '\\\'')}'].push(${listener.handler})`;
+		return `if(ENGINE.listeners[${JSON.stringify(listener.event)}]===undefined)ENGINE.listeners[${JSON.stringify(listener.event)}]=[];ENGINE.listeners[${JSON.stringify(listener.event)}].push(${listener.handler});`;
 	}
 
 	/**
@@ -112,7 +112,7 @@ namespace patches {
 	 * @param message please note there is no quote checking here
 	 */
 	function errorCatch(js: string, message: string = 'failed applying server js') {
-		return `try{${js}}catch(e){console.error('${message}');console.error(e);}`
+		return `try{${js}}catch(e){console.error(${JSON.stringify(message)});console.error(e);}`
 	}
 
 	/**
@@ -121,17 +121,17 @@ namespace patches {
 	export function computePatches(): string {
 		let result = '';
 		for(const patch of patches.patches) {
-			result += `;${errorCatch(generateJsFromPatch(patch), `failed applying server patch to ${patch.location}`)};`;
+			result += `;${errorCatch(generateJsFromPatch(patch), `failed applying server patch to ${patch.location.replace('\n', '\\n')} at ${patch.replace.replace('\n', '\\n')}`)};`;
 		}
 
 		for(const js of patches.js) {
-			result += `;${errorCatch(js)};`;
+			result += `;${errorCatch(`eval(${JSON.stringify(js)})`)};`;
 		}
 
 		for(const listener of patches.listeners) {
-			result += `;${errorCatch(generateListener(listener), `failed adding server listener to ${listener.event}`)};`;
+			result += `;${errorCatch(generateListener(listener), `failed adding server listener to ${listener.event.replace('\n', '\\n')}`)};`;
 		}
-
+		
 		if(options.compressPatches) {
 			result = minify(result);
 		}
@@ -148,7 +148,7 @@ patches.addPatch(
 		if(ENGINE.listeners[key]) {
 			ENGINE.listeners[key].forEach(e => e(json[key], key));
 		}
-	}`
+	}`, false
 );
 patches.addJs('ENGINE.listeners = {};');
 
