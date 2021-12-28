@@ -4,16 +4,16 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head><title>
-	@&variable[title]&@
+	{{title}}
 </title><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0" />
-<meta property="og:title" content="@&variable[title]&@" /><meta property="og:type" content="website" />
+<meta property="og:title" content="{{title}}" /><meta property="og:type" content="website" />
 <meta property="og:url" content="https://thetravelers.online" />
 <meta property="og:image" content="/imgs/logo2.png" />
-<meta property="og:description" content="@&variable[description]&@" />
+<meta property="og:description" content="{{description}}" />
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:image" content="/imgs/logo2.png" />
-<meta name="twitter:title" content="@&variable[title]&@" />
-<meta name="twitter:description" content="@&variable[description]&@" />
+<meta name="twitter:title" content="{{title}}" />
+<meta name="twitter:description" content="{{description}}" />
 <link id="styleCss" rel="stylesheet" href="./resources_v114/__travelers.css" /><link rel="stylesheet" href="./resources_v114/_supplies.css" /><link rel="stylesheet" href="./resources_v114/_crafting.css" /><link rel="stylesheet" href="./resources_v114/_stats.css" /><link rel="stylesheet" href="./resources_v114/_interaction.css" /><link rel="stylesheet" href="./resources_v114/_building.css" /><link rel="stylesheet" href="./resources_v114/_pvp.css" /><link rel="stylesheet" href="./resources_v114/_otherpages.css" /><link id="favicon" rel="shortcut icon" type="image/png" href="favicon.ico" />
     
 </head>
@@ -22,8 +22,8 @@
         <div id="init-cover"></div>
         <div id="homepage" class="homepage clearback">
             <div class="header">
-                <h2 class="banner-title">@&variable[title]&@</h2>&nbsp;
-                <h3 class="game-subtitle">@&variable[description]&@</h3>
+                <h2 class="banner-title">{{title}}</h2>&nbsp;
+                <h3 class="game-subtitle">{{description}}</h3>
             </div>
 
             <!-- login/signup/forgot password -->
@@ -41,7 +41,7 @@
                 
                         <p id='badlogin' class="clearback"></p>
 						<div class="clearback" style="display:inline-block;">
-                            @&variable[captchaHtml]&@
+                            {{{captchaHtml}}}
                         </div>
                         <br />
                 
@@ -65,7 +65,7 @@
 
                         <p id='badsignup' class="clearback"></p>
 						<div class="clearback" style="display:inline-block;">
-                            @&variable[captchaHtml]&@
+                            {{{captchaHtml}}}
                         </div>
                         <br />
 
@@ -99,7 +99,7 @@
                         <br />
                         <br />
 						<div class="clearback" style="display:inline-block;">
-                            @&variable[captchaHtml]&@
+                            {{{captchaHtml}}}
                         </div>
                         <br />
                         <br />
@@ -718,8 +718,8 @@
             </div>
         </div>
 
-        <input name="autologin" type="hidden" id="autologin" value="@&asyncReturnFunction[token]&@" />
-        <input name="autocount" type="hidden" id="autocount" value="@&returnFunction[onlinePlayers]&@" />
+        <input name="autologin" type="hidden" id="autologin" value="{{token}}" />
+        <input name="autocount" type="hidden" id="autocount" value="{{onlinePlayers}}" />
         <input name="auto_dailyPeak" type="hidden" id="auto_dailyPeak" value="41" />
         <input name="auto_alltimePeak" type="hidden" id="auto_alltimePeak" value="67" />
     </form>
@@ -749,7 +749,7 @@
         -torogadude, September 18th 2019  
 
     -->   
-	@&variable[captchaScript]&@
+	{{{captchaScript}}}
 	<script src="/socket.io/socket.io.min.js"></script>
     <!--my scripts-->
     <script src="./resources_v114/socket.js"></script>
@@ -842,7 +842,7 @@
 			document.onreadystatechange = function(e)
 			{
 				if(e.eventPhase !== 2)return;
-				@&returnFunction[worldGen]&@
+				{{{worldGen}}}
 			}
         })();
 		
@@ -851,7 +851,7 @@
 		}
     </script>
 	<script>
-		@&returnFunction[getPatchScript]&@
+		{{{getPatchScript}}}
 	</script>
 </body>
 </html>

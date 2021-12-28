@@ -9,16 +9,23 @@
 	</div>
 	<!-- base stuff -->
 	<script>
+		async function makeRequest(command, data) {
+			return fetch('/admin.aspx', {
+				method: 'POST',
+				body: JSON.stringify({
+					command: command,
+					data: data
+				})
+			});
+		}
 		// bypass js error even though it is valid
 		const root = document.getElementById('root');
-		root.style.display = '@&asyncReturnFunction[isAdmin]&@' === 'true' ? '' : 'none';
+		root.style.display = '{{isAdmin}}' === 'true' ? '' : 'none';
 		function button(label, endPoint, wrapper = alert, guard = ()=>true)
 		{
 			const btnElem = document.createElement('input');
 			btnElem.type = 'button';
-			btnElem.onclick = async ()=>{if(guard())(await fetch('admin.aspx/' + endPoint, {
-				method: 'POST'
-			})).json().then(r=>wrapper(r.d));}
+			btnElem.onclick = async ()=>{if(guard())(await makeRequest(endPoint, undefined)).json().then(r=>wrapper(r.d));}
 			btnElem.value = label;
 			root.appendChild(btnElem);
 			root.insertAdjacentHTML('beforeend', '<br>');
@@ -30,10 +37,7 @@
 			btnElem.type = 'button';
 			inputElem.type = 'text';
 			let f;
-			btnElem.onclick = async ()=>(f = await fetch('admin.aspx/' + endPoint, {
-				method: 'POST',
-				body: inputElem.value
-			})).json().then(r=>handler(r.d));
+			btnElem.onclick = async ()=>(f = await makeRequest(endPoint, inputElem.value)).json().then(r=>handler(r.d));
 			btnElem.value = label;
 			inputElem.placeholder = placeholder;
 			root.appendChild(inputElem);
@@ -72,6 +76,6 @@
 		button('Turn Off Immediately', 'turnOffServer', alert, ()=>confirm('press "OK" to turn off server'));
 		text('Turn Off Server In X Minutes', 'serverGoingDown', 'reason:minutes');
 		html('pluginMarker', '<hr>');
-		@&returnFunction[adminFuncs]&@
+		{{{adminFuncs}}}
 	</script>
 </html>

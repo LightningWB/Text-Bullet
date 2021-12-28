@@ -4,17 +4,17 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head><title>
-	@&variable[title]&@: leaderboard
+	{{title}}: leaderboard
 </title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta property="og:title" content="@&variable[title]&@" />
+<meta property="og:title" content="{{title}}" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://thetravelers.online" />
 <meta property="og:image" content="/imgs/logo2.png" />
 <meta property="og:description" content="leaderboard" />
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:image" content="/imgs/logo2.png" />
-<meta name="twitter:title" content="@&variable[title]&@" />
+<meta name="twitter:title" content="{{title}}" />
 <meta name="twitter:description" content="leaderboard" />
 <link rel="stylesheet" href="./resources_v114/__travelers.css" />
 <link rel="stylesheet" href="./resources_v114/_otherpages.css" />
@@ -56,7 +56,7 @@
         <div class="other-siteback"></div>
 
         <div class="header">
-            <h2 class="banner-title"><a class="title-link" href='./'>@&variable[title]&@</a></h2>&nbsp;
+            <h2 class="banner-title"><a class="title-link" href='./'>{{title}}</a></h2>&nbsp;
             <h3 class="game-subtitle">leaderboard</h3>
         </div>
 
@@ -104,12 +104,12 @@
                 </div>
             </div>-->
         </div>
-		<input id="lb_data" type="hidden" value='@&asyncReturnFunction[getLeaderBoardData]&@'>
+		<input id="lb_data" type="hidden" value='{{{getLeaders}}}'>
 
 		<script>
 			const data = JSON.parse(document.getElementById('lb_data').value);
 			const compiled = {};
-			const translators = @&returnFunction[getTranslators]&@;
+			const translators = {{{getTranslators}}};
 			for(const type in translators) {
 				for(const funcId in translators[type]) {
 					translators[type][funcId] = eval('(' + translators[type][funcId] + ')');
