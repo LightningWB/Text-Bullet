@@ -105,10 +105,10 @@ namespace player
 		return resultingPLayer;
 	}
 
-	export async function getPlayerFromToken(token:string):Promise<player>// this won't read data from memory because a token is only used on auto log
+	export function getPlayerFromToken(token:string):player// this won't read data from memory because a token is only used on auto log
 	{
 		if(token === undefined)return null;
-		return await (await db.query('players', {token:token}, 1))[0];
+		return playerData.find(p => p.token === token);
 	}
 
 	export function getPlayerFromUsername(username:string):player

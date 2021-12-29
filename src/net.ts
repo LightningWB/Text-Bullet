@@ -143,7 +143,6 @@ namespace net
 				return JSON.stringify(result);
 			};
 			const leads = await getLeaders(req);
-			console.log(leads);
 			res.render('leaderboard', {
 				helpers: {
 					getLeaders: () => leads
@@ -238,9 +237,9 @@ namespace net
 		});
 	}
 
-	async function isAdmin(token):Promise<boolean>
+	function isAdmin(token):boolean
 	{
-		return (await player.getPlayerFromToken(token) || {admin: false}).admin
+		return (player.getPlayerFromToken(token) || {admin: false}).admin
 	}
 
 	async function isAdminReq(req):Promise<boolean>
@@ -388,7 +387,7 @@ namespace net
 					return end('spam');
 				}
 				// username exists
-				if((await db.query('players', {})).find(p=>p.data.public.username.toLowerCase() === args.username.toLowerCase()) !== undefined)
+				if(player.getPlayerFromUsername(args.username) !== undefined)
 				{
 					end('1');
 				}
@@ -470,7 +469,7 @@ namespace net
 				if(!await verifyCaptcha(args.captcha, req.connection.remoteAddress)) {
 					return end('29');
 				}
-				const user:player.player = await player.getPlayerFromDBByUsername(args.username);
+				const user:player.player = player.getPlayerFromUsername(args.username);
 				if(user === undefined)return end('');
 				const hash = crypto.hash(user.salt + args.password);
 				if(hash !== user.hash)return end('');
