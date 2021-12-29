@@ -68,6 +68,9 @@ namespace travelers
 				process.exit(1);
 			}
 		}
+		util.debug('INFO', 'Loading previous player count highs...');
+		await net.loadHighs();
+		util.debug('INFO', 'Successfully loaded previous player count highs.');
 		util.debug('INFO', 'Initializing world generation');
 		worldGen.initialize();
 		worldGen.computeGenerator();
@@ -117,6 +120,7 @@ namespace travelers
 			saving = true;
 			await chunks.save();
 			await player.save();
+			await net.saveHighs();
 			saving = false;
 		}
 		catch(err){saving = false;db.addErrorRaw(err);}
@@ -129,6 +133,18 @@ namespace travelers
 		{
 			if(cycling)return;
 			cycling = true;
+			const onlinePlayers = player.getOnlinePlayers().length;
+			net.highs.dailyHigh[onlinePlayers] = Date.now();
+			for(let i = 0; i < net.highs.dailyHigh.length; i++) {
+				if(net.highs.dailyHigh[i] && Date.now() - net.highs.dailyHigh[i] > 1000 * 30) {
+					net.highs.dailyHigh[i] = undefined;
+					net.saveHighs();
+				}
+			}
+			if(onlinePlayers > net.highs.allTimeHigh) {
+				net.highs.allTimeHigh = onlinePlayers;
+				net.saveHighs();
+			}
 			await chunks.waitChunkLoads();
 			plugins.triggerEvent('gameTickPre');
 			player.tickPlayers();

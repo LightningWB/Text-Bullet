@@ -112,7 +112,19 @@ namespace net
 			const token = (await player.getPlayerFromToken(cookie.parse(req.headers.cookie || '').T) || {data:{public:{username:'0'}}}).data.public.username;
 			res.render('index', {
 				helpers: {
-					token: () => token
+					token: () => token,
+					dailyPeak: () => {
+						let max = 0;
+						for(const count in highs.dailyHigh) {
+							if(!isNaN(parseInt(count)) && highs.dailyHigh[count] !== undefined && parseInt(count) > max) {
+								max = parseInt(count);
+							}
+						}
+						return max;
+					},
+					allTimePeak: () => {
+						return highs.allTimeHigh;
+					}
 				}
 			});
 		});
@@ -908,6 +920,26 @@ namespace net
 		setLeaderBoards();
 	}, 1000 * 60 * 2)// every two minutes
 
+
+	export const highs: {dailyHigh: number[],allTimeHigh:number} = {
+		dailyHigh : [],
+		allTimeHigh: 0
+	};
+
+	export async function loadHighs() {
+		const result = await db.query('highs');
+		if(result.length > 0) {
+			highs.dailyHigh = result[0].dailyHigh.filter(n => typeof n === 'number');
+			highs.allTimeHigh = result[0].allTimeHigh;
+		}
+	}
+
+	export async function saveHighs() {
+		await db.set('highs', [{
+			dailyHigh: highs.dailyHigh,
+			allTimeHigh: highs.allTimeHigh
+		}]);
+	}
 }
 
 (global as any).net = net;
