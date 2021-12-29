@@ -23,6 +23,18 @@ namespace travelers
 	 */
 	export async function main()
 	{
+		if(process.argv.includes('--help') || process.argv.includes('-h')) {
+			// process.stdout to avoid util.debug overwrite
+			process.stdout.write('Commands:\n');
+			process.stdout.write('\t--help, -h: show this help\n');
+			process.stdout.write('\t--version, -v: show version\n');
+			process.stdout.write('\t--reset-password [identifier] [new password]: reset a player\'s password. identifier is either their username or "id:[their id]"\n');
+			process.exit(0);
+		}
+		if(process.argv.includes('--version') || process.argv.includes('-v')) {
+			process.stdout.write('Text Bullet v' + require('../package.json').version + '\n');
+			process.exit(0);
+		}
 		util.debug('INFO', 'Starting server...');
 		util.debug('INFO', 'Connecting to database...');
 		await db.start(options.db.mode as any, options.db);
