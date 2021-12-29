@@ -37,7 +37,6 @@ namespace db
 	 */
 	export async function start(m:mode, options:ops):Promise<void>
 	{
-		util.debug('INFO', 'Connecting to database');
 		util.debug('INFO', `Using database type of ${m}`);
 		mode = m;
 		if(mode === 'mongo')

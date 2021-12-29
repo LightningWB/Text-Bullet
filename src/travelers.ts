@@ -6,6 +6,7 @@ import * as player from './player';
 import * as net from './net';
 import * as plugins from './plugin';
 import * as chunks from './chunks';
+import * as crypto from './crypto';
 import * as util from './util';
 import { tps } from './options';
 import worldGen = require('./worldgen');
@@ -23,14 +24,44 @@ namespace travelers
 	export async function main()
 	{
 		util.debug('INFO', 'Starting server...');
+		util.debug('INFO', 'Connecting to database...');
 		await db.start(options.db.mode as any, options.db);
+		await player.loadPlayers();
+		if(process.argv.includes('--reset-password')) {
+			const index = process.argv.indexOf('--reset-password');
+			if(process.argv.length >= index + 2) {
+				const identifier = process.argv[index + 1];
+				const newPassword = process.argv[index + 2];
+				util.debug('INFO', 'Resetting password for ' + (typeof identifier === 'string' ? identifier : ('player id ' + identifier)));
+				const salt = util.randomString(25);
+				const hash = crypto.hash(salt + newPassword);
+				let originalPlayer: player.player;
+				if(identifier.indexOf('id:') === 0) {
+					originalPlayer = player.getPlayerFromId(parseInt(identifier.substring(3)));
+				} else {
+					originalPlayer = player.getPlayerFromUsername(identifier);
+				}
+				if(!originalPlayer) {
+					util.debug('ERROR', 'No user found.');
+					process.exit(1);
+				}
+				const oldSalt = originalPlayer.salt;
+				const oldHash = originalPlayer.hash;
+				originalPlayer.salt = salt;
+				originalPlayer.hash = hash;
+				await player.save();
+				util.debug('INFO', 'Password reset.');
+			} else {
+				util.debug('ERROR', 'You must provide an identifier and a new password for the account.');
+				process.exit(1);
+			}
+		}
 		util.debug('INFO', 'Initializing world generation');
 		worldGen.initialize();
 		worldGen.computeGenerator();
 		net.start(travelers);
 		await plugins.init();
 		loadPlugins();
-		await player.loadPlayers();
 		setInterval(()=>cycle(), 1000/options.tps);
 		plugins.triggerEvent('ready');
 		util.debug('INFO', 'Compiling world generation');

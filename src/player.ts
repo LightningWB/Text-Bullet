@@ -372,7 +372,7 @@ namespace player
 		catch(err){saving = false;db.addErrorRaw(err, 'player.save');}
 		saving = false;		
 	}
-	async function savePlayer(id: number):Promise<void>
+	export async function savePlayer(id: number):Promise<void>
 	{
 		try
 		{
