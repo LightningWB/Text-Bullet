@@ -818,7 +818,7 @@ namespace net
 			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
 			res.end(JSON.stringify({d:onSend()}));
 		};
-		adminHtml += 'button("' + util.htmlEscape(text) + '", "plugins.' + util.htmlEscape(id) + '");\n';
+		adminHtml += 'button(' + JSON.stringify(text) + ', "plugins.' + util.htmlEscape(id) + '");\n';
 	}
 	export function addAdminText(id:string, placeHolder: string, text: string, onSend: Function):any
 	{
@@ -826,7 +826,7 @@ namespace net
 			res.setHeader('Content-Type', 'text/json');if(!await isAdminReq(req))return res.end('GoAway');
 			res.end(JSON.stringify({d:onSend(d)}));
 		};
-		adminHtml += 'text("' + util.htmlEscape(text) + '", "plugins.' + util.htmlEscape(id) + '", "' + placeHolder + '");\n';
+		adminHtml += 'text(' + JSON.stringify(text) + ', "plugins.' + util.htmlEscape(id) + '", ' + JSON.stringify(placeHolder) + ');\n';
 	}
 
 	export type howToPlayPart = {
