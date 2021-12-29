@@ -567,13 +567,11 @@ namespace net
 			username = username.replace(/ /g, '');
 			if(typeof username === 'string')
 			{
-				const players = await db.query('players', {data:{public:{username: username}}}, 1);
-				if(players.length <= 0)return res.end('{"d":"pass a valid username"}');
-				const DBPlayer = players[0];
-				const playerNew = util.clone(DBPlayer);
+				const playerData = player.getPlayerFromUsername(username);
+				if(!playerData)return res.end('{"d":"pass a valid username"}');
+				const playerNew = util.clone(playerData);
 				playerNew.admin = true;
-				db.update('players', DBPlayer, playerNew, 1);
-				if(player.isOnline(username))player.getOnlinePlayer(username).admin = true;
+				await player.save();
 				res.end('{"d":"Successfully Added Admin To ' + username + '"}');
 			}
 			else
@@ -586,13 +584,11 @@ namespace net
 			username = username.replace(/ /g, '');
 			if(typeof username === 'string')
 			{
-				const players = await db.query('players', {data:{public:{username: username}}}, 1);
-				if(players.length <= 0)return res.end('{"d":"pass a valid username"}');
-				const DBPlayer = players[0];
-				const playerNew = util.clone(DBPlayer);
+				const playerData = player.getPlayerFromUsername(username);
+				if(!playerData)return res.end('{"d":"pass a valid username"}');
+				const playerNew = util.clone(playerData);
 				playerNew.admin = false;
-				db.update('players', DBPlayer, playerNew, 1);
-				if(player.isOnline(username))player.getOnlinePlayer(username).admin = false;
+				await player.save();
 				res.end('{"d":"Successfully Removed Admin From ' + username + '"}');
 			}
 			else
@@ -627,10 +623,9 @@ namespace net
 			username = username.replace(/ /g, '');
 			if(typeof username === 'string')
 			{
-				const players = await db.query('players', {data:{public:{username: username}}}, 1);
-				if(players.length <= 0)return res.end('{"d":"pass a valid username"}');
-				const player = players[0];
-				res.end('{"d":"' + username + ' joined at ' + new Date(player.joinDate || 0) + '"}');
+				const playerData = player.getPlayerFromUsername(username);
+				if(!playerData)return res.end('{"d":"pass a valid username"}');
+				res.end('{"d":"' + username + ' joined at ' + new Date(playerData.joinDate || 0) + '"}');
 			}
 			else
 			{
@@ -797,6 +792,22 @@ namespace net
 				}
 			} else {
 				res.end('{"d":"Invalid Minutes"}');
+			}
+		},
+		resetToken: async (username: string, req, res) => {
+			username = username.replace(/ /g, '');
+			if(typeof username === 'string') {
+				const user = player.getPlayerFromUsername(username);
+				if(user) {
+					user.token = base64.encode(util.rand(0, 2**64));
+					if(player.isOnline(username)) {
+						player.disconnect(username);
+					}
+					await player.save();
+					res.end('{"d":"Successfully reset Token"}');
+				} else {
+					res.end('{"d":"Couldn\'t find player"}');
+				}
 			}
 		}
 	}
