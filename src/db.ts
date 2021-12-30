@@ -122,6 +122,7 @@ namespace db
 						}
 					}
 				};
+				addToQuery(query, []);
 				const data = await db.collection(table).find(newQuery).limit(limit).toArray();
 				const removeNullProps = (obj:object)=>{
 					for(const prop in obj)
@@ -382,7 +383,22 @@ namespace db
 			else if(mode === 'mongo')
 			{
 				const db = conn as mongoDb.Db;
-				await db.collection(table).deleteMany(deleteQuery);
+				const newQuery = {};
+				const addToQuery = (obj:object, history:string[]) => {
+					for(const prop in obj)
+					{
+						if(typeof obj[prop] === 'object' && !Array.isArray(obj[prop]))
+						{
+							addToQuery(obj[prop], history.concat(prop));
+						}
+						else
+						{
+							newQuery[history.concat(prop).join('.')] = obj[prop];
+						}
+					}
+				};
+				addToQuery(deleteQuery, []);
+				await db.collection(table).deleteMany(newQuery);
 			}
 			else if(mode === 'fs')
 			{
