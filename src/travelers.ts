@@ -134,6 +134,7 @@ namespace travelers
 			if(saving)return;
 			util.debug('INFO', 'Saving game...');
 			saving = true;
+			plugins.triggerEvent('save');
 			await chunks.save();
 			await player.save();
 			await net.saveHighs();

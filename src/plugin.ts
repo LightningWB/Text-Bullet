@@ -328,7 +328,8 @@ namespace plugins
 		'playerTick': (player: player.playerData) => any,
 		'saveChunk': (chunk: chunk.chunk) => any,
 		'ready': () => any,
-		'globalMessage': (message: string) => any
+		'globalMessage': (message: string) => any,
+		'save': () => any
 	}
 	class plugin
 	{
