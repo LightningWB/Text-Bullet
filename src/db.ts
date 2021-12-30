@@ -108,7 +108,21 @@ namespace db
 			else if(mode === 'mongo')
 			{
 				const db = conn as mongoDb.Db;
-				const data = await db.collection(table).find(query).limit(limit).toArray();
+				const newQuery = {};
+				const addToQuery = (obj:object, history:string[]) => {
+					for(const prop in obj)
+					{
+						if(typeof obj[prop] === 'object' && !Array.isArray(obj[prop]))
+						{
+							addToQuery(obj[prop], history.concat(prop));
+						}
+						else
+						{
+							newQuery[history.concat(prop).join('.')] = obj[prop];
+						}
+					}
+				};
+				const data = await db.collection(table).find(newQuery).limit(limit).toArray();
 				const removeNullProps = (obj:object)=>{
 					for(const prop in obj)
 					{
