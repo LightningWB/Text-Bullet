@@ -11,6 +11,11 @@ import * as util from './util';
 import { tps } from './options';
 import worldGen = require('./worldgen');
 
+// work nicely with systemctl
+process.on('SIGTERM', ()=>{
+	travelers.save();
+});
+
 /**
  * main travelers stuff
  */
