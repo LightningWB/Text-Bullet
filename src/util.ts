@@ -1,3 +1,5 @@
+import path = require('path');
+import fs = require('fs');
 import chunks = require("./chunks");
 
 /**
@@ -151,10 +153,12 @@ namespace util
 	{
 		return cloneArray(logs);
 	}
-	const MAX_LOGS = 100;
+	const MAX_LOGS = 1000;
 	type level = 'ERROR' | 'WARN' | 'INFO';
 
 	const userRegex = new RegExp(process.env.USERNAME || process.env.USER || randomString(500), 'g');
+	const logStream = fs.createWriteStream(path.join(root, 'log.txt'), {flags: 'a'});
+	logStream.write('====================\n');
 	export function debug(mode:level, ...message: any[]): void
 	{
 		for(let i = 0; i < message.length; i++) {
@@ -176,6 +180,7 @@ namespace util
 		}
 		logs.push(mode + ' [' + new Date().toISOString() + '] ' + message);
 		if(color)oldLog.apply(oldLog, [color + mode + reset + ' [' + new Date().toISOString() + ']'].concat(message));
+		logStream.write(mode + ' [' + new Date().toISOString() + '] ' + JSON.stringify(message) + '\n');
 	}
 
 	console.log = (...args) => {
