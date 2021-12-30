@@ -12,9 +12,16 @@ import { tps } from './options';
 import worldGen = require('./worldgen');
 
 // work nicely with systemctl
-process.on('SIGTERM', ()=>{
+process.on('SIGTERM', async ()=>{
 	util.debug('INFO', 'Received SIGTERM, shutting down gracefully.');
-	travelers.save();
+	await travelers.save();
+	util.debug('INFO', 'Shutdown complete.');
+	process.exit(0);
+});
+
+process.on('SIGINT', async ()=>{
+	util.debug('INFO', 'Received SIGINT, shutting down gracefully.');
+	await travelers.save();
 	util.debug('INFO', 'Shutdown complete.');
 	process.exit(0);
 });
