@@ -136,7 +136,7 @@ namespace travelers
 			const onlinePlayers = player.getOnlinePlayers().length;
 			net.highs.dailyHigh[onlinePlayers] = Date.now();
 			for(let i = 0; i < net.highs.dailyHigh.length; i++) {
-				if(net.highs.dailyHigh[i] && Date.now() - net.highs.dailyHigh[i] > 1000 * 30) {
+				if(net.highs.dailyHigh[i] && Date.now() - net.highs.dailyHigh[i] > 86400000) {
 					net.highs.dailyHigh[i] = undefined;
 					net.saveHighs();
 				}
