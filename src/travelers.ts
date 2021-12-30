@@ -13,7 +13,10 @@ import worldGen = require('./worldgen');
 
 // work nicely with systemctl
 process.on('SIGTERM', ()=>{
+	util.debug('INFO', 'Received SIGTERM, shutting down gracefully.');
 	travelers.save();
+	util.debug('INFO', 'Shutdown complete.');
+	process.exit(0);
 });
 
 /**
@@ -122,10 +125,12 @@ namespace travelers
 		try
 		{
 			if(saving)return;
+			util.debug('INFO', 'Saving game...');
 			saving = true;
 			await chunks.save();
 			await player.save();
 			await net.saveHighs();
+			util.debug('INFO', 'Game saved successfully');
 			saving = false;
 		}
 		catch(err){saving = false;db.addErrorRaw(err);}
