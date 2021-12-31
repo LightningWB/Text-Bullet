@@ -108,6 +108,9 @@ namespace net
 				},
 				disocrd_link: () => {
 					return JSON.stringify(options.discord);
+				},
+				reddit_link: () => {
+					return JSON.stringify(options.reddit);
 				}
 			}
 		});

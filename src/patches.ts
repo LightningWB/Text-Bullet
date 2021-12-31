@@ -152,5 +152,7 @@ patches.addPatch(
 );
 patches.addJs('ENGINE.listeners = {};');
 patches.addPatch('ENGINE.setOnline', `"<a class='homepage-imglink' target='_blank' href='" + ENGINE.discord_link + "'><img class='homepage-icon' src='./imgs/discord.png' /></a>"`, `(ENGINE.discord_link !== "" ? ("<a class='homepage-imglink' target='_blank' href='" + ENGINE.discord_link + "'><img class='homepage-icon' src='./imgs/discord.png' /></a>") : "")`, false);
+patches.addPatch('ENGINE.setOnline', `"<a class='homepage-imglink' target='_blank' href='" + ENGINE.reddit_link + "'><img class='homepage-icon' src='./imgs/reddit.png' /></a>"`, `(ENGINE.reddit_link !== "" ? ("<a class='homepage-imglink' target='_blank' href='" + ENGINE.reddit_link + "'><img class='homepage-icon' src='./imgs/reddit.png' /></a>") : "")`, false);
+patches.addPatch('ENGINE.setOnline', `"join the traveling community:<br />"`, `(ENGINE.discord_link !== "" || ENGINE.reddit_link !== "" ? "join the traveling community:<br />" : "")`, false);
 
 export = patches;

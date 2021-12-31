@@ -790,6 +790,7 @@
             ENGINE.playersOnline = parseInt(document.getElementById("autocount").value);
             ENGINE.version = {{{version}}};
 			ENGINE.discord_link = {{{disocrd_link}}};
+			ENGINE.reddit_link = {{{reddit_link}}};
 
             document.getElementById("game-info").innerHTML = ENGINE.setOnline() + "<div id='game-peaks' style='background-color: rgba(0,0,0,0);font-size: 12px;margin-top:10px'>daily peak <b>" + document.getElementById("auto_dailyPeak").value + "</b> \u2022 alltime peak <b>" + document.getElementById("auto_alltimePeak").value + "</b></div>";
             

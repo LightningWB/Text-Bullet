@@ -56,6 +56,10 @@ namespace loader
 		allowed(['String']),
 		'discord = ""',
 		'',
+		'# the reddit link for the server to display. set to "" to disable.',
+		allowed(['String']),
+		'reddit = ""',
+		'',
 		'# changelogs for the server. Copy paste more in if needed',
 		'[[changelog]]',
 		indent([

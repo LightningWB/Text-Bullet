@@ -43,7 +43,8 @@ type ops = {
 	obscureWorldGen: boolean,
 	allowObsceneNames: boolean,
 	version: string,
-	discord: string
+	discord: string,
+	reddit: string
 }
 const defaultOps: ops = {
 	port: 80,
@@ -69,7 +70,8 @@ const defaultOps: ops = {
 	obscureWorldGen: false,
 	allowObsceneNames: false,
 	version: 'release 1.0.0',
-	discord: ''
+	discord: '',
+	reddit: ''
 };
 const file = fs.readFileSync(path.join(util.root, 'config.toml')).toString();
 const options: ops = util.mergeObject(defaultOps, toml.parse(file));
