@@ -42,7 +42,8 @@ type ops = {
 	compressPatches: boolean,
 	obscureWorldGen: boolean,
 	allowObsceneNames: boolean,
-	version: string
+	version: string,
+	discord: string
 }
 const defaultOps: ops = {
 	port: 80,
@@ -67,7 +68,8 @@ const defaultOps: ops = {
 	compressPatches: true,
 	obscureWorldGen: false,
 	allowObsceneNames: false,
-	version: 'release 1.0.0'
+	version: 'release 1.0.0',
+	discord: ''
 };
 const file = fs.readFileSync(path.join(util.root, 'config.toml')).toString();
 const options: ops = util.mergeObject(defaultOps, toml.parse(file));

@@ -773,6 +773,9 @@
     <script src="./resources_v114/you.js"></script>
     <script src="./resources_v114/other.js"></script>
     <script src="./resources_v114/puzzle.js"></script>
+	<script>
+		{{{getPatchScript}}}
+	</script>
     <script>
         (function () {
             //document.getElementById("adblock-msg").style.display = window.adsEnabled !== undefined ? "none" : "";
@@ -786,6 +789,7 @@
 
             ENGINE.playersOnline = parseInt(document.getElementById("autocount").value);
             ENGINE.version = {{{version}}};
+			ENGINE.discord_link = {{{disocrd_link}}};
 
             document.getElementById("game-info").innerHTML = ENGINE.setOnline() + "<div id='game-peaks' style='background-color: rgba(0,0,0,0);font-size: 12px;margin-top:10px'>daily peak <b>" + document.getElementById("auto_dailyPeak").value + "</b> \u2022 alltime peak <b>" + document.getElementById("auto_alltimePeak").value + "</b></div>";
             
@@ -851,8 +855,5 @@
 			SOCKET.captcha = r;
 		}
     </script>
-	<script>
-		{{{getPatchScript}}}
-	</script>
 </body>
 </html>

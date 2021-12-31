@@ -151,5 +151,6 @@ patches.addPatch(
 	}`, false
 );
 patches.addJs('ENGINE.listeners = {};');
+patches.addPatch('ENGINE.setOnline', `"<a class='homepage-imglink' target='_blank' href='" + ENGINE.discord_link + "'><img class='homepage-icon' src='./imgs/discord.png' /></a>"`, `(ENGINE.discord_link !== "" ? ("<a class='homepage-imglink' target='_blank' href='" + ENGINE.discord_link + "'><img class='homepage-icon' src='./imgs/discord.png' /></a>") : "")`, false);
 
 export = patches;

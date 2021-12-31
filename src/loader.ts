@@ -52,6 +52,10 @@ namespace loader
 		allowed(['String']),
 		'version = "release 1.0.0"',
 		'',
+		'# the discord link for the server to display. set to "" to disable.',
+		allowed(['String']),
+		'discord = ""',
+		'',
 		'# changelogs for the server. Copy paste more in if needed',
 		'[[changelog]]',
 		indent([

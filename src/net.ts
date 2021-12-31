@@ -105,6 +105,9 @@ namespace net
 				},
 				version: () => {
 					return JSON.stringify(options.title + ' • ' + options.version);
+				},
+				disocrd_link: () => {
+					return JSON.stringify(options.discord);
 				}
 			}
 		});
