@@ -38,72 +38,76 @@ namespace travelers
 	 */
 	export async function main()
 	{
-		if(process.argv.includes('--help') || process.argv.includes('-h')) {
-			// process.stdout to avoid util.debug overwrite
-			process.stdout.write('Commands:\n');
-			process.stdout.write('\t--help, -h: show this help\n');
-			process.stdout.write('\t--version, -v: show version\n');
-			process.stdout.write('\t--reset-password [identifier] [new password]: reset a player\'s password. identifier is either their username or "id:[their id]"\n');
-			process.exit(0);
-		}
-		if(process.argv.includes('--version') || process.argv.includes('-v')) {
-			process.stdout.write('Text Bullet v' + require('../package.json').version + '\n');
-			process.exit(0);
-		}
-		util.debug('INFO', 'Starting server...');
-		util.debug('INFO', 'Connecting to database...');
-		await db.start(options.db.mode as any, options.db);
-		await player.loadPlayers();
-		if(process.argv.includes('--reset-password')) {
-			const index = process.argv.indexOf('--reset-password');
-			if(process.argv.length >= index + 2) {
-				const identifier = process.argv[index + 1];
-				const newPassword = process.argv[index + 2];
-				util.debug('INFO', 'Resetting password for ' + (typeof identifier === 'string' ? identifier : ('player id ' + identifier)));
-				const salt = util.randomString(25);
-				const hash = crypto.hash(salt + newPassword);
-				let originalPlayer: player.player;
-				if(identifier.indexOf('id:') === 0) {
-					originalPlayer = player.getPlayerFromId(parseInt(identifier.substring(3)));
+		try {
+			if(process.argv.includes('--help') || process.argv.includes('-h')) {
+				// process.stdout to avoid util.debug overwrite
+				process.stdout.write('Commands:\n');
+				process.stdout.write('\t--help, -h: show this help\n');
+				process.stdout.write('\t--version, -v: show version\n');
+				process.stdout.write('\t--reset-password [identifier] [new password]: reset a player\'s password. identifier is either their username or "id:[their id]"\n');
+				process.exit(0);
+			}
+			if(process.argv.includes('--version') || process.argv.includes('-v')) {
+				process.stdout.write('Text Bullet v' + require('../package.json').version + '\n');
+				process.exit(0);
+			}
+			util.debug('INFO', 'Starting server...');
+			util.debug('INFO', 'Connecting to database...');
+			await db.start(options.db.mode as any, options.db);
+			await player.loadPlayers();
+			if(process.argv.includes('--reset-password')) {
+				const index = process.argv.indexOf('--reset-password');
+				if(process.argv.length >= index + 2) {
+					const identifier = process.argv[index + 1];
+					const newPassword = process.argv[index + 2];
+					util.debug('INFO', 'Resetting password for ' + (typeof identifier === 'string' ? identifier : ('player id ' + identifier)));
+					const salt = util.randomString(25);
+					const hash = crypto.hash(salt + newPassword);
+					let originalPlayer: player.player;
+					if(identifier.indexOf('id:') === 0) {
+						originalPlayer = player.getPlayerFromId(parseInt(identifier.substring(3)));
+					} else {
+						originalPlayer = player.getPlayerFromUsername(identifier);
+					}
+					if(!originalPlayer) {
+						util.debug('ERROR', 'No user found.');
+						process.exit(1);
+					}
+					const oldSalt = originalPlayer.salt;
+					const oldHash = originalPlayer.hash;
+					originalPlayer.salt = salt;
+					originalPlayer.hash = hash;
+					await player.save();
+					util.debug('INFO', 'Password reset.');
 				} else {
-					originalPlayer = player.getPlayerFromUsername(identifier);
-				}
-				if(!originalPlayer) {
-					util.debug('ERROR', 'No user found.');
+					util.debug('ERROR', 'You must provide an identifier and a new password for the account.');
 					process.exit(1);
 				}
-				const oldSalt = originalPlayer.salt;
-				const oldHash = originalPlayer.hash;
-				originalPlayer.salt = salt;
-				originalPlayer.hash = hash;
-				await player.save();
-				util.debug('INFO', 'Password reset.');
-			} else {
-				util.debug('ERROR', 'You must provide an identifier and a new password for the account.');
-				process.exit(1);
 			}
+			util.debug('INFO', 'Loading previous player count highs...');
+			await net.loadHighs();
+			util.debug('INFO', 'Successfully loaded previous player count highs.');
+			util.debug('INFO', 'Initializing world generation');
+			worldGen.initialize();
+			worldGen.computeGenerator();
+			net.start(travelers);
+			await plugins.init();
+			loadPlugins();
+			setInterval(()=>cycle(), 1000/options.tps);
+			plugins.triggerEvent('ready');
+			util.debug('INFO', 'Compiling world generation');
+			worldGen.computeGenerator();
+			setGenerator();
+			util.debug('INFO', 'Setting leader boards');
+			net.setLeaderBoards();
+			net.state.starting = false;
+			util.debug('INFO', 'Compiling patches');
+			net.reloadPatches();
+			util.debug('INFO', 'Server started successfully');
+		} catch(e) {
+			util.debug('ERROR', 'Failed to start server: ', e);
+			process.exit(1);
 		}
-		util.debug('INFO', 'Loading previous player count highs...');
-		await net.loadHighs();
-		util.debug('INFO', 'Successfully loaded previous player count highs.');
-		util.debug('INFO', 'Initializing world generation');
-		worldGen.initialize();
-		worldGen.computeGenerator();
-		net.start(travelers);
-		await plugins.init();
-		loadPlugins();
-		setInterval(()=>cycle(), 1000/options.tps);
-		plugins.triggerEvent('ready');
-		util.debug('INFO', 'Compiling world generation');
-		worldGen.computeGenerator();
-		setGenerator();
-		util.debug('INFO', 'Setting leader boards');
-		net.setLeaderBoards();
-		net.state.starting = false;
-		util.debug('INFO', 'Compiling patches');
-		net.reloadPatches();
-		util.debug('INFO', 'Server started successfully');
-
 	}
 
 	export function setGenerator(): void {
