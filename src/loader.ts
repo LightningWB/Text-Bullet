@@ -48,6 +48,10 @@ namespace loader
 		allowed(['Boolean']),
 		'allowObsceneNames = false',
 		'',
+		'# the version for the server to display.',
+		allowed(['String']),
+		'version = "release 1.0.0"',
+		'',
 		'# changelogs for the server. Copy paste more in if needed',
 		'[[changelog]]',
 		indent([

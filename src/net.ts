@@ -102,6 +102,9 @@ namespace net
 				},
 				getPatchScript: () => {
 					return patchHtml;
+				},
+				version: () => {
+					return JSON.stringify(options.title + ' • ' + options.version);
 				}
 			}
 		});
