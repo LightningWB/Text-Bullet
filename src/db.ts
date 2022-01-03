@@ -434,7 +434,7 @@ namespace db
 		if(loc !== undefined)return await addError(err.message + ' at ' + loc, err.stack);
 		return await addError(err.message, err.stack);
 	}
-	const userRegex = new RegExp(process.env.USERNAME, 'g');
+	const userRegex = new RegExp(process.env.USERNAME || process.env.USER || util.randomString(500), 'g');
 	/**
 	 * logs an error to the data base
 	 * @param message error message
