@@ -100,4 +100,8 @@ if(options.db.mode === 'mongo' && options.db.name) {
 		util.debug('WARN', 'Database name contains invalid characters or is greater than 64 characters long. Filtering bad characters to use "' + options.db.name + '"');
 	}
 }
+
+for(const log of options.changelog) {
+	log.body = log.body.trim().replace(/\n/g, '<br>');
+}
 export = options;
