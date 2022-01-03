@@ -117,6 +117,7 @@ namespace net
 		server.engine('handlebars', hbs.engine);
 		server.set('view engine', 'handlebars');
 		server.set('views', path.join(__dirname, '../views'));
+		server.enable('view cache');
 		server.get('/', async (req, res) => {
 			const token = (await player.getPlayerFromToken(cookie.parse(req.headers.cookie || '').T) || {data:{public:{username:'0'}}}).data.public.username;
 			res.render('index', {
