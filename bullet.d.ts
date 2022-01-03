@@ -333,6 +333,8 @@ declare namespace plugins
 		  */
 		setStorage(storage: storage): void
 		addLeaderboard(name: string, scorer: (player: player.playerData,) => number, maps:{[key:string]:(player: player.playerData) => any}, _translators:{[key:string]:(player: player.playerData) => string}):void
+		getPrimaryLeaderboard(): string
+		setPrimaryLeaderboard(name: string): void
 		addHowToPlaySection(name: string, values: howToPlayPart[]):void
 		/**
 		 * synchronously loads a toml config file

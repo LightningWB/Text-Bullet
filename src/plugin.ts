@@ -394,6 +394,17 @@ namespace plugins
 			net.addLeaderboard(name, scorer, maps, _translators);
 		}
 
+		getPrimaryLeaderboard(): string
+		{
+			return net.getPrimaryBoard();
+		}
+
+		setPrimaryLeaderboard(name: string): void
+		{
+			net.setPrimaryBoard(name);
+		}
+
+
 		/**
 		 * add a how to play section to the how to play page
 		 * @param name 

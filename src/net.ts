@@ -222,7 +222,7 @@ namespace net
 			if(typeof data.ver === 'number' && data.ver > 0) {
 				log = options.changelog[changelogsSorted.length - data.ver]
 			}
-			res.end(JSON.stringify({d: JSON.stringify({...log, leaders: []})}))
+			res.end(JSON.stringify({d: JSON.stringify({...log, leaders: leaders[primaryBoard].slice(0, 5)})}));
 		});
 		server.post('/changelog.aspx/GetChangelogs', (req, res) => {
 			const d = req.body;
@@ -924,6 +924,15 @@ namespace net
 				leaders[key].push(p);
 			}
 		}
+	}
+
+	let primaryBoard = '';
+	export function setPrimaryBoard(name: string) {
+		primaryBoard = name;
+	}
+
+	export function getPrimaryBoard() {
+		return primaryBoard;
 	}
 
 	setInterval(() => {
