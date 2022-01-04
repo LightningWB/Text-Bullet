@@ -120,8 +120,8 @@ namespace travelers
 		{
 			const user = player.getPlayerFromAuth(auth);
 			if(user) {
-				plugins.triggerEvent('actions::' + packet.action, packet, user.data);
 				plugins.triggerEvent('actions::*', packet, user.data);
+				plugins.triggerEvent('actions::' + packet.action, packet, user.data);
 			}
 		}
 		catch(err)
