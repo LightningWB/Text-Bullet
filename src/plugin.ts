@@ -467,7 +467,12 @@ namespace plugins
 
 	export function generateTileAt(x:number, y:number):string
 	{
-		return require('./travelers').genTile(x, y);
+		return world.getGenerator().generateTileAt(x, y);
+	}
+
+	export function generateBiomeAt(x:number, y:number):string
+	{
+		return world.getGenerator().getBiomeAt(x, y);
 	}
 
 	export async function init():Promise<void>
