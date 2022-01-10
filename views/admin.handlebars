@@ -69,6 +69,13 @@
 		text('Get Player JSON', 'getPlayerJson', 'Username', (r)=>document.getElementById('playerJson').innerHTML = r);
 		html('playerJson');
 		text('Set Player JSON', 'setPlayerJson', 'Username:key:value');
+		button('Get Loaded Chunks', 'getLoadedChunks', (r)=>document.getElementById('loadedChunks').innerText = r);
+		html('loadedChunks');
+		text('Get Objects in chunk', 'getObjectsInChunk', 'chunk id', (r)=>document.getElementById('objectsInChunk').innerText = r);
+		html('objectsInChunk');
+		text('Get Object JSON', 'getObjectJson', 'x:y', (r)=>document.getElementById('objectJson').innerHTML = r);
+		html('objectJson');
+		text('Set Object JSON', 'setObjectJson', 'x:y:key:value');
 		button('Go Down For Maintenance', 'disableConnections');
 		button('Come Back Up', 'enableConnections');
 		text('Global Message', 'globalMessage', 'Message');

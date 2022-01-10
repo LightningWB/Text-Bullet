@@ -15,6 +15,7 @@ import * as util from './util';
 import patches = require('./patches');
 import { profanity } from '@2toad/profanity';
 import base64 = require('base-64');
+import chunks = require('./chunks');
 
 /**
  * the website part of the travelers.
@@ -830,6 +831,77 @@ namespace net
 				} else {
 					res.end('{"d":"Couldn\'t find player"}');
 				}
+			}
+		},
+		getLoadedChunks: async (data, req, res) => {
+			res.end(JSON.stringify({d:chunks.loadedChunks().join('\n') || 'No chunks loaded'}));
+		},
+		getObjectsInChunk: async (data, req, res) => {
+			const splitUp = data.split('|');
+			const x = parseInt(splitUp[0]);
+			const y = parseInt(splitUp[1]);
+			if(!chunks.isChunkLoaded(x, y)) {
+				await chunks.loadChunk(x, y);
+			}
+			res.end(JSON.stringify({d:util.getObjs(chunks.getChunk(x, y)).map(o=>o.public.char + '-(' + o.public.x + ', ' + o.public.y + ')').join('\n') || 'No objects in chunk'}));
+		},
+		getObjectJson: async (data, req, res) => {
+			const splitUp = data.split(':');
+			const x = parseInt(splitUp[0]);
+			const y = parseInt(splitUp[1]);
+			const {x: chunkX, y: chunkY} = chunks.coordsToChunk(x, y);
+			if(!chunks.isChunkLoaded(chunkX, chunkY)) {
+				await chunks.loadChunk(chunkX, chunkY);
+			}
+			const obj = chunks.getObj(x, y);
+			if(obj) {
+				res.end(JSON.stringify({d:util.htmlEscape(JSON.stringify(obj, null, 4)).replace(/\n/g, '<br>')}));
+			} else {
+				res.end('{"d":"Couldn\'t find object"}');
+			}
+		},
+		setObjectJson: async (data, req, res) => {
+			const splitUp = data.split(':');
+			if(splitUp.length !== 4) {
+				return res.end('{"d":"Invalid Arguments"}');
+			}
+			const x = parseInt(splitUp[0]);
+			const y = parseInt(splitUp[1]);
+			const key = splitUp[2];
+			let val = splitUp[3];
+			try {
+				if(val === 'delete') {
+					val = 'delete';
+				} else {
+					val = JSON.parse(val);
+				}
+			} catch(e) {
+				return res.end('{"d":"Invalid JSON in replace value"}');
+			}
+			const {x: chunkX, y: chunkY} = chunks.coordsToChunk(x, y);
+			if(!chunks.isChunkLoaded(chunkX, chunkY)) {
+				await chunks.loadChunk(chunkX, chunkY);
+			}
+			const obj = chunks.getObj(x, y);
+			if(obj) {
+				const editKey = (obj, keys, val) => {
+					if(keys.length === 1) {
+						if(val === 'delete') {
+							delete obj[keys[0]];
+						} else {
+							obj[keys[0]] = val;
+						}
+					} else {
+						if(typeof obj[keys[0]] !== 'object' || Array.isArray(obj[keys[0]])) {
+							obj[keys[0]] = {};
+						}
+						editKey(obj[keys[0]], keys.slice(1), val);
+					}
+				}
+				editKey(obj, key.split('.'), val);
+				res.end('{"d":"Successfully set object"}');
+			} else {
+				res.end('{"d":"Couldn\'t find object"}');
 			}
 		}
 	}
