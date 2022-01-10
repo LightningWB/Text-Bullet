@@ -119,7 +119,6 @@ declare namespace player
 }
 
 type ops = {
-	staticFiles: boolean,
 	tps: number,
 	port: number,
 	title: string,
@@ -129,7 +128,13 @@ type ops = {
 		title: string,
 		body: string
 	}[],
-	ipLimit: number
+	ipLimit: number,
+	compressPatches: boolean,
+	obscureWorldGen: boolean,
+	allowObsceneNames: boolean,
+	version: string,
+	discord: string,
+	reddit: string
 }
 
 declare namespace config {
@@ -171,11 +176,15 @@ declare namespace plugins
 		 * @returns the player
 		 */
 		export function getPlayerByUsername(username: string): player.playerData
-		export function isPlayerOnline(username: string): boolean
+		export function isPlayerOnline(username: string | number): boolean
 		export function getOnlinePlayer(username: string): player.playerData
 		export function onlinePlayers(): player.playerData[]
 		export function onlinePlayerNames(): string[]
 		export function getPlayerNames(): string[]
+		export function getPlayer(id: number): player.playerData
+		export function getPlayerId(username: string): number
+		export function getPlayerIds(): number[]
+		export function getOnlinePlayerIds(): number[]
 	}
 	export namespace chunks
 	{
@@ -308,7 +317,8 @@ declare namespace plugins
 		'playerTick': (player: player.playerData) => any,
 		'saveChunk': (chunk: chunk.chunk) => any,
 		'ready': () => any,
-		'globalMessage': (message: string) => any
+		'globalMessage': (message: string) => any,
+		'save': () => any
 	}
 	class plugin
 	{
@@ -344,6 +354,7 @@ declare namespace plugins
 	export function makePlugin(id:string):plugin
 	export function emit(namespace: string, method: string, ...args):void
 	export function generateTileAt(x:number, y:number):string
+	export function generateBiomeAt(x:number, y:number):string
 }
 
 export = plugins;

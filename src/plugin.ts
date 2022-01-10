@@ -37,7 +37,7 @@ namespace plugins
 			if(player.isOnline(username))return player.getOnlinePlayer(username).data;
 			else return (player.getPlayerFromUsername(username)).data;
 		}
-		export function isPlayerOnline(username: string): boolean
+		export function isPlayerOnline(username: string | number): boolean
 		{
 			return player.isOnline(username);
 		}
@@ -60,6 +60,26 @@ namespace plugins
 		export function getPlayerNames(): string[]
 		{
 			return player.getPlayerNames()
+		}
+
+		export function getPlayer(id: number): player.playerData
+		{
+			return player.getPlayerFromId(id).data;
+		}
+
+		export function getPlayerId(username: string): number
+		{
+			return player.getPlayerIdFromUsername(username);
+		}
+
+		export function getPlayerIds(): number[]
+		{
+			return player.getPlayerIds();
+		}
+
+		export function getOnlinePlayerIds(): number[]
+		{
+			return player.getOnlinePlayerIds();
 		}
 	}
 	export namespace chunks
