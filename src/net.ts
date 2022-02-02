@@ -72,6 +72,7 @@ namespace net
 			legacyHeaders: true
 		}));
 		server.disable('x-powered-by');
+		const showLoaderBoard = options.donations.address !== '' || options.donations.bitcoin !== '' || options.donations.ethereum !== '' || options.donations.description !== '';
 		const hbs = create({
 			helpers: {
 				title: () => {
@@ -112,6 +113,21 @@ namespace net
 				},
 				reddit_link: () => {
 					return JSON.stringify(options.reddit);
+				},
+				showDonations: () => {
+					return showLoaderBoard;
+				},
+				donation_description: () => {
+					return options.donations.description;
+				},
+				donation_bitcoin: () => {
+					return options.donations.bitcoin;
+				},
+				donation_ethereum: () => {
+					return options.donations.ethereum;
+				},
+				donation_address: () => {
+					return options.donations.address;
 				}
 			}
 		});

@@ -133,18 +133,16 @@
                     <h3 class="post-title">latest version</h3>
                     <h4 id="changelog-date" class="post-subtitle">2/11/2020</h4>
                     <p id="changelog-desc" class="post-body">loading...</p>
-                </div><!--
+                </div><!--{{#if (showDonations)}}
             ---><div class="content-box floating-content-box">
                     <h3 class="post-title">donate</h3>
-                    <p class="post-body">I've spent hundreds of hours developing The Travelers and I plan to keep it going as long as I can. 
-                        The site costs $20 a month to run and $25 a year to keep the domain. I can handle this myself, but if you want
-                        to donate to show your appreciation and help keep the mystery alive, here's a few links. Thanks for playing!
+                    <p class="post-body">{{donation_description}}
                         <br />
-                        <br />PayPal/Venmo: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="30445f425f57515445545570575d51595c1e535f5d">[email&#160;protected]</a>
-                        <br />Bitcoin: <span style="font-size:12px;">3Hap8CWvLZVAJnU8L8F8hXf8WEkRBEwazr</span>
-                        <br />Ethereum: <span style="font-size:12px;">0xD805732a2053F8F3395Ff7DDCa390ad64804F166</span>
+                        {{#if (donation_address)}}<br />PayPal/Venmo: {{donation_address}}{{/if}}
+                        {{#if (donation_bitcoin)}}<br />Bitcoin: <span style="font-size:12px;">{{donation_bitcoin}}</span>{{/if}}
+                        {{#if (donation_ethereum)}}<br />Ethereum: <span style="font-size:12px;">{{donation_ethereum}}</span>{{/if}}
                     </p>
-                </div><!--
+                </div><!--{{/if}}
         ---></div>
         </div>
 

@@ -45,7 +45,13 @@ type ops = {
 	version: string,
 	discord: string,
 	reddit: string,
-	leaderboardSize: number
+	leaderboardSize: number,
+	donations: {
+		address: string,
+		bitcoin: string,
+		ethereum: string,
+		description: string
+	}
 }
 const defaultOps: ops = {
 	port: 80,
@@ -73,7 +79,13 @@ const defaultOps: ops = {
 	version: 'release 1.0.0',
 	discord: '',
 	reddit: '',
-	leaderboardSize: 10
+	leaderboardSize: 10,
+	donations: {
+		address: '',
+		bitcoin: '',
+		ethereum: '',
+		description: 'donate to the server'
+	}
 };
 const file = fs.readFileSync(path.join(util.root, 'config.toml')).toString();
 const options: ops = util.mergeObject(defaultOps, toml.parse(file));

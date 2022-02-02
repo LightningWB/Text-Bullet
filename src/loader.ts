@@ -74,6 +74,25 @@ namespace loader
 			'"""'
 		]),
 		'',
+		'[donations]',
+		indent([
+			'# the donation description. set to "" to disable.',
+			allowed(['String']),
+			'description = ""',
+			'',
+			'# the paypal/venmo email for the donation. set to "" to disable.',
+			allowed(['String']),
+			'address = ""',
+			'',
+			'#the bitcoin id for the donation. set to "" to disable.',
+			allowed(['String']),
+			'bitcoin = ""',
+			'',
+			'# the ethereum id for the donation. set to "" to disable.',
+			allowed(['String']),
+			'ethereum = ""'
+		]),
+		'',
 		'[db]',
 		indent([
 			'# the data base connection type.',
