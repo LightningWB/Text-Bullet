@@ -84,7 +84,7 @@ const defaultOps: ops = {
 		address: '',
 		bitcoin: '',
 		ethereum: '',
-		description: 'donate to the server'
+		description: ''
 	}
 };
 const file = fs.readFileSync(path.join(util.root, 'config.toml')).toString();
