@@ -165,12 +165,12 @@
 					return e;
 				},
 				br: () => document.createElement('br'),
-				user: (name, rank, firstText = '', subText = '') => {
+				user: (name, rank, firstText = '', subText = '', is_you = false) => {
 					const container = ELEMS.span('');
-					container.appendChild(ELEMS.p(rank + ')', 'lboard-wide clearback'));
+					container.appendChild(ELEMS.p((is_you ? '<b>' : '' ) + rank + ')' + (is_you ? '</b>' : ''), 'lboard-wide clearback'));
 					const containerSpan = ELEMS.span('');
 						containerSpan.className = 'lboard-main';
-						containerSpan.appendChild(ELEMS.b(name));
+						containerSpan.appendChild(ELEMS.b(name + (is_you ? ' (you)' : '')));
 						if(firstText) {
 							firstText = firstText.replace(/\`(.*?)\`/g, s => s.replace('`', '<span class="lb-list-unit">').replace('`', '</span>'));
 							containerSpan.insertAdjacentText('beforeend', ': ');
@@ -205,14 +205,15 @@
 					const container = ELEMS.div('');
 					container.id = 'lb_' + boardName;
 					container.style = 'display:inline-block;text-align:left;background-color:rgba(0,0,0,0);min-width: 70%;';
-					for(const member of board) {
+					for(let i = 0; i < board.length; i++) {
+						const member = board[i];
 						const activeTranslator = translators[boardName];
 						let primary = '', caption;
 						primary = activeTranslator.primary(member);
 						if(activeTranslator.caption) {
 							caption = activeTranslator.caption(member);
 						}
-						container.appendChild(ELEMS.user(member.username, member.rank, primary, caption));
+						container.appendChild(ELEMS.user(member.username, member.rank, primary, caption, member.is_you));
 					}
 					root.appendChild(container);
 				} catch(err) {
