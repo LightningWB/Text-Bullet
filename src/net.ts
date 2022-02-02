@@ -156,10 +156,10 @@ namespace net
 					let mySelf = leaders[type].find(l => l.username === name);
 					let finalLeaders:util.anyObject[];
 					if(mySelf) {
-						finalLeaders = leaders[type].filter(l => l.rank <= 10 || (l.rank <= mySelf.rank + 1 && l.rank >= mySelf.rank - 1));
+						finalLeaders = leaders[type].filter(l => l.rank <= options.leaderboardSize || (l.rank <= mySelf.rank + 1 && l.rank >= mySelf.rank - 1));
 						finalLeaders.forEach(l => l.is_you = l.username === name);
 					} else {
-						finalLeaders = leaders[type].filter(l => l.rank <= 10);
+						finalLeaders = leaders[type].filter(l => l.rank <= options.leaderboardSize);
 					}
 					result[type] = finalLeaders;
 				}
