@@ -1,10 +1,9 @@
-<!-- don't think you are clever going here to see all admin stuff. it is open source on github. -->
-<!DOCTYPE html>
+{{#if (isAdmin)}}<!DOCTYPE html>
 <html>
 	<head>
 		<title>Admin Panel</title>
 	</head>
-	<div id="root" style="display: none;">
+	<div id="root">
 		<h1><u>Admin Panel</u></h1>
 	</div>
 	<!-- base stuff -->
@@ -20,7 +19,6 @@
 		}
 		// bypass js error even though it is valid
 		const root = document.getElementById('root');
-		root.style.display = '{{isAdmin}}' === 'true' ? '' : 'none';
 		function button(label, endPoint, wrapper = alert, guard = ()=>true)
 		{
 			const btnElem = document.createElement('input');
@@ -86,4 +84,4 @@
 		html('pluginMarker', '<hr>');
 		{{{adminFuncs}}}
 	</script>
-</html>
+</html>{{/if}}
