@@ -36,6 +36,7 @@ declare namespace utility
 	type level = 'ERROR' | 'WARN' | 'INFO';
 	export function debug(mode:level, message: string): void
 	export function rand(min: number, max: number): number
+	export function randf(min: number, max: number): number
 	type dataType = 'number' | 'int' | 'string' | 'object' | 'array' | 'boolean' | 'bigint' | 'symbol' | 'function';
 	export class Out<T>
 	{
