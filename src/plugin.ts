@@ -497,7 +497,6 @@ namespace plugins
 
 	export async function init():Promise<void>
 	{
-		if(Object.keys(pluginStorage).length > 0)return;
 		util.debug('INFO', 'Loading plugin storage')
 		const savedStates: fullStorage[] = await db.query('pluginStorage');
 		for(const storage of savedStates)
