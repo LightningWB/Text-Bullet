@@ -40,6 +40,7 @@ namespace net
 	let adminHtml = '';
 	let howToPlayHtml = '';
 	let patchHtml = '';
+	let patchCss = '';
 	let leaders:{[key:string]:util.anyObject[]} = {};
 	let translators = {};
 	const changelogsSorted = options.changelog.sort((l1, l2) => new Date(l2.date).getTime() - new Date(l1.date).getTime());
@@ -104,6 +105,9 @@ namespace net
 				},
 				getPatchScript: () => {
 					return patchHtml;
+				},
+				getPatchCss: () => {
+					return patchCss;
 				},
 				version: () => {
 					return JSON.stringify(options.title + ' • ' + options.version);
@@ -979,6 +983,7 @@ namespace net
 	export function reloadPatches() {
 		if(!state.starting) {
 			patchHtml = patches.computePatches();
+			patchCss = patches.computePatchCss();
 		}
 	}
 

@@ -252,6 +252,11 @@ declare namespace plugins
 		 * @param handler how to handle the data. can be a stringified function or a function that'll be converted automatically.
 		 */
 		export function addListener(event: string, handler: string | ((value?: any, key?: any) => any)): void
+		/**
+		 * adds css to a new style element
+		 * @param css 
+		 */
+		 export function addCssPatch(css: string): void
 	}
 	export namespace worldGen {
 		export type generator = {

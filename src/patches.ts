@@ -34,13 +34,15 @@ namespace patches {
 	type patchStorage = {
 		patches: patch[],
 		js: string[],
-		listeners: listener[]
+		listeners: listener[],
+		css: string[]
 	};
 
 	const patches: patchStorage = {
 		patches: [],
 		js: [],
-		listeners: []
+		listeners: [],
+		css: []
 	};
 
 	function verifyLocation(location: string): boolean {
@@ -137,6 +139,20 @@ namespace patches {
 		}
 
 		return result;
+	}
+
+	export function computePatchCss(): string {
+		return patches.css.map(css => '<style>' + css + '</style>').join('');
+	}
+
+	setInterval(() => console.log(computePatchCss()), 1000 * 5)
+
+	/**
+	 * adds css to a new style element
+	 * @param css 
+	 */
+	export function addCssPatch(css: string): void {
+		patches.css.push(css);
 	}
 
 }

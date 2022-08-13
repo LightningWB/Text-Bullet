@@ -215,6 +215,15 @@ namespace plugins
 			patch.addListener(event, handler);
 			net.reloadPatches();
 		}
+
+		/**
+		 * adds css to a new style element
+		 * @param css 
+		 */
+		export function addCssPatch(css: string): void {
+			patch.addCssPatch(css);
+			net.reloadPatches();
+		}
 	}
 	export namespace worldGen {
 		export type generator = world.generator
