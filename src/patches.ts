@@ -145,8 +145,6 @@ namespace patches {
 		return patches.css.map(css => '<style>' + css + '</style>').join('');
 	}
 
-	setInterval(() => console.log(computePatchCss()), 1000 * 5)
-
 	/**
 	 * adds css to a new style element
 	 * @param css 
