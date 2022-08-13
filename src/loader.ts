@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import * as cryptoLib from 'crypto';
 import * as util from './util';
 
 namespace loader
@@ -140,8 +141,32 @@ namespace loader
 			'# private secret key to use for captcha.',
 			allowed(['String']),
 			'secretKey = ""'
+		]),
+		'',
+		'[email]',
+		indent([
+			'# the email service to use.',
+			'# a full list of valid services can be found here: https://nodemailer.com/smtp/well-known/',
+			allowed(['String']),
+			'service = "gmail"',
+			'',
+			'# the username to use for the email service.',
+			allowed(['String']),
+			'username = ""',
+			'',
+			'# the password to use for the email service.',
+			allowed(['String']),
+			'password = ""',
+			'',
+			'',
+			'# the email address to send from. most likely the same as the username.',
+			allowed(['String']),
+			'from = ""',
+			'',
+			'# the encryption key used to store emails. changing this will require all users to reset their email.',
+			allowed(['String']),
+			'key = "' + cryptoLib.randomBytes(32).toString('hex') + '"'
 		])
-		
 	].join('\n');
 	// making a few file writes once synchronously is ok when it saves debugging other stuff
 	export function creatFiles()

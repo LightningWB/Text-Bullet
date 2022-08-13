@@ -42,7 +42,7 @@ namespace player
 	type secureData = {
 		hash: string,
 		salt: string,
-		email: string,
+		email: string | crypto.encryptedData,
 		token: string,
 		admin: boolean
 	}
@@ -232,6 +232,11 @@ namespace player
 	export function getPlayerIds():number[]
 	{
 		return playerData.map(p => p.data.id);
+	}
+
+	export function getPlayers():player[]
+	{
+		return playerData;
 	}
 
 	export function addNonDBProps(player: player)

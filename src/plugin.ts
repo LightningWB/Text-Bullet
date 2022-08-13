@@ -77,6 +77,11 @@ namespace plugins
 			return player.getPlayerIds();
 		}
 
+		export function getPlayers():player[]
+		{
+			return player.getPlayers().map(p => p.data);
+		}
+
 		export function getOnlinePlayerIds(): number[]
 		{
 			return player.getOnlinePlayerIds();

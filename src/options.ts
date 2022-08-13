@@ -51,6 +51,14 @@ type ops = {
 		bitcoin: string,
 		ethereum: string,
 		description: string
+	},
+	email: {
+		service: string | 'gmail' | 'hotmail' | 'outlook365' | 'yahoo',
+		username: string,
+		password: string,
+		sender: string,
+		encryptionKey: string,
+		enabled?: boolean
 	}
 }
 const defaultOps: ops = {
@@ -85,6 +93,13 @@ const defaultOps: ops = {
 		bitcoin: '',
 		ethereum: '',
 		description: ''
+	},
+	email: {
+		service: '',
+		username: '',
+		password: '',
+		sender: '',
+		encryptionKey: 'test'
 	}
 };
 const file = fs.readFileSync(path.join(util.root, 'config.toml')).toString();
@@ -114,6 +129,8 @@ if(options.db.mode === 'mongo' && options.db.name) {
 		util.debug('WARN', 'Database name contains invalid characters or is greater than 64 characters long. Filtering bad characters to use "' + options.db.name + '"');
 	}
 }
+
+options.email.enabled = options.email.password !== '' && options.email.sender !== '' && options.email.service !== '' && options.email.username !== '';
 
 for(const log of options.changelog) {
 	log.body = log.body.trim().replace(/\n/g, '<br>');

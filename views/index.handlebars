@@ -36,7 +36,7 @@
 
                         <p id="password-changed" style="display:none;font-size:14px;">password changed successfully, please log in with the new password.</p>
     
-                        <input type='text' id='loginname-txt' placeholder='username or email' maxlength="200" style='font-size: 20px;'/>
+                        <input type='text' id='loginname-txt' placeholder='username' maxlength="200" style='font-size: 20px;'/>
                         <input type='password' id='loginpass-txt' placeholder='password' maxlength="100" style='font-size: 20px;'/>
                 
                         <p id='badlogin' class="clearback"></p>
@@ -50,7 +50,9 @@
                         <input type='button' id='signup-switch' class='linkbtn clearback' value='new traveler? sign up here' onclick='SOCKET.switchstart();' style="font-size:18px;" />
 
                         <br />
+                        {{#if hasEmailEnabled}}
                         <input type='button' class='linkbtn clearback' value='forgot password?' onclick='SOCKET.switchforgot();' />
+                        {{/if}}
                     </div>
                     <div id='signup-screen' class='startpage-optionbox' style='opacity:1;'>
                         <h3 class='post-title' style="padding:0">create an account</h3>
@@ -73,7 +75,9 @@
                         <input type='button' id='signup-btn' value='join' onclick='SOCKET.signup();' />
                         <input type='button' id='login-switch' class='linkbtn clearback' value='asleep somewhere? log in here' onclick='SOCKET.switchstart();' style="font-size:18px;" />
                 
+                        {{#if hasEmailEnabled}}
                         <input type='button' class='linkbtn clearback' value='forgot password?' onclick='SOCKET.switchforgot();' />
+                        {{/if}}
                     </div>
                     <div id='forgot-screen' class='startpage-optionbox' style='opacity:0;display:none'>
                         <h3 class='post-title' style="padding:0">forgot password</h3>

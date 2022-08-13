@@ -7,6 +7,7 @@ import * as socketIo from 'socket.io';
 import * as joi from 'joi';
 import * as hcaptcha from 'hcaptcha';
 import * as recaptcha2 from 'recaptcha2';
+import * as nodemailer from 'nodemailer';
 import * as db from './db';
 import * as crypto from './crypto';
 import * as player from './player';
@@ -55,6 +56,46 @@ namespace net
 	} else {
 		captchaScript = '<script>grecaptcha = {reset: () => {}};const CAPTCHA_EXISTS = false;</script>'
 	}
+
+	let transporter:nodemailer.Transporter;
+	let getMailOptions: (uid: number, code: string) => nodemailer.SendMailOptions | string;
+	let passwordResets: {[key:string]:{uid:number, timeout:number}} = {};
+	if(options.email.enabled) {
+		transporter = nodemailer.createTransport({
+			service: options.email.service,
+			auth: {
+				user: options.email.username,
+				pass: options.email.password
+			}
+		});
+		getMailOptions = (uid: number, code: string) => {
+			if(!require('./travelers').allowConnections) {
+				return '19';
+			}
+			const user = player.getPlayerFromId(uid);
+			const email = crypto.decryptEmail(user?.email);
+			if(user?.email && email) {
+				return {
+					from: options.email.sender,
+					to: email,
+					subject: options.title + ' - reset password request',
+					html: `hello, <b>${util.htmlEscape(user.data.public.username)}</b>! your reset password code is: <b>${code}</b>. it will be valid for 5 minutes. if this request wasn't made by you, then someone is probably trying to break into your account. <b>make sure you're using a secure password so your account is safe.</b>`
+				};
+			} else {
+				return '1';
+			}
+		};
+
+		setInterval(() => {
+			console.log(passwordResets)
+			for(const code in passwordResets) {
+				if(passwordResets[code].timeout < Date.now()) {
+					delete passwordResets[code];
+				}
+			}
+		}, 1000 * 15);
+	}
+
 	/**
 	 * starts the whole website
 	 */
@@ -156,7 +197,8 @@ namespace net
 					allTimePeak: () => {
 						return highs.allTimeHigh;
 					}
-				}
+				},
+				hasEmailEnabled: options.email.enabled
 			});
 		});
 		server.get('/admin', async (req, res) => {
@@ -235,6 +277,26 @@ namespace net
 		server.post('/default.aspx/GetPlayersOnline', (req, res) => {
 			res.end('{"d":'+player.getOnlinePlayers().length+'}');
 		});
+		server.post('/default.aspx/GetAcctInfo', (req, res) => {
+			const user = player.getPlayerFromToken(cookie.parse(req.headers.cookie).T);
+			const email = crypto.decryptEmail(user.email);
+			console.log('email: ' + email);
+			res.end(JSON.stringify({
+				d: email
+			}));
+		});
+		if(options.email.enabled) {
+			server.post('/default.aspx/Forgot1', (req, res) => {
+			const email = JSON.parse(req.body).email;
+			if(typeof email !== 'string' || email === '') {
+				res.end('{d:"1"}');
+			}
+			const uid = player.getPlayers().find(p => {
+				return crypto.decryptEmail(p.email) === email;
+			})?.data?.id;
+			res.end(JSON.stringify({d:sendPasswordReset(uid)}));
+			});
+		}
 		// changelog.aspx
 		server.post('/changelog.aspx/GetSpecificChangelog', (req, res) => {
 			const d = req.body;
@@ -462,7 +524,7 @@ namespace net
 						token: token,
 						username: args.username,
 						id: (await db.query('players', {})).length,
-						email: args.email,
+						email: crypto.encryptEmail(args.email),
 						admin: false
 					});
 					queueUser(args.username, end, req.socket.remoteAddress);
@@ -578,6 +640,17 @@ namespace net
 		{
 			end('an error occurred', 501)
 			db.addError(err.message, err.stack);
+		}
+	}
+
+	function sendPasswordReset(uid: number) {
+		const code = util.randomString(8);
+		const options = getMailOptions(uid, code);
+		if(typeof options === 'string') {
+			return options;
+		} else {
+			transporter.sendMail(options);
+			return '2';
 		}
 	}
 

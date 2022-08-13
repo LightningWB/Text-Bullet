@@ -185,6 +185,7 @@ declare namespace plugins
 		export function getPlayer(id: number): player.playerData
 		export function getPlayerId(username: string): number
 		export function getPlayerIds(): number[]
+		export function getPlayers():player[]
 		export function getOnlinePlayerIds(): number[]
 	}
 	export namespace chunks
